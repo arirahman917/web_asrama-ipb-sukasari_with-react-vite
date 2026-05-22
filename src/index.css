@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Optimasi Performa Lenis & Scroll */
+
+html.lenis, html.lenis body { 
+    height: auto; 
+    width: 100vw; 
+    overflow-x: hidden; 
+}
+
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-scrolling iframe { pointer-events: none; }
+
+/* Hilangkan Scrollbar default */
+body { margin: 0; padding: 0; background: #f3f4f6; } 
+::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Hardware Acceleration untuk elemen yang dianimasikan GSAP */
+.will-change-transform { will-change: transform, opacity; }
+.overflow-hidden-mask { overflow: hidden; display: inline-block; }
+
+/* Gradien Khusus */
+.grad-navy {
+    background: linear-gradient(to right, rgba(15,23,42,1) 0%, rgba(15,23,42,0.95) 30%, rgba(15,23,42,0.6) 55%, rgba(15,23,42,0.1) 80%, rgba(15,23,42,0) 100%);
+}
+.grad-orange {
+    background: linear-gradient(to right, rgba(234,88,12,1) 0%, rgba(234,88,12,0.95) 30%, rgba(234,88,12,0.6) 55%, rgba(234,88,12,0.1) 80%, rgba(234,88,12,0) 100%);
+}
+
+/* Responsive adjustments for Mobile Visi Misi Cards */
+@media (max-width: 768px) {
+    #title-visi h2, #title-misi h2, #title-nilai h2 { font-size: 2.5rem; line-height: 1; }
+    .card-content p, .card-content ul, .card-content span { font-size: 0.9rem !important; }
+    .card-content svg { width: 1.25rem; height: 1.25rem; }
+    .card-content .w-14 { width: 2.5rem; height: 2.5rem; }
+}
