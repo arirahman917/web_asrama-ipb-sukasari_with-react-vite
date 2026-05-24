@@ -91,7 +91,7 @@ function CountdownDisplay() {
     <div className="mt-6 flex flex-col items-center">
       {/* Label */}
       <p className="text-xs uppercase tracking-[0.2em] text-orange-300 font-semibold mb-3">
-        {oprec.status === "closed" ? "🔒 Pendaftaran Telah Ditutup" : `🔥 OPEN RECRUITMENT — ${oprec.label}`}
+        {oprec.status === "closed" ? "🔒 Pendaftaran Telah Ditutup" : `OPEN RECRUITMENT — ${oprec.label}`}
       </p>
 
       {/* Countdown boxes */}
@@ -279,7 +279,7 @@ export default function Hero() {
             ref={descRef}
             className="text-[14px] xs:text-[16px] md:text-[14px] max-w-[290px] xs:max-w-[320px] md:max-w-[420px] font-normal"
           >
-            Lebih dari hunian, Asrama IPB Sukasari adalah rumah untuk belajar, bertumbuh,
+            Rumah yang nyaman untuk belajar, bertumbuh,
             dan meraih prestasi bersama.
           </p>
 

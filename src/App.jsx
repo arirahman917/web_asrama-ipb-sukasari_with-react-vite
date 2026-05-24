@@ -10,7 +10,8 @@ import Tentang from './components/sections/tentang';
 import VisiMisiNilai from './components/sections/visiMisiNilai';
 import Sejarah from './components/sections/sejarah';
 import Pengurus from './components/sections/pengurus';
-import Program from './components/sections/program';
+// import Program from './components/sections/program';
+import ProgramSementara from './components/sections/programSementara';
 import Fasilitas from './components/sections/fasilitas';
 import Berita from './components/sections/berita';
 import Galeri from './components/sections/galeri';
@@ -56,7 +57,8 @@ function LandingPage() {
       {/* <Sejarah /> */}
       <VisiMisiNilai />
       <Pengurus />
-      <Program />
+      {/* <Program /> */}
+      <ProgramSementara />
       <Fasilitas />
       <Berita />
       <Galeri />

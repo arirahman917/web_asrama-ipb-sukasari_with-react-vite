@@ -182,8 +182,13 @@ export default function Berita() {
                                     <img
                                         src={item.img}
                                         alt={item.title}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 blur-[2px]"
                                     />
+                                    
+                                    {/* Coming Soon Overlay */}
+                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-0 pointer-events-none">
+                                        <span className="bg-white/20 backdrop-blur-md border border-white/30 text-white text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-full tracking-widest shadow-lg">SEGERA HADIR</span>
+                                    </div>
 
                                     {/* Potongan Tanggal Kiri Bawah (Inverted Radius Effect) */}
                                     {/* px-5 ditambahkan agar tanggal tidak terpotong di kiri */}
@@ -200,14 +205,18 @@ export default function Berita() {
                                 </div>
 
                                 {/* Teks Konten */}
-                                <div className="px-1 md:px-2">
-                                    <h3 className="font-bold text-base md:text-lg text-gray-900 mb-1.5 md:mb-2 leading-snug group-hover:text-orange-500 transition-colors line-clamp-2">
-                                        {item.title}
-                                    </h3>
-                                    {/* line-clamp-3 akan otomatis memotong teks dan memberikan '...' di baris ketiga */}
-                                    <p className="text-[13px] md:text-sm text-gray-500 leading-relaxed line-clamp-3">
-                                        {item.desc}
-                                    </p>
+                                <div className="px-1 md:px-2 relative mt-2">
+                                    <div className="blur-[4px] select-none opacity-50 pointer-events-none pb-2">
+                                        <h3 className="font-bold text-base md:text-lg text-gray-900 mb-1.5 md:mb-2 leading-snug line-clamp-2">
+                                            {item.title}
+                                        </h3>
+                                        <p className="text-[13px] md:text-sm text-gray-500 leading-relaxed line-clamp-3">
+                                            {item.desc}
+                                        </p>
+                                    </div>
+                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                                        <span className="text-gray-500 text-[10px] md:text-xs font-bold tracking-widest border border-gray-300 rounded-full px-3 py-1 bg-white/60 backdrop-blur-md shadow-sm">COMING SOON</span>
+                                    </div>
                                 </div>
                             </Link>
                         ))}

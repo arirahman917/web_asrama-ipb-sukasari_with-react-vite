@@ -36,7 +36,7 @@ export default function Footer() {
         scrub: true,
       },
       scaleX: 0.96,
-      scaleY: 0.96,
+      scaleY: 1, // Tidak disusutkan secara vertikal agar tidak bergeser ke atas sama sekali
       borderRadius: "0 0 32px 32px",
       transformOrigin: "top center",
       ease: "none",
@@ -49,7 +49,7 @@ export default function Footer() {
       {/* Background Biru Dongker Utama */}
       <div 
         ref={blueBoxRef} 
-        className="w-full bg-[#182C4A] pt-16 pb-12 text-white relative z-10 will-change-transform shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
+        className="w-full bg-[#0a2f4c] pt-16 pb-12 text-white relative z-10 will-change-transform"
       >
         <div className="max-w-6xl mx-auto px-8 md:px-16 grid grid-cols-1 md:grid-cols-3 gap-12 items-start text-center md:text-left">
           
@@ -116,11 +116,11 @@ export default function Footer() {
       {/* White Bottom Area: Teks & Logo yang terungkap secara natural */}
       <div 
         ref={whiteBoxRef}
-        className="w-full h-[180px] bg-[#FAF9F6] flex flex-col items-center justify-center relative z-0"
+        className="w-full h-[160px] bg-[#FAF9F6] flex flex-col items-center justify-end pb-10 relative z-0"
       >
-        <p className="text-gray-600 text-sm font-medium mb-3">You are always in my heart.</p>
+        <p className="text-gray-600 text-[13px] font-medium mb-3">You are always in my heart.</p>
         <div className="flex items-center justify-center">
-            <img src={logoAis} alt="Logo Asrama Sukasari" className="h-14 w-auto object-contain" />
+            <img src={logoAis} alt="Logo Asrama Sukasari" className="h-12 w-auto object-contain opacity-90" />
         </div>
       </div>
 

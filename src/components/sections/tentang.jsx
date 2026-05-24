@@ -4,7 +4,7 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 // Import gambar
-import imgKabinet from '../../assets/img/pengurus/kabinet.webp';
+import imgKabinetBahagia from '../../assets/img/pengurus/kabinet-bahagia.webp';
 import imgGedung from '../../assets/img/fasilitas/gedung.webp';
 import imgUpgrading from '../../assets/img/program/upgrading.webp';
 
@@ -70,7 +70,7 @@ export default function Tentang() {
                 
                 <div className="absolute inset-0 flex w-full h-full bg-[#1b2a47]">
                     <div id="mobile-img-container" className="w-full h-full block lg:hidden origin-top">
-                        <img id="mobile-img" src={imgKabinet} alt="Kabinet Asrama" className="w-full h-full object-cover" style={{ objectPosition: '50% 0%' }} />
+                        <img id="mobile-img" src={imgKabinetBahagia} alt="Kabinet Asrama" className="w-full h-full object-cover" style={{ objectPosition: '50% 0%' }} />
                     </div>
 
                     <div className="hidden lg:flex w-full h-full">
@@ -79,7 +79,7 @@ export default function Tentang() {
                         </div>
                         <div className="hidden lg:flex flex-col w-1/2 h-full bg-gray-200">
                             <div className="w-full h-1/2 relative"><img src={imgUpgrading} alt="Foto Atas" className="w-full h-full object-cover object-[center_65%]" /></div>
-                            <div className="w-full h-1/2 relative"><img src={imgGedung} alt="Foto Bawah" className="w-full h-full object-cover object-[50%_center]" /></div>
+                            <div className="w-full h-1/2 relative"><img src={imgKabinetBahagia} alt="Foto Bawah" className="w-full h-full object-cover object-[50%_center]" /></div>
                         </div>
                     </div>
                 </div>

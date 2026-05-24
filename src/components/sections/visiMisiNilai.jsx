@@ -4,9 +4,9 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 // Import gambar
-import imgVisi from '../../assets/img/program/visi.webp';
-import imgMisi from '../../assets/img/program/upgrading.webp'; // Dulu di Laravel pakai upgrading.jpg
-import imgNilai from '../../assets/img/program/nilai.webp';
+import imgVisi from '../../assets/img/pengurus/kabinet.webp';
+import imgMisi from '../../assets/img/program/upgrading-bendera.jpg'; // Dulu di Laravel pakai upgrading.jpg
+import imgNilai from '../../assets/img/program/kolam-upgrading.webp';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -63,8 +63,8 @@ export default function VisiMisiNilai() {
             <div className="relative w-[89%] max-w-[1450px] h-[90vh]">
 
                 <div className="absolute inset-0 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl pointer-events-none">
-                    <div id="bg-visi" className="absolute inset-0 bg-cover bg-center md:bg-bottom" style={{ backgroundImage: `url(${imgVisi})` }}></div>
-                    <div id="bg-misi" className="absolute inset-0 bg-cover bg-center md:bg-bottom opacity-0" style={{ backgroundImage: `url(${imgMisi})` }}></div>
+                    <div id="bg-visi" className="absolute inset-0 bg-cover bg-center md:bg-[center_70%]" style={{ backgroundImage: `url(${imgVisi})` }}></div>
+                    <div id="bg-misi" className="absolute inset-0 bg-cover bg-center md:bg-[center_70%] opacity-0" style={{ backgroundImage: `url(${imgMisi})` }}></div>
                     <div id="bg-nilai" className="absolute inset-0 bg-cover bg-[center_60%] md:bg-[center_60%] opacity-0" style={{ backgroundImage: `url(${imgNilai})` }}></div>
 
                     {/* Pastikan grad-navy dan grad-orange sudah ada di index.css kamu */}

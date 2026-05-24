@@ -49,7 +49,7 @@ const PilihBerita = () => {
             Berita
           </Link>
           <ChevronRight className="w-4 h-4" />
-          <span className="text-orange-500 font-medium bg-orange-50 px-3 py-1 rounded-md max-w-[200px] md:max-w-md truncate">
+          <span className="text-orange-500 font-medium bg-orange-50 px-3 py-1 rounded-md max-w-[200px] md:max-w-md truncate blur-[4px] select-none opacity-50">
             {berita.title}
           </span>
         </nav>
@@ -59,7 +59,7 @@ const PilihBerita = () => {
           
           {/* Kolom Kiri: Konten Utama Berita */}
           <article className="w-full md:w-2/3 lg:w-[70%]">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-5 leading-snug">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-5 leading-snug blur-[5px] select-none opacity-40">
               {berita.title}
             </h1>
 
@@ -77,15 +77,22 @@ const PilihBerita = () => {
               </button>
             </div>
 
-            <div className="mb-8 overflow-hidden rounded-[24px] shadow-sm bg-gray-100">
+            <div className="relative mb-8 overflow-hidden rounded-[24px] shadow-sm bg-gray-100">
               <img
                 src={berita.img} 
                 alt={berita.title}
-                className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500"
+                className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500 blur-[3px]"
               />
+              {/* Coming Soon Overlay */}
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-10 pointer-events-none">
+                  <div className="bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold px-6 py-3 rounded-2xl md:rounded-full tracking-widest shadow-xl flex flex-col items-center text-center">
+                      <span className="text-sm md:text-base">SEGERA HADIR</span>
+                      <span className="text-[10px] md:text-xs font-normal tracking-normal mt-1 opacity-90">Konten ini hanya tampilan sementara</span>
+                  </div>
+              </div>
             </div>
 
-            <div className="space-y-5 text-gray-700 leading-relaxed text-justify text-base md:text-lg">
+            <div className="space-y-5 text-gray-700 leading-relaxed text-justify text-base md:text-lg blur-[5px] select-none opacity-40">
               {/* Jika desc berupa text biasa dengan baris baru \n, kita pisahkan jadi <p> terpisah */}
               {berita.desc.split('\n').map((paragraph, idx) => (
                 paragraph.trim() !== '' && (
@@ -121,10 +128,12 @@ const PilihBerita = () => {
                   <Link 
                     key={item.id}
                     to={`/berita/${item.id}`} 
-                    className="py-4 border-b border-gray-200 text-sm md:text-base text-gray-700 hover:text-orange-500 transition-colors font-medium leading-snug group"
+                    className="py-4 border-b border-gray-200 text-sm md:text-base text-gray-700 hover:text-orange-500 transition-colors font-medium leading-snug group relative"
                   >
-                    <span className="line-clamp-2">{item.title}</span>
-                    <span className="block mt-2 text-xs text-gray-400 group-hover:text-orange-400">{item.date}</span>
+                    <div className="blur-[4px] select-none opacity-50 pointer-events-none">
+                        <span className="line-clamp-2">{item.title}</span>
+                        <span className="block mt-2 text-xs text-gray-400 group-hover:text-orange-400">{item.date}</span>
+                    </div>
                   </Link>
                 ))}
               </div>
