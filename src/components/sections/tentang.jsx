@@ -4,9 +4,9 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 // Import gambar
-import imgKabinet from '../../assets/img/pengurus/kabinet.jpg';
-import imgGedung from '../../assets/img/fasilitas/gedung.jpg';
-import imgUpgrading from '../../assets/img/program/upgrading.jpg';
+import imgKabinet from '../../assets/img/pengurus/kabinet.webp';
+import imgGedung from '../../assets/img/fasilitas/gedung.webp';
+import imgUpgrading from '../../assets/img/program/upgrading.webp';
 
 gsap.registerPlugin(ScrollTrigger);
 

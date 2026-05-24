@@ -2,11 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 // Import gambar sesuai dengan struktur folder kamu
-import imgBph from '../../assets/img/pengurus/bph/menteri.jpg';
-import imgKepenghunian from '../../assets/img/pengurus/kepenghunian/menteri.jpg';
-import imgLingpras from '../../assets/img/pengurus/lingpras/menteri.jpg';
-import imgJasroh from '../../assets/img/pengurus/jasroh/menteri.jpg';
-import imgMediadigi from '../../assets/img/pengurus/mediadigi/menteri.jpg';
+import imgBph from '../../assets/img/pengurus/bph/menteri.webp';
+import imgKepenghunian from '../../assets/img/pengurus/kepenghunian/menteri.webp';
+import imgLingpras from '../../assets/img/pengurus/lingpras/menteri.webp';
+import imgJasroh from '../../assets/img/pengurus/jasroh/menteri.webp';
+import imgMediadigi from '../../assets/img/pengurus/mediadigi/menteri.webp';
 
 export default function Pengurus() {
     const pengurusData = [

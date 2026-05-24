@@ -20,18 +20,28 @@ import Footer from './components/core/footer';
 import PengurusFull from './pages/pengurusFull';
 import BeritaDetail from './pages/detailBerita';
 import PilihBerita from './pages/pilihBerita';
+import FormOprec from './pages/FormOprec';
+import Login from './pages/Login';
+import ResponsOprec from './pages/ResponsOprec';
+
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 // Komponen ScrollToTop untuk mengatasi masalah posisi scroll saat ganti halaman
 function ScrollToTop() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    // Jika lenis sudah diinisialisasi, gunakan lenis.scrollTo
+    // Reset native scroll and Lenis scroll
     if (window.lenis) {
       window.lenis.scrollTo(0, { immediate: true });
-    } else {
-      window.scrollTo(0, 0);
     }
+    window.scrollTo(0, 0);
+
+    // Refresh ScrollTrigger to recalculate positions on new page
+    // Using setTimeout to wait for React to finish rendering the new DOM
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
   }, [pathname]);
 
   return null;
@@ -43,7 +53,7 @@ function LandingPage() {
     <main className="relative w-full min-h-screen bg-[#f3f4f6] font-sans">
       <Hero />
       <Tentang />
-      <Sejarah />
+      {/* <Sejarah /> */}
       <VisiMisiNilai />
       <Pengurus />
       <Program />
@@ -52,6 +62,16 @@ function LandingPage() {
       <Galeri />
       <Alumni />
     </main>
+  );
+}
+
+function MainLayout({ children }) {
+  return (
+    <>
+      <Navbar />
+      {children}
+      <Footer />
+    </>
   );
 }
 
@@ -70,15 +90,18 @@ export default function App() {
     // Ekspos lenis ke global window agar bisa diakses oleh animasi GSAP di komponen lain
     window.lenis = lenis;
 
+    let rafId;
+
     function raf(time) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
       lenis.destroy();
+      cancelAnimationFrame(rafId);
       window.lenis = null;
     };
   }, []);
@@ -86,14 +109,18 @@ export default function App() {
   return (
     <Router>
       <ScrollToTop />
-      <Navbar />
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/pengurus" element={<PengurusFull />} />
-        <Route path="/berita" element={<BeritaDetail />} />
-        <Route path="/berita/:id" element={<PilihBerita />} />
+        {/* Main Site Routes with Navbar & Footer */}
+        <Route path="/" element={<MainLayout><LandingPage /></MainLayout>} />
+        <Route path="/pengurus" element={<MainLayout><PengurusFull /></MainLayout>} />
+        <Route path="/berita" element={<MainLayout><BeritaDetail /></MainLayout>} />
+        <Route path="/berita/:id" element={<MainLayout><PilihBerita /></MainLayout>} />
+        
+        {/* OPREC & Admin Routes without Navbar & Footer */}
+        <Route path="/oprec" element={<FormOprec />} />
+        <Route path="/admin" element={<Login />} />
+        <Route path="/admin/respons" element={<ResponsOprec />} />
       </Routes>
-      <Footer />
     </Router>
   );
 }

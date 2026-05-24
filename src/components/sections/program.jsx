@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
 // Import photos program
-import imgUpgrading2025 from '../../assets/img/program/kolam-upgrading.jpg';
-import imgUpgrading2024 from '../../assets/img/program/nilai.jpg';
+import imgUpgrading2025 from '../../assets/img/program/kolam-upgrading.webp';
+import imgUpgrading2024 from '../../assets/img/program/nilai.webp';
 import imgRenang from '../../assets/img/program/renang.jpeg';
-import imgSukasariCup from '../../assets/img/program/sc1.jpg';
-import imgOlahragaBulanan from '../../assets/img/program/voli.jpg';
-import imgBentukKabinet from '../../assets/img/program/visi.jpg';
+import imgSukasariCup from '../../assets/img/program/sc1.webp';
+import imgOlahragaBulanan from '../../assets/img/program/voli.webp';
+import imgBentukKabinet from '../../assets/img/program/visi.webp';
 
 export default function ProgramAsrama() {
     // Data Dummy Program

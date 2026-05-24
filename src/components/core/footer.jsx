@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import logoAis from '../../assets/img/logo-ais.png';
+import logoAis from '../../assets/img/logo-ais.webp';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -23,21 +23,20 @@ const Mail = ({ className }) => (
 export default function Footer() {
   const footerRef = useRef(null);
   const blueBoxRef = useRef(null);
+  const whiteBoxRef = useRef(null);
 
   useGSAP(() => {
     // Animasi Shrink saat scroll mentok bawah
-    // Ini akan menambah ruang scroll virtual (+=250) lalu menyusutkan blue box
+    // Tanpa menggunakan pin agar tidak menimpa section di atasnya (Alumni)
     gsap.to(blueBoxRef.current, {
       scrollTrigger: {
-        trigger: footerRef.current,
-        start: "bottom bottom", 
-        end: "+=250",           
+        trigger: whiteBoxRef.current,
+        start: "top bottom", // Animasi dimulai saat kotak putih mulai terlihat dari bawah
+        end: "bottom bottom", // Animasi selesai saat kotak putih terlihat sepenuhnya
         scrub: true,
-        pin: true,
       },
       scaleX: 0.96,
-      scaleY: 0.95,
-      y: -120, // Diperbesar agar teks di bawahnya tidak tertutup
+      scaleY: 0.96,
       borderRadius: "0 0 32px 32px",
       transformOrigin: "top center",
       ease: "none",
@@ -45,16 +44,8 @@ export default function Footer() {
   }, { scope: footerRef });
 
   return (
-    <footer id="footer" ref={footerRef} className="relative w-full bg-[#FAF9F6] h-auto overflow-hidden">
+    <footer id="footer" ref={footerRef} className="relative w-full bg-[#FAF9F6] flex flex-col">
       
-      {/* Absolute Bottom Area: Teks & Logo yang terungkap saat box biru menyusut */}
-      <div className="absolute bottom-0 left-0 w-full h-[200px] flex flex-col items-center justify-end pb-8 z-0 pointer-events-none">
-        <p className="text-gray-600 text-sm font-medium mb-3">You are always in my heart.</p>
-        <div className="flex items-center justify-center">
-            <img src={logoAis} alt="Logo Asrama Sukasari" className="h-14 w-auto object-contain" />
-        </div>
-      </div>
-
       {/* Background Biru Dongker Utama */}
       <div 
         ref={blueBoxRef} 
@@ -104,7 +95,7 @@ export default function Footer() {
               <a href="https://www.instagram.com/arirahmanrise?igsh=MTd4eGQ4eTZncjNlMQ==#" className="text-white hover:text-orange-400 transition-colors">
                 <Instagram className="w-7 h-7" />
               </a>
-              <a href="#" className="text-white hover:text-orange-400 transition-colors">
+              <a href="mailto:asramasukasari43@gmail.com" className="text-white hover:text-orange-400 transition-colors">
                 <Mail className="w-7 h-7" />
               </a>
             </div>
@@ -119,6 +110,17 @@ export default function Footer() {
             <a href="#" className="hover:text-white transition-colors">Term of Service</a>
             <a href="#" className="hover:text-white transition-colors">Privacy and Cookies</a>
           </div>
+        </div>
+      </div>
+
+      {/* White Bottom Area: Teks & Logo yang terungkap secara natural */}
+      <div 
+        ref={whiteBoxRef}
+        className="w-full h-[180px] bg-[#FAF9F6] flex flex-col items-center justify-center relative z-0"
+      >
+        <p className="text-gray-600 text-sm font-medium mb-3">You are always in my heart.</p>
+        <div className="flex items-center justify-center">
+            <img src={logoAis} alt="Logo Asrama Sukasari" className="h-14 w-auto object-contain" />
         </div>
       </div>
 

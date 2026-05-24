@@ -4,35 +4,35 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 // photo program
-import imgUpgrading2025 from '../../assets/img/program/kolam-upgrading.jpg';
-import imgUpgrading2024 from '../../assets/img/program/nilai.jpg';
+import imgUpgrading2025 from '../../assets/img/program/kolam-upgrading.webp';
+import imgUpgrading2024 from '../../assets/img/program/nilai.webp';
 import imgRenang from '../../assets/img/program/renang.jpeg';
-import imgSukasariCup from '../../assets/img/program/sc1.jpg';
-import imgOlahragaBulanan from '../../assets/img/program/voli.jpg';
-import imgBentukKabinet from '../../assets/img/program/visi.jpg';
+import imgSukasariCup from '../../assets/img/program/sc1.webp';
+import imgOlahragaBulanan from '../../assets/img/program/voli.webp';
+import imgBentukKabinet from '../../assets/img/program/visi.webp';
 
 // photo pengurus
-import imgBph from '../../assets/img/pengurus/bph/menteri.jpg';
-import imgKepenghunian from '../../assets/img/pengurus/kepenghunian/menteri.jpg';
-import imgLingpras from '../../assets/img/pengurus/lingpras/menteri.jpg';
-import imgJasroh from '../../assets/img/pengurus/jasroh/menteri.jpg';
-import imgMediadigi from '../../assets/img/pengurus/mediadigi/menteri.jpg';
-import imgKabinet from '../../assets/img/pengurus/kabinet.jpg';
-import imgKabinetBahagia from '../../assets/img/pengurus/kabinet-bahagia.jpg';
+import imgBph from '../../assets/img/pengurus/bph/menteri.webp';
+import imgKepenghunian from '../../assets/img/pengurus/kepenghunian/menteri.webp';
+import imgLingpras from '../../assets/img/pengurus/lingpras/menteri.webp';
+import imgJasroh from '../../assets/img/pengurus/jasroh/menteri.webp';
+import imgMediadigi from '../../assets/img/pengurus/mediadigi/menteri.webp';
+import imgKabinet from '../../assets/img/pengurus/kabinet.webp';
+import imgKabinetBahagia from '../../assets/img/pengurus/kabinet-bahagia.webp';
 
 // photo fasilitas
-import alatMasak from '../../assets/img/fasilitas/alat_masak.jpg';
-import dapur from '../../assets/img/fasilitas/dapur.jpg';
-import gedung from '../../assets/img/fasilitas/gedung.jpg';
-import kompor from '../../assets/img/fasilitas/kompor.jpg';
-import kulkas from '../../assets/img/fasilitas/kulkas.jpg';
-import ruangTengah from '../../assets/img/fasilitas/ruang_tengah.jpg';
-import mejaMakan from '../../assets/img/fasilitas/meja_makan.jpg';
-import parkiran from '../../assets/img/fasilitas/parkiran.jpg';
-import mushola from '../../assets/img/fasilitas/mushola.jpg';
-import perpustakaan from '../../assets/img/fasilitas/non-blok.jpg';
-import pekarangan from '../../assets/img/fasilitas/pekarangan.jpg';
-import bgFasilitas from '../../assets/img/bg-fasilitas.jpg';
+import alatMasak from '../../assets/img/fasilitas/alat_masak.webp';
+import dapur from '../../assets/img/fasilitas/dapur.webp';
+import gedung from '../../assets/img/fasilitas/gedung.webp';
+import kompor from '../../assets/img/fasilitas/kompor.webp';
+import kulkas from '../../assets/img/fasilitas/kulkas.webp';
+import ruangTengah from '../../assets/img/fasilitas/ruang_tengah.webp';
+import mejaMakan from '../../assets/img/fasilitas/meja_makan.webp';
+import parkiran from '../../assets/img/fasilitas/parkiran.webp';
+import mushola from '../../assets/img/fasilitas/mushola.webp';
+import perpustakaan from '../../assets/img/fasilitas/non-blok.webp';
+import pekarangan from '../../assets/img/fasilitas/pekarangan.webp';
+import bgFasilitas from '../../assets/img/bg-fasilitas.webp';
 
 // Daftarkan plugin ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
@@ -171,7 +171,7 @@ export default function Galeri() {
             </h2>
 
             {/* Tombol Selengkapnya */}
-            <div className="absolute z-[100] mt-[600px] md:mt-80">
+            {/* <div className="absolute z-[100] mt-[600px] md:mt-80">
                 <a 
                     href="#" 
                     className="flex items-center gap-2 px-6 py-3 bg-white/40 backdrop-blur-md border border-white/60 text-gray-800 font-semibold rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.1)] hover:bg-white/70 hover:shadow-[0_8px_30px_rgb(0,0,0,0.15)] hover:scale-105 transition-all duration-300"
@@ -179,7 +179,7 @@ export default function Galeri() {
                     <span className="text-[12px]">Selengkapnya</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
                 </a>
-            </div>
+            </div> */}
 
             {/* Container untuk efek Tilt Mouse */}
             <div

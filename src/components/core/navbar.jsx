@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import logoAis from '../../assets/img/logo-ais.png';
+import { Link } from 'react-router-dom';
+import logoAis from '../../assets/img/logo-ais.webp';
 
 export default function Navbar() {
     // --- STATE ---
@@ -77,40 +78,45 @@ export default function Navbar() {
                 </a>
             </div>
 
-            {/* Desktop Menu */}
-            <div className="hidden lg:flex items-center gap-5 xl:gap-6 text-[11px] lg:text-[9px] font-semibold">
-                <a href="/#hero" className="hover:text-orange-500 transition-colors py-2">Beranda</a>
-                
-                {/* Dropdown Desktop */}
-                <div className="relative" ref={desktopDropdownRef}>
-                    <button 
-                        onClick={() => setIsDesktopDropdownOpen(!isDesktopDropdownOpen)}
-                        className="flex items-center justify-between w-full text-left py-2 focus:outline-none group cursor-pointer"
-                    >
-                        <span className="group-hover:text-orange-500 transition-colors py-2">Identitas</span>
-                        <svg className={`ml-1 w-2 h-2 transition-transform duration-300 ${isDesktopDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
+            {/* Desktop Menu & Button */}
+            <div className="hidden lg:flex items-center gap-4 xl:gap-6">
+                <div className="flex items-center gap-5 xl:gap-6 text-[11px] lg:text-[9px] font-semibold">
+                    <a href="/#hero" className="hover:text-orange-500 transition-colors py-2">Beranda</a>
                     
-                    <div className={`absolute top-[110%] left-0 w-28 bg-white/95 backdrop-blur-xl rounded-md shadow-[0_10px_40px_rgb(0,0,0,0.1)] border border-gray-100 p-2 flex flex-col gap-1 transition-all duration-300 z-[100] ${isDesktopDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
-                        <div className="overflow-hidden m-0.5">
-                            <div className="flex flex-col gap-3 border-l-2 border-gray-200 ml-1 pl-3 mt-2 mb-2">
-                                <a href="/#about-section" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Tentang</a>
-                                <a href="/#sejarah-section" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Sejarah</a>
-                                <a href="/#pin-section" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Visi Misi</a>
-                                <a href="/#pengurus" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Pengurus</a>
+                    {/* Dropdown Desktop */}
+                    <div className="relative" ref={desktopDropdownRef}>
+                        <button 
+                            onClick={() => setIsDesktopDropdownOpen(!isDesktopDropdownOpen)}
+                            className="flex items-center justify-between w-full text-left py-2 focus:outline-none group cursor-pointer"
+                        >
+                            <span className="group-hover:text-orange-500 transition-colors py-2">Identitas</span>
+                            <svg className={`ml-1 w-2 h-2 transition-transform duration-300 ${isDesktopDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        
+                        <div className={`absolute top-[110%] left-0 w-28 bg-white/95 backdrop-blur-xl rounded-md shadow-[0_10px_40px_rgb(0,0,0,0.1)] border border-gray-100 p-2 flex flex-col gap-1 transition-all duration-300 z-[100] ${isDesktopDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
+                            <div className="overflow-hidden m-0.5">
+                                <div className="flex flex-col gap-3 border-l-2 border-gray-200 ml-1 pl-3 mt-2 mb-2">
+                                    <a href="/#about-section" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Tentang</a>
+                                    <a href="/#sejarah-section" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Sejarah</a>
+                                    <a href="/#pin-section" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Visi Misi</a>
+                                    <a href="/#pengurus" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Pengurus</a>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    
+                    <a href="/#program" className="hover:text-orange-500 transition-colors py-2">Program</a>
+                    <a href="/#fasilitas" className="hover:text-orange-500 transition-colors py-2">Fasilitas</a>
+                    <a href="/#berita" className="hover:text-orange-500 transition-colors py-2">Berita</a>
+                    <a href="/#galeri" className="hover:text-orange-500 transition-colors py-2">Galeri</a>
+                    <a href="/#alumni" className="hover:text-orange-500 transition-colors py-2">Kata Alumni</a>
+                    <a href="/#footer" className="hover:text-orange-500 transition-colors py-2">Kontak</a>
                 </div>
-                
-                <a href="/#program" className="hover:text-orange-500 transition-colors py-2">Program</a>
-                <a href="/#fasilitas" className="hover:text-orange-500 transition-colors py-2">Fasilitas</a>
-                <a href="/#berita" className="hover:text-orange-500 transition-colors py-2">Berita</a>
-                <a href="/#galeri" className="hover:text-orange-500 transition-colors py-2">Galeri</a>
-                <a href="/#alumni" className="hover:text-orange-500 transition-colors py-2">Kata Alumni</a>
-                <a href="/#footer" className="hover:text-orange-500 transition-colors py-2 mr-2">Kontak</a>
+                <Link to="/oprec" className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[11px] lg:text-[10px] font-semibold rounded-full hover:from-orange-600 hover:to-orange-700 transition-all shadow-md shadow-orange-500/20">
+                    Daftar
+                </Link>
             </div>
             
             {/* Hamburger Button */}
@@ -160,6 +166,9 @@ export default function Navbar() {
                 <a href="/#berita" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Berita</a>
                 <a href="/#galeri" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Galeri</a>
                 <a href="/#footer" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Kontak</a>
+                <Link to="/oprec" className="mt-2 text-center px-4 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all shadow-md shadow-orange-500/20">
+                    Daftar OPREC
+                </Link>
             </div>
         </nav>
     );

@@ -4,9 +4,9 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 // Import gambar
-import imgVisi from '../../assets/img/program/visi.jpg';
-import imgMisi from '../../assets/img/program/upgrading.jpg'; // Dulu di Laravel pakai upgrading.jpg
-import imgNilai from '../../assets/img/program/nilai.jpg';
+import imgVisi from '../../assets/img/program/visi.webp';
+import imgMisi from '../../assets/img/program/upgrading.webp'; // Dulu di Laravel pakai upgrading.jpg
+import imgNilai from '../../assets/img/program/nilai.webp';
 
 gsap.registerPlugin(ScrollTrigger);
 

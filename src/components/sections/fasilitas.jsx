@@ -3,18 +3,28 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-import alatMasak from '../../assets/img/fasilitas/alat_masak.jpg';
-import dapur from '../../assets/img/fasilitas/dapur.jpg';
-import gedung from '../../assets/img/fasilitas/gedung.jpg';
-import kompor from '../../assets/img/fasilitas/kompor.jpg';
-import kulkas from '../../assets/img/fasilitas/kulkas.jpg';
-import ruangTengah from '../../assets/img/fasilitas/ruang_tengah.jpg';
-import mejaMakan from '../../assets/img/fasilitas/meja_makan.jpg';
-import parkiran from '../../assets/img/fasilitas/parkiran.jpg';
-import mushola from '../../assets/img/fasilitas/mushola.jpg';
-import perpustakaan from '../../assets/img/fasilitas/non-blok.jpg';
-import pekarangan from '../../assets/img/fasilitas/pekarangan.jpg';
-import bgFasilitas from '../../assets/img/bg-fasilitas.jpg';
+import alatKebersihan from '../../assets/img/fasilitas/alat_kebersihan.webp';
+import alatMasak from '../../assets/img/fasilitas/alat_masak.webp';
+import alatP3k from '../../assets/img/fasilitas/alat_p3k.webp';
+import cctv from '../../assets/img/fasilitas/cctv.webp';
+import dapur from '../../assets/img/fasilitas/dapur.webp';
+import gedung from '../../assets/img/fasilitas/gedung.webp';
+import kamar from '../../assets/img/fasilitas/kamar.webp';
+import kamarMandi from '../../assets/img/fasilitas/kamar_mandi.jpg';
+import kipasAngin from '../../assets/img/fasilitas/kipas_angin.webp';
+import kompor from '../../assets/img/fasilitas/kompor.webp';
+import kulkas from '../../assets/img/fasilitas/kulkas.webp';
+import lapangVoli from '../../assets/img/fasilitas/lapang_voli.png';
+import mading from '../../assets/img/fasilitas/mading.webp';
+import mejaMakan from '../../assets/img/fasilitas/meja_makan.webp';
+import mesinCuci from '../../assets/img/fasilitas/mesin_cuci.webp';
+import mushola from '../../assets/img/fasilitas/mushola.webp';
+import nonBlok from '../../assets/img/fasilitas/non-blok.webp';
+import parkiran from '../../assets/img/fasilitas/parkiran.webp';
+import pekarangan from '../../assets/img/fasilitas/pekarangan.webp';
+import permainan from '../../assets/img/fasilitas/permainan.webp';
+import ruangTengah from '../../assets/img/fasilitas/ruang_tengah.webp';
+import bgFasilitas from '../../assets/img/bg-fasilitas.webp';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -23,16 +33,26 @@ gsap.registerPlugin(ScrollTrigger);
 // Desktop: Formasi 2-1-2 dengan gap vertikal lebih lebar ke bawah
 const fasilitasData = [
     { id: 1, title: "Gedung Asrama", img: gedung, deskX: "-32vw", deskY: "-20vh", mobX: "-26vw", mobY: "-15vh" },
-    { id: 2, title: "Ruang Tengah", img: ruangTengah, deskX: "32vw", deskY: "-20vh", mobX: "26vw", mobY: "-15vh" },
-    { id: 3, title: "Mushola", img: mushola, deskX: "0vw", deskY: "20vh", mobX: "0vw", mobY: "4vh" },
-    { id: 4, title: "Parkiran", img: parkiran, deskX: "-32vw", deskY: "60vh", mobX: "-26vw", mobY: "24vh" },
-    { id: 5, title: "Non-Blok", img: perpustakaan, deskX: "32vw", deskY: "60vh", mobX: "26vw", mobY: "24vh" },
-    { id: 6, title: "Dapur Bersama", img: dapur, deskX: "0vw", deskY: "100vh", mobX: "0vw", mobY: "44vh" },
-    { id: 7, title: "Pekarangan", img: pekarangan, deskX: "-32vw", deskY: "140vh", mobX: "-26vw", mobY: "65vh" },
-    { id: 8, title: "Alat Masak", img: alatMasak, deskX: "32vw", deskY: "140vh", mobX: "26vw", mobY: "65vh" },
-    { id: 9, title: "Meja Makan", img: mejaMakan, deskX: "0vw", deskY: "180vh", mobX: "0vw", mobY: "84vh" },
-    { id: 10, title: "Kulkas", img: kulkas, deskX: "-32vw", deskY: "220vh", mobX: "-26vw", mobY: "105vh" },
-    { id: 11, title: "Kompor", img: kompor, deskX: "32vw", deskY: "220vh", mobX: "26vw", mobY: "105vh" },
+    { id: 2, title: "Kamar", img: kamar, deskX: "32vw", deskY: "-20vh", mobX: "26vw", mobY: "-15vh" },
+    { id: 3, title: "Ruang Tengah", img: ruangTengah, deskX: "0vw", deskY: "20vh", mobX: "0vw", mobY: "4vh" },
+    { id: 4, title: "Kamar Mandi", img: kamarMandi, deskX: "-32vw", deskY: "60vh", mobX: "-26vw", mobY: "24vh" },
+    { id: 5, title: "Dapur", img: dapur, deskX: "32vw", deskY: "60vh", mobX: "26vw", mobY: "24vh" },
+    { id: 6, title: "Mushola", img: mushola, deskX: "0vw", deskY: "100vh", mobX: "0vw", mobY: "44vh" },
+    { id: 7, title: "Lapang Voli", img: lapangVoli, deskX: "-32vw", deskY: "140vh", mobX: "-26vw", mobY: "65vh" },
+    { id: 8, title: "Parkiran", img: parkiran, deskX: "32vw", deskY: "140vh", mobX: "26vw", mobY: "65vh" },
+    { id: 9, title: "Ruang Non-Blok", img: nonBlok, deskX: "0vw", deskY: "180vh", mobX: "0vw", mobY: "84vh" },
+    { id: 10, title: "Pekarangan", img: pekarangan, deskX: "-32vw", deskY: "220vh", mobX: "-26vw", mobY: "105vh" },
+    { id: 11, title: "Meja Makan", img: mejaMakan, deskX: "32vw", deskY: "220vh", mobX: "26vw", mobY: "105vh" },
+    { id: 12, title: "Kulkas", img: kulkas, deskX: "0vw", deskY: "260vh", mobX: "0vw", mobY: "125vh" },
+    { id: 13, title: "Mesin Cuci", img: mesinCuci, deskX: "-32vw", deskY: "300vh", mobX: "-26vw", mobY: "145vh" },
+    { id: 14, title: "Kompor", img: kompor, deskX: "32vw", deskY: "300vh", mobX: "26vw", mobY: "145vh" },
+    { id: 15, title: "Alat Masak", img: alatMasak, deskX: "0vw", deskY: "340vh", mobX: "0vw", mobY: "165vh" },
+    { id: 16, title: "Kipas Angin", img: kipasAngin, deskX: "-32vw", deskY: "380vh", mobX: "-26vw", mobY: "185vh" },
+    { id: 17, title: "Alat Kebersihan", img: alatKebersihan, deskX: "32vw", deskY: "380vh", mobX: "26vw", mobY: "185vh" },
+    { id: 18, title: "Alat P3K", img: alatP3k, deskX: "0vw", deskY: "420vh", mobX: "0vw", mobY: "205vh" },
+    { id: 19, title: "CCTV", img: cctv, deskX: "-32vw", deskY: "460vh", mobX: "-26vw", mobY: "225vh" },
+    { id: 20, title: "Permainan", img: permainan, deskX: "32vw", deskY: "460vh", mobX: "26vw", mobY: "225vh" },
+    { id: 21, title: "Mading", img: mading, deskX: "0vw", deskY: "500vh", mobX: "0vw", mobY: "245vh" },
 ];
 
 export default function Fasilitas() {
@@ -64,7 +84,7 @@ export default function Fasilitas() {
                 scrollTrigger: {
                     trigger: sectionRef.current,
                     start: "top top",
-                    end: "+=2800",
+                    end: "+=5000",
                     scrub: 1,
                     pin: true,
                     anticipatePin: 1,
@@ -94,9 +114,9 @@ export default function Fasilitas() {
             // 3. Wrapper Naik Ke Atas (Memunculkan fasilitas bawah)
             tl.addLabel("scrollUp", "scatter+=0.4");
             tl.to(wrapperRef.current, {
-                y: isDesktop ? "-205vh" : "-80vh",
+                y: isDesktop ? "-485vh" : "-225vh",
                 ease: "none",
-                duration: 3,
+                duration: 6,
             }, "scrollUp");
 
         });

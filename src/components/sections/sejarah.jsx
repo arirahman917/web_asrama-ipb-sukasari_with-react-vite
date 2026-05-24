@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
 // Import Assets
-import imgGedung from '../../assets/img/fasilitas/gedung.jpg';
-import imgKabinet from '../../assets/img/pengurus/kabinet.jpg';
-import imgUpgrading from '../../assets/img/program/upgrading.jpg';
+import imgGedung from '../../assets/img/fasilitas/gedung.webp';
+import imgKabinet from '../../assets/img/pengurus/kabinet.webp';
+import imgUpgrading from '../../assets/img/program/upgrading.webp';
 
 const historyData = [
     { 
