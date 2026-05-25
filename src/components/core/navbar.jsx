@@ -119,16 +119,22 @@ export default function Navbar() {
                 </Link>
             </div>
             
-            {/* Hamburger Button */}
-            <button 
-                id="btn-hamburger"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden cursor-pointer p-2 rounded-full hover:bg-gray-200 transition"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg>
-            </button>
+            {/* Mobile Actions: Daftar Button + Hamburger */}
+            <div className="flex lg:hidden items-center gap-3">
+                <Link to="/oprec" className="px-4 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[12px] font-semibold rounded-full shadow-md shadow-orange-500/20 active:scale-95 transition-all">
+                    Daftar
+                </Link>
+                {/* Hamburger Button */}
+                <button 
+                    id="btn-hamburger"
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    className="cursor-pointer p-1.5 -mr-1 rounded-full hover:bg-gray-200 transition"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+            </div>
 
             {/* Mobile Menu Content */}
             <div 
@@ -166,9 +172,6 @@ export default function Navbar() {
                 <a href="/#berita" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Berita</a>
                 <a href="/#galeri" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Galeri</a>
                 <a href="/#footer" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Kontak</a>
-                <Link to="/oprec" className="mt-2 text-center px-4 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all shadow-md shadow-orange-500/20">
-                    Daftar OPREC
-                </Link>
             </div>
         </nav>
     );

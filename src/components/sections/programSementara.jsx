@@ -139,10 +139,6 @@ export default function ProgramSementara() {
                                 ? "border-orange-500/40 bg-white/[0.08] shadow-[0_0_30px_rgba(242,129,63,0.1)]" 
                                 : "border-white/[0.08] hover:border-white/20 hover:bg-white/[0.06]"
                         }`}>
-                            {/* Top Gradient Bar */}
-                            <div className={`h-1 w-full bg-gradient-to-r ${program.color} transition-opacity duration-300 ${
-                                activeIndex === index ? "opacity-100" : "opacity-30 group-hover:opacity-60"
-                            }`} />
 
                             {/* Card Content */}
                             <div className="p-5 md:p-6">

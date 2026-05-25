@@ -62,33 +62,39 @@ export default function Galeri() {
     const imagesRef = useRef([]);
 
     useGSAP(() => {
-        // Efek kursor mouse: Frame nengok yang diperbesar
-        const handleMouseMove = (e) => {
-            const { clientX, clientY } = e;
-            const xPos = (clientX / window.innerWidth - 0.5) * 60; // Max rotasi 60 derajat
-            const yPos = (clientY / window.innerHeight - 0.5) * -60;
+        const mm = gsap.matchMedia();
 
-            if (containerRef.current) {
-                gsap.to(containerRef.current, {
-                    rotationY: xPos,
-                    rotationX: yPos,
-                    ease: "power3.out",
-                    duration: 1.5
-                });
-            }
+        // Efek kursor mouse hanya untuk desktop
+        mm.add("(min-width: 768px)", () => {
+            const handleMouseMove = (e) => {
+                const { clientX, clientY } = e;
+                const xPos = (clientX / window.innerWidth - 0.5) * 40; 
+                const yPos = (clientY / window.innerHeight - 0.5) * -40;
 
-            if (titleRef.current) {
-                // Judul ikut nengok
-                gsap.to(titleRef.current, {
-                    rotationY: xPos * 0.8,
-                    rotationX: yPos * 0.8,
-                    ease: "power3.out",
-                    duration: 1.5
-                });
-            }
-        };
+                if (containerRef.current) {
+                    gsap.to(containerRef.current, {
+                        rotationY: xPos,
+                        rotationX: yPos,
+                        ease: "power2.out",
+                        duration: 1.5,
+                        force3D: true
+                    });
+                }
 
-        window.addEventListener('mousemove', handleMouseMove);
+                if (titleRef.current) {
+                    gsap.to(titleRef.current, {
+                        rotationY: xPos * 0.8,
+                        rotationX: yPos * 0.8,
+                        ease: "power2.out",
+                        duration: 1.5,
+                        force3D: true
+                    });
+                }
+            };
+
+            window.addEventListener('mousemove', handleMouseMove);
+            return () => window.removeEventListener('mousemove', handleMouseMove);
+        });
 
         // --- ANIMASI SCROLL (Estafet Konstan) ---
         let tl = gsap.timeline({
@@ -133,7 +139,8 @@ export default function Galeri() {
                 y: flyOutY,
                 scale: 1.5, // Membesarnya tidak terlalu ekstrem
                 duration: 7, // Durasi panjang agar lambat dan halus
-                ease: "none" // Konstan (linear)
+                ease: "none", // Konstan (linear)
+                force3D: true
             }, startTime + delay);
 
             // Muncul secara bertahap di awal
@@ -151,9 +158,6 @@ export default function Galeri() {
             }, startTime + delay + 5.5);
         });
 
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-        };
     }, { scope: sectionRef });
 
     return (
@@ -194,7 +198,7 @@ export default function Galeri() {
                             key={index}
                             ref={(el) => (imagesRef.current[index] = el)}
                             // top-1/2 left-1/2 dipadukan dengan xPercent -50 dan yPercent -50 dari GSAP
-                            className={`absolute top-1/2 left-1/2 ${shapeClass} rounded-2xl md:rounded-3xl overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.15)] will-change-transform bg-gray-100`}
+                            className={`absolute top-1/2 left-1/2 ${shapeClass} rounded-2xl md:rounded-3xl overflow-hidden shadow-xl will-change-transform bg-gray-100`}
                         >
                             <img
                                 src={src}

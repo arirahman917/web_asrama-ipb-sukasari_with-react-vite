@@ -108,6 +108,7 @@ export default function Fasilitas() {
                     rotation: 0,
                     ease: "power2.out",
                     duration: 1,
+                    force3D: true
                 }, "scatter+=" + (i * 0.05));
             });
 
@@ -117,6 +118,7 @@ export default function Fasilitas() {
                 y: isDesktop ? "-485vh" : "-225vh",
                 ease: "none",
                 duration: 6,
+                force3D: true
             }, "scrollUp");
 
         });
@@ -154,8 +156,7 @@ export default function Fasilitas() {
                 {fasilitasData.map((item) => (
                     <div
                         key={item.id}
-                        // Hapus -translate-x-1/2 -translate-y-1/2 karena bentrok dengan GSAP. Kita gunakan top-1/2 left-1/2 + xPercent -50 yPercent -50
-                        className="fasilitas-item absolute top-1/2 left-1/2 flex flex-col items-center gap-1 md:gap-2 w-[38vw] sm:w-[32vw] md:w-[26vw] lg:w-[24vw] max-w-[160px] sm:max-w-[200px] md:max-w-[280px] lg:max-w-[340px]"
+                        className="fasilitas-item absolute top-1/2 left-1/2 will-change-transform shadow-[0_2px_8px_rgba(0,0,0,0.2)] rounded-xl overflow-hidden flex flex-col items-center gap-1 md:gap-2 w-[38vw] sm:w-[32vw] md:w-[26vw] lg:w-[24vw] max-w-[160px] sm:max-w-[200px] md:max-w-[280px] lg:max-w-[340px]"
                         style={{ willChange: 'transform, opacity' }} // Optimasi tinggi per-item agar di-render oleh VRAM GPU langsung
                     >
                         <img

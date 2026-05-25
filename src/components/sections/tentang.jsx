@@ -9,6 +9,7 @@ import imgGedung from '../../assets/img/fasilitas/gedung.webp';
 import imgUpgrading from '../../assets/img/program/upgrading.webp';
 
 gsap.registerPlugin(ScrollTrigger);
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 export default function Tentang() {
     const containerRef = useRef();
@@ -30,6 +31,7 @@ export default function Tentang() {
                     start: "top top", 
                     end: "+=1200", 
                     pin: true, 
+                    anticipatePin: 1,
                     scrub: 1 
                 }
             });
@@ -50,6 +52,7 @@ export default function Tentang() {
                     start: "top top", 
                     end: "+=1200", 
                     pin: true, 
+                    anticipatePin: 1,
                     scrub: 1 
                 }
             });
@@ -65,7 +68,7 @@ export default function Tentang() {
     }, { scope: containerRef });
 
     return (
-        <section ref={containerRef} id="about-section tentang" className="relative w-full h-[100svh] md:h-screen flex items-center justify-center bg-white overflow-hidden">
+        <section ref={containerRef} id="about-section tentang" className="relative w-full h-screen flex items-center justify-center bg-white overflow-hidden">
             <div id="about-card" className="relative w-full h-full overflow-hidden flex items-center justify-center bg-white shadow-2xl will-change-transform">
                 
                 <div className="absolute inset-0 flex w-full h-full bg-[#1b2a47]">
