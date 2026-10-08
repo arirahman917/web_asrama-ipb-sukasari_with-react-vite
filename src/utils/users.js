@@ -4,6 +4,7 @@
 // ============================================================
 import { db } from "../firebase";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
+import { createCachedQuery } from "./cache";
 
 export const USERS_COLLECTION = "users";
 
@@ -40,7 +41,7 @@ export function normalizeUser(raw) {
   };
 }
 
-export async function fetchUsers() {
+async function rawFetchUsers() {
   const snap = await getDocs(collection(db, USERS_COLLECTION));
   return snap.docs
     .map((d) => normalizeUser({ id: d.id, ...d.data() }))
@@ -50,8 +51,22 @@ export async function fetchUsers() {
     );
 }
 
+// Cache per-sesi: daftar anggota besar, tidak perlu dibaca ulang tiap mount.
+const usersQuery = createCachedQuery(rawFetchUsers);
+
+/** Ambil daftar anggota dari cache bila ada, jika tidak baru baca Firestore. */
+export function fetchUsers() {
+  return usersQuery.fetch();
+}
+
+/** Bersihkan cache users (dipanggil setelah perubahan status admin). */
+export function invalidateUsersCache() {
+  usersQuery.invalidate();
+}
+
 /** Set/lepas status admin web untuk seorang user (field isAdmin). */
 export async function setUserAdmin(userId, isAdmin) {
   if (!userId) throw new Error("User ID tidak valid.");
   await updateDoc(doc(db, USERS_COLLECTION, userId), { isAdmin: !!isAdmin });
+  invalidateUsersCache();
 }

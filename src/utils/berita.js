@@ -16,6 +16,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { formatDateId, getYear, getMonthName, toDate } from "./format";
+import { createCachedQuery } from "./cache";
 
 export const BERITA_COLLECTION = "berita";
 
@@ -43,7 +44,7 @@ export function normalizeBerita(raw) {
 }
 
 /** Ambil semua berita (terbaru lebih dulu). Hanya yang published. */
-export async function fetchBerita({ includeDrafts = false } = {}) {
+async function rawFetchBerita({ includeDrafts = false } = {}) {
   const q = query(collection(db, BERITA_COLLECTION), orderBy("createdAt", "desc"));
   const snap = await getDocs(q);
   return snap.docs
@@ -53,11 +54,36 @@ export async function fetchBerita({ includeDrafts = false } = {}) {
 }
 
 /** Ambil satu berita berdasarkan ID. */
-export async function fetchBeritaById(id) {
+async function rawFetchBeritaById(id) {
   if (!id) return null;
   const snap = await getDoc(doc(db, BERITA_COLLECTION, id));
   if (!snap.exists()) return null;
   return normalizeBerita({ id: snap.id, ...snap.data() });
+}
+
+// Cache per-sesi agar daftar/detail berita tidak dibaca ulang dari Firestore
+// setiap kali komponen mount (navigasi halaman, remount, StrictMode).
+const beritaListQuery = createCachedQuery(rawFetchBerita);
+const beritaByIdQuery = createCachedQuery(rawFetchBeritaById);
+
+/**
+ * Ambil berita dari cache bila ada, jika tidak baru baca Firestore.
+ * @param {{ includeDrafts?: boolean }} [opts]
+ */
+export function fetchBerita(opts) {
+  return beritaListQuery.fetch(opts);
+}
+
+/** Ambil satu berita (di-cache per ID). */
+export function fetchBeritaById(id) {
+  if (!id) return Promise.resolve(null);
+  return beritaByIdQuery.fetch(id);
+}
+
+/** Bersihkan cache berita (dipanggil setelah create/update/delete). */
+export function invalidateBeritaCache() {
+  beritaListQuery.invalidate();
+  beritaByIdQuery.invalidate();
 }
 
 /**
@@ -82,6 +108,7 @@ export async function createBerita(data) {
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
+  invalidateBeritaCache();
   return ref.id;
 }
 
@@ -91,8 +118,10 @@ export async function updateBerita(id, data) {
     ...payload,
     updatedAt: serverTimestamp(),
   });
+  invalidateBeritaCache();
 }
 
 export async function deleteBerita(id) {
   await deleteDoc(doc(db, BERITA_COLLECTION, id));
+  invalidateBeritaCache();
 }
