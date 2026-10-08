@@ -1,0 +1,58 @@
+rules_version = '2';
+
+// ============================================================
+// Storage Security Rules — Asrama IPB Sukasari
+// ------------------------------------------------------------
+// Baca: publik (agar gambar tampil di website).
+// Tulis: dibatasi per folder.
+//   - berita/**, site/**  : hanya admin
+//   - oprec/**            : pengguna yang login (pendaftar OPREC)
+//   - alumni/**           : admin, atau pengajuan publik berupa gambar < 5MB
+// isAdmin() memakai cross-service rules ke Firestore `admins`.
+// ============================================================
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        (firestore.exists(/databases/(default)/documents/users/$(request.auth.uid))
+          && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin == true)
+        || firestore.exists(/databases/(default)/documents/admins/$(request.auth.token.email))
+      );
+    }
+
+    function isImageUnder5MB() {
+      return request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Semua file boleh dibaca publik.
+    match /{allPaths=**} {
+      allow read: if true;
+    }
+
+    // Unggahan konten berita -> hanya admin.
+    match /berita/{allPaths=**} {
+      allow write: if isAdmin();
+    }
+
+    // Aset gambar situs -> hanya admin.
+    match /site/{allPaths=**} {
+      allow write: if isAdmin();
+    }
+
+    // Berkas pendaftaran OPREC -> pengguna yang login.
+    match /oprec/{allPaths=**} {
+      allow write: if isSignedIn();
+    }
+
+    // Foto pengajuan pesan alumni -> admin, atau publik (gambar < 5MB).
+    match /alumni/{allPaths=**} {
+      allow write: if isAdmin() || (request.auth == null && isImageUnder5MB());
+    }
+  }
+}

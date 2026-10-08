@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import logoAis from '../../assets/img/logo-ais.webp';
+import SiteImage from './SiteImage';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -118,7 +118,7 @@ export default function Footer() {
       >
         <p className="text-gray-600 text-[13px] font-medium mb-3">You are always in my heart.</p>
         <div className="flex items-center justify-center">
-          <img src={logoAis} alt="Logo Asrama Sukasari" className="h-12 w-auto object-contain opacity-90" />
+          <SiteImage k="logo-ais.webp" alt="Logo Asrama Sukasari" className="h-12 w-auto object-contain opacity-90" />
         </div>
       </div>
 

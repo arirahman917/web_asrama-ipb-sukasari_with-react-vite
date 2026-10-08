@@ -1,34 +1,31 @@
 import React, { useState } from 'react';
 
-// Import Assets
-import imgGedung from '../../assets/img/fasilitas/gedung.webp';
-import imgKabinet from '../../assets/img/pengurus/kabinet.webp';
-import imgUpgrading from '../../assets/img/program/upgrading.webp';
+import SiteImage from '../core/SiteImage';
 
 const historyData = [
     { 
         year: "1951", 
         title: "Tahun 1951", 
         text: "Pada tahun 1951, Asrama IPB Sukasari resmi didirikan. Kehadirannya menjadi bagian penting dalam mendukung kehidupan mahasiswa di lingkungan kampus. Sejak awal, asrama ini dirancang sebagai tempat tinggal sekaligus ruang pembinaan karakter.", 
-        images: [imgGedung, imgKabinet, imgUpgrading] 
+        images: ["fasilitas/gedung.webp", "pengurus/kabinet.webp", "program/upgrading.webp"] 
     },
     { 
         year: "1970", 
         title: "Renovasi (1970)", 
         text: "Seiring bertambahnya jumlah mahasiswa, dilakukan berbagai renovasi untuk meningkatkan kapasitas dan kenyamanan hunian. Perubahan ini juga menyesuaikan kebutuhan fasilitas yang semakin berkembang.", 
-        images: [imgUpgrading, imgGedung] 
+        images: ["program/upgrading.webp", "fasilitas/gedung.webp"] 
     },
     { 
         year: "1998", 
         title: "Era Reformasi", 
         text: "Asrama ini menjadi saksi bisu pergerakan mahasiswa. Banyak diskusi dan dinamika intelektual terjadi di dalamnya pada masa tersebut. Nilai-nilai kritis dan semangat perubahan tumbuh kuat di lingkungan asrama.", 
-        images: [imgKabinet, imgUpgrading, imgGedung] 
+        images: ["pengurus/kabinet.webp", "program/upgrading.webp", "fasilitas/gedung.webp"] 
     },
     { 
         year: "Sekarang", 
         title: "Sukasari Kini", 
         text: "Hingga hari ini, Asrama IPB Sukasari tetap berdiri kokoh. Asrama ini terus beradaptasi dengan perkembangan zaman dan kebutuhan mahasiswa modern. Lingkungannya tetap menjadi tempat tumbuhnya kebersamaan dan pengembangan diri.", 
-        images: [imgUpgrading, imgGedung, imgKabinet] 
+        images: ["program/upgrading.webp", "fasilitas/gedung.webp", "pengurus/kabinet.webp"] 
     }
 ];
 
@@ -101,8 +98,8 @@ export default function Sejarah() {
                 {/* Gambar Kanan */}
                 <div className="w-full lg:w-3/5 relative">
                     <div className="relative w-full h-80 md:h-[42vh] lg:h-[70vh] rounded-2xl lg:rounded-[1.5rem] overflow-hidden bg-gray-200 shadow-lg mb-10 md:mb-0">
-                        <img
-                            src={activeData.images[activePhotoIndex]}
+                        <SiteImage
+                            k={activeData.images[activePhotoIndex]}
                             alt="Sejarah Asrama"
                             className="w-full h-full object-cover transition-opacity duration-200"
                             style={{ opacity: isImageTransitioning ? 0 : 1 }}
@@ -121,8 +118,8 @@ export default function Sejarah() {
                                         opacity: idx === activePhotoIndex ? 1 : 0.75,
                                     }}
                                 >
-                                    <img
-                                        src={img}
+                                    <SiteImage
+                                        k={img}
                                         className="w-9 h-9 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full object-cover aspect-square shadow-md"
                                         alt="thumbnail"
                                     />

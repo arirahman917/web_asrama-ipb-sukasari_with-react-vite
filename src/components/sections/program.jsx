@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 
-// Import photos program
-import imgUpgrading2025 from '../../assets/img/program/kolam-upgrading.webp';
-import imgUpgrading2024 from '../../assets/img/program/nilai.webp';
-import imgRenang from '../../assets/img/program/renang.jpeg';
-import imgSukasariCup from '../../assets/img/program/sc1.webp';
-import imgOlahragaBulanan from '../../assets/img/program/voli.webp';
-import imgBentukKabinet from '../../assets/img/program/visi.webp';
+import SiteImage from '../core/SiteImage';
 
 export default function ProgramAsrama() {
     // Data Dummy Program
@@ -15,38 +9,38 @@ export default function ProgramAsrama() {
             id: 1,
             title: "Olahraga Bulanan (Voli)",
             description: "Kegiatan rutin berolahraga voli setiap bulan untuk menjaga kebugaran tubuh serta mempererat tali persaudaraan antar penghuni.",
-            image: imgOlahragaBulanan
+            image: "program/voli.webp"
         },
         {
             id: 2,
             title: "Renang Bersama",
             description: "Program rekreasi dan olahraga air yang diadakan secara berkala sebagai sarana refreshing dari kesibukan akademik.",
-            image: imgRenang
+            image: "program/renang.jpeg"
         },
         {
             id: 3,
             title: "Sukasari Cup",
             description: "Kompetisi olahraga tahunan antar penghuni Asrama Sukasari untuk menumbuhkan jiwa kompetitif, sportivitas, dan kebersamaan.",
-            image: imgSukasariCup,
+            image: "program/sc1.webp",
             imgClass: "object-[center_76%]"
         },
         {
             id: 4,
             title: "Upgrading Pengurus 2024",
             description: "Kegiatan evaluasi dan peningkatan kapasitas diri para pengurus asrama tahun 2024 demi kinerja yang lebih optimal.",
-            image: imgUpgrading2024
+            image: "program/nilai.webp"
         },
         {
             id: 5,
             title: "Upgrading Pengurus 2025",
             description: "Pelatihan dan pembekalan pengurus asrama tahun 2025 untuk meningkatkan kemampuan kepemimpinan dan manajerial.",
-            image: imgUpgrading2025
+            image: "program/kolam-upgrading.webp"
         },
         {
             id: 6,
             title: "Pembentukan Kabinet",
             description: "Musyawarah pembentukan kabinet dan penetapan visi misi kepengurusan baru untuk satu periode ke depan.",
-            image: imgBentukKabinet
+            image: "program/visi.webp"
         }
     ];
 
@@ -108,8 +102,8 @@ export default function ProgramAsrama() {
                                 onClick={() => setActiveIndex(index)} // Bisa diklik langsung fotonya untuk pindah
                                 className={`absolute w-full h-full rounded-2xl md:rounded-3xl overflow-hidden transition-all duration-700 ease-in-out ${getCardStyle(index)}`}
                             >
-                                <img
-                                    src={program.image}
+                                <SiteImage
+                                    k={program.image}
                                     alt={program.title}
                                     className={`w-full h-full object-cover ${program.imgClass || 'object-center'}`}
                                 />

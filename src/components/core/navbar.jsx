@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import logoAis from '../../assets/img/logo-ais.webp';
+import SiteImage from './SiteImage';
 
 export default function Navbar() {
     // --- STATE ---
@@ -74,7 +74,7 @@ export default function Navbar() {
             {/* Logo */}
             <div className="flex items-center gap-3">
                 <a href="/">
-                    <img src={logoAis} alt="Logo Asrama" className="z-10 w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 object-contain" />
+                    <SiteImage k="logo-ais.webp" alt="Logo Asrama" className="z-10 w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 object-contain" />
                 </a>
             </div>
 

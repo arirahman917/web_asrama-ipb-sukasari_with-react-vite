@@ -3,10 +3,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-// Import gambar
-import imgKabinetBahagia from '../../assets/img/pengurus/kabinet-bahagia.webp';
-import imgGedung from '../../assets/img/fasilitas/gedung.webp';
-import imgUpgrading from '../../assets/img/program/upgrading.webp';
+import SiteImage from '../core/SiteImage';
 
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.config({ ignoreMobileResize: true });
@@ -73,16 +70,16 @@ export default function Tentang() {
                 
                 <div className="absolute inset-0 flex w-full h-full bg-[#1b2a47]">
                     <div id="mobile-img-container" className="w-full h-full block lg:hidden origin-top">
-                        <img id="mobile-img" src={imgKabinetBahagia} alt="Kabinet Asrama" className="w-full h-full object-cover" style={{ objectPosition: '50% 0%' }} />
+                        <SiteImage id="mobile-img" k="pengurus/kabinet-bahagia.webp" alt="Kabinet Asrama" className="w-full h-full object-cover" style={{ objectPosition: '50% 0%' }} />
                     </div>
 
                     <div className="hidden lg:flex w-full h-full">
                         <div className="w-full lg:w-1/2 h-full">
-                            <img src={imgGedung} alt="Gedung Asrama" className="w-full h-full object-cover object-[54%_center]" />
+                            <SiteImage k="fasilitas/gedung.webp" alt="Gedung Asrama" className="w-full h-full object-cover object-[54%_center]" />
                         </div>
                         <div className="hidden lg:flex flex-col w-1/2 h-full bg-gray-200">
-                            <div className="w-full h-1/2 relative"><img src={imgUpgrading} alt="Foto Atas" className="w-full h-full object-cover object-[center_65%]" /></div>
-                            <div className="w-full h-1/2 relative"><img src={imgKabinetBahagia} alt="Foto Bawah" className="w-full h-full object-cover object-[50%_center]" /></div>
+                            <div className="w-full h-1/2 relative"><SiteImage k="program/upgrading.webp" alt="Foto Atas" className="w-full h-full object-cover object-[center_65%]" /></div>
+                            <div className="w-full h-1/2 relative"><SiteImage k="pengurus/kabinet-bahagia.webp" alt="Foto Bawah" className="w-full h-full object-cover object-[50%_center]" /></div>
                         </div>
                     </div>
                 </div>

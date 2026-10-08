@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { db } from "../firebase";
 import { collection, getDocs, orderBy, query, doc, updateDoc } from "firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
@@ -180,7 +179,7 @@ function PersonCard({ data, index, onImageClick, onToggleWaStatus }) {
       </div>
 
       {/* Quick Info Bar */}
-      <div className="grid grid-cols-4 divide-x divide-white/10 bg-white/3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-white/10 bg-white/5">
         <div className="p-3 text-center">
           <p className="text-[10px] text-gray-500 uppercase">WhatsApp</p>
           <p className="text-xs text-white font-medium truncate">{data.nomorWhatsapp || "-"}</p>
@@ -195,7 +194,7 @@ function PersonCard({ data, index, onImageClick, onToggleWaStatus }) {
         </div>
         <div className="p-3 text-center flex flex-col items-center justify-center">
           <p className="text-[10px] text-gray-500 uppercase mb-1">Grup WA</p>
-          <button 
+          <button
             onClick={(e) => { e.stopPropagation(); onToggleWaStatus(data.id, data.waGroupJoined); }}
             className={`text-[9px] px-2 py-0.5 rounded-md border transition-all ${data.waGroupJoined ? "bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30" : "bg-red-500/20 text-red-400 border-red-500/30 hover:bg-red-500/30"}`}
           >
@@ -206,7 +205,7 @@ function PersonCard({ data, index, onImageClick, onToggleWaStatus }) {
 
       {/* Toggle Details */}
       <button onClick={() => setExpanded(!expanded)}
-        className="w-full py-3 text-xs text-gray-400 hover:text-white transition-colors flex items-center justify-center gap-2 bg-white/3 hover:bg-white/5">
+        className="w-full py-3 text-xs text-gray-400 hover:text-white transition-colors flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10">
         {expanded ? "Sembunyikan Detail ▲" : "Lihat Detail ▼"}
       </button>
 
@@ -224,7 +223,7 @@ function PersonCard({ data, index, onImageClick, onToggleWaStatus }) {
                   {/* Text Fields */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
                     {section.fields.map(({ key, label }) => (
-                      <div key={key} className="bg-white/3 rounded-lg px-3 py-2">
+                      <div key={key} className="bg-white/5 rounded-lg px-3 py-2">
                         <p className="text-[10px] text-gray-500 uppercase">{label}</p>
                         <p className="text-xs text-white font-medium break-words">
                           {key === "ceritaDiri" || key === "portofolio" ? (data[key] || "-") : (isCurrency(key) ? formatCurrency(data[key]) : ((key === "namaAyah" || key === "namaIbu") && data[key] === "-" ? "Meninggal" : (data[key] || "-")))}
@@ -308,18 +307,10 @@ function PersonCard({ data, index, onImageClick, onToggleWaStatus }) {
 // MAIN COMPONENT
 // ============================================================
 export default function ResponsOprec() {
-  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [modalImage, setModalImage] = useState(null);
-
-  // Auth check
-  useEffect(() => {
-    if (sessionStorage.getItem("aisAdminLoggedIn") !== "true") {
-      navigate("/admin");
-    }
-  }, [navigate]);
 
   // Fetch data
   useEffect(() => {
@@ -360,80 +351,63 @@ export default function ResponsOprec() {
     }
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("aisAdminLoggedIn");
-    navigate("/admin");
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A]">
+    <div>
       {/* Modal */}
       {modalImage && <ImageModal src={modalImage.src} alt={modalImage.alt} onClose={() => setModalImage(null)} />}
 
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-black/30 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-bold text-white">📋 Data Pendaftar OPREC</h1>
-            <p className="text-xs text-gray-400">Asrama IPB Sukasari 2026</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-gray-500 hidden sm:block">Total: <span className="text-orange-400 font-bold">{data.length}</span> pendaftar</span>
-            <button onClick={handleLogout}
-              className="px-4 py-2 text-xs bg-red-500/10 text-red-400 border border-red-500/30 rounded-xl hover:bg-red-500/20 transition-all font-medium">
-              Logout
-            </button>
-          </div>
+      <div className="flex items-end justify-between gap-4 mb-6 flex-wrap">
+        <div>
+          <h2 className="text-2xl font-bold text-white">Data Pendaftar OPREC</h2>
+          <p className="text-sm text-gray-400">Asrama IPB Sukasari 2026</p>
         </div>
       </div>
 
       {/* Search & Stats */}
-      <div className="max-w-5xl mx-auto px-4 py-6">
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between mb-6">
-          {/* Search */}
-          <div className="relative w-full sm:max-w-md">
-            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari nama, prodi, asal daerah, atau email..."
-              className="w-full bg-white/5 border border-white/15 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-orange-400 transition-all" />
-          </div>
-          <p className="text-sm text-gray-400">
-            Menampilkan <span className="text-white font-semibold">{filteredData.length}</span> dari <span className="text-white font-semibold">{data.length}</span>
-          </p>
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between mb-6">
+        <div className="relative w-full sm:max-w-md">
+          <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+            placeholder="Cari nama, prodi, asal daerah, atau email..."
+            className="w-full bg-white/5 border border-white/15 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-orange-400 transition-all" />
         </div>
-
-        {/* Loading */}
-        {loading && (
-          <div className="flex items-center justify-center py-20">
-            <div className="flex flex-col items-center gap-3">
-              <svg className="animate-spin w-10 h-10 text-orange-500" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-              <p className="text-sm text-gray-400">Memuat data pendaftar...</p>
-            </div>
-          </div>
-        )}
-
-        {/* No Data */}
-        {!loading && filteredData.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-5xl mb-4">📭</p>
-            <p className="text-gray-400">{search ? "Tidak ditemukan pendaftar dengan pencarian tersebut." : "Belum ada data pendaftar."}</p>
-          </div>
-        )}
-
-        {/* Cards Grid */}
-        {!loading && filteredData.length > 0 && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {filteredData.map((d, i) => (
-                <PersonCard key={d.id} data={d} index={i} onImageClick={(src, alt) => setModalImage({ src, alt })} onToggleWaStatus={handleToggleWaStatus} />
-              ))}
-            </div>
-        )}
+        <p className="text-sm text-gray-400">
+          Menampilkan <span className="text-white font-semibold">{filteredData.length}</span> dari <span className="text-white font-semibold">{data.length}</span>
+        </p>
       </div>
+
+      {/* Loading */}
+      {loading && (
+        <div className="flex items-center justify-center py-20">
+          <div className="flex flex-col items-center gap-3">
+            <svg className="animate-spin w-10 h-10 text-orange-500" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            <p className="text-sm text-gray-400">Memuat data pendaftar...</p>
+          </div>
+        </div>
+      )}
+
+      {/* No Data */}
+      {!loading && filteredData.length === 0 && (
+        <div className="text-center py-20">
+          <p className="text-5xl mb-4">📭</p>
+          <p className="text-gray-400">{search ? "Tidak ditemukan pendaftar dengan pencarian tersebut." : "Belum ada data pendaftar."}</p>
+        </div>
+      )}
+
+      {/* Cards Grid */}
+      {!loading && filteredData.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {filteredData.map((d, i) => (
+            <PersonCard key={d.id} data={d} index={i} onImageClick={(src, alt) => setModalImage({ src, alt })} onToggleWaStatus={handleToggleWaStatus} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

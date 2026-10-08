@@ -3,28 +3,8 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-import alatKebersihan from '../../assets/img/fasilitas/alat_kebersihan.webp';
-import alatMasak from '../../assets/img/fasilitas/alat_masak.webp';
-import alatP3k from '../../assets/img/fasilitas/alat_p3k.webp';
-import cctv from '../../assets/img/fasilitas/cctv.webp';
-import dapur from '../../assets/img/fasilitas/dapur.webp';
-import gedung from '../../assets/img/fasilitas/gedung.webp';
-import kamar from '../../assets/img/fasilitas/kamar.webp';
-import kamarMandi from '../../assets/img/fasilitas/kamar_mandi.jpg';
-import kipasAngin from '../../assets/img/fasilitas/kipas_angin.webp';
-import kompor from '../../assets/img/fasilitas/kompor.webp';
-import kulkas from '../../assets/img/fasilitas/kulkas.webp';
-import lapangVoli from '../../assets/img/fasilitas/lapang_voli.png';
-import mading from '../../assets/img/fasilitas/mading.webp';
-import mejaMakan from '../../assets/img/fasilitas/meja_makan.webp';
-import mesinCuci from '../../assets/img/fasilitas/mesin_cuci.webp';
-import mushola from '../../assets/img/fasilitas/mushola.webp';
-import nonBlok from '../../assets/img/fasilitas/non-blok.webp';
-import parkiran from '../../assets/img/fasilitas/parkiran.webp';
-import pekarangan from '../../assets/img/fasilitas/pekarangan.webp';
-import permainan from '../../assets/img/fasilitas/permainan.webp';
-import ruangTengah from '../../assets/img/fasilitas/ruang_tengah.webp';
-import bgFasilitas from '../../assets/img/bg-fasilitas.webp';
+import SiteImage from '../core/SiteImage';
+import { useSiteImages } from '../../utils/images';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -32,32 +12,33 @@ gsap.registerPlugin(ScrollTrigger);
 // Mobile (757px ke bawah): Menggunakan formasi sama persis (2-1-2) dengan ukuran & jarak proporsional
 // Desktop: Formasi 2-1-2 dengan gap vertikal lebih lebar ke bawah
 const fasilitasData = [
-    { id: 1, title: "Gedung Asrama", img: gedung, deskX: "-32vw", deskY: "-20vh", mobX: "-26vw", mobY: "-15vh" },
-    { id: 2, title: "Kamar", img: kamar, deskX: "32vw", deskY: "-20vh", mobX: "26vw", mobY: "-15vh" },
-    { id: 3, title: "Ruang Tengah", img: ruangTengah, deskX: "0vw", deskY: "20vh", mobX: "0vw", mobY: "4vh" },
-    { id: 4, title: "Kamar Mandi", img: kamarMandi, deskX: "-32vw", deskY: "60vh", mobX: "-26vw", mobY: "24vh" },
-    { id: 5, title: "Dapur", img: dapur, deskX: "32vw", deskY: "60vh", mobX: "26vw", mobY: "24vh" },
-    { id: 6, title: "Mushola", img: mushola, deskX: "0vw", deskY: "100vh", mobX: "0vw", mobY: "44vh" },
-    { id: 7, title: "Lapang Voli", img: lapangVoli, deskX: "-32vw", deskY: "140vh", mobX: "-26vw", mobY: "65vh" },
-    { id: 8, title: "Parkiran", img: parkiran, deskX: "32vw", deskY: "140vh", mobX: "26vw", mobY: "65vh" },
-    { id: 9, title: "Ruang Non-Blok", img: nonBlok, deskX: "0vw", deskY: "180vh", mobX: "0vw", mobY: "84vh" },
-    { id: 10, title: "Pekarangan", img: pekarangan, deskX: "-32vw", deskY: "220vh", mobX: "-26vw", mobY: "105vh" },
-    { id: 11, title: "Meja Makan", img: mejaMakan, deskX: "32vw", deskY: "220vh", mobX: "26vw", mobY: "105vh" },
-    { id: 12, title: "Kulkas", img: kulkas, deskX: "0vw", deskY: "260vh", mobX: "0vw", mobY: "125vh" },
-    { id: 13, title: "Mesin Cuci", img: mesinCuci, deskX: "-32vw", deskY: "300vh", mobX: "-26vw", mobY: "145vh" },
-    { id: 14, title: "Kompor", img: kompor, deskX: "32vw", deskY: "300vh", mobX: "26vw", mobY: "145vh" },
-    { id: 15, title: "Alat Masak", img: alatMasak, deskX: "0vw", deskY: "340vh", mobX: "0vw", mobY: "165vh" },
-    { id: 16, title: "Kipas Angin", img: kipasAngin, deskX: "-32vw", deskY: "380vh", mobX: "-26vw", mobY: "185vh" },
-    { id: 17, title: "Alat Kebersihan", img: alatKebersihan, deskX: "32vw", deskY: "380vh", mobX: "26vw", mobY: "185vh" },
-    { id: 18, title: "Alat P3K", img: alatP3k, deskX: "0vw", deskY: "420vh", mobX: "0vw", mobY: "205vh" },
-    { id: 19, title: "CCTV", img: cctv, deskX: "-32vw", deskY: "460vh", mobX: "-26vw", mobY: "225vh" },
-    { id: 20, title: "Permainan", img: permainan, deskX: "32vw", deskY: "460vh", mobX: "26vw", mobY: "225vh" },
-    { id: 21, title: "Mading", img: mading, deskX: "0vw", deskY: "500vh", mobX: "0vw", mobY: "245vh" },
+    { id: 1, title: "Gedung Asrama", img: "fasilitas/gedung.webp", deskX: "-32vw", deskY: "-20vh", mobX: "-26vw", mobY: "-15vh" },
+    { id: 2, title: "Kamar", img: "fasilitas/kamar.webp", deskX: "32vw", deskY: "-20vh", mobX: "26vw", mobY: "-15vh" },
+    { id: 3, title: "Ruang Tengah", img: "fasilitas/ruang_tengah.webp", deskX: "0vw", deskY: "20vh", mobX: "0vw", mobY: "4vh" },
+    { id: 4, title: "Kamar Mandi", img: "fasilitas/kamar_mandi.jpg", deskX: "-32vw", deskY: "60vh", mobX: "-26vw", mobY: "24vh" },
+    { id: 5, title: "Dapur", img: "fasilitas/dapur.webp", deskX: "32vw", deskY: "60vh", mobX: "26vw", mobY: "24vh" },
+    { id: 6, title: "Mushola", img: "fasilitas/mushola.webp", deskX: "0vw", deskY: "100vh", mobX: "0vw", mobY: "44vh" },
+    { id: 7, title: "Lapang Voli", img: "fasilitas/lapang_voli.png", deskX: "-32vw", deskY: "140vh", mobX: "-26vw", mobY: "65vh" },
+    { id: 8, title: "Parkiran", img: "fasilitas/parkiran.webp", deskX: "32vw", deskY: "140vh", mobX: "26vw", mobY: "65vh" },
+    { id: 9, title: "Ruang Non-Blok", img: "fasilitas/non-blok.webp", deskX: "0vw", deskY: "180vh", mobX: "0vw", mobY: "84vh" },
+    { id: 10, title: "Pekarangan", img: "fasilitas/pekarangan.webp", deskX: "-32vw", deskY: "220vh", mobX: "-26vw", mobY: "105vh" },
+    { id: 11, title: "Meja Makan", img: "fasilitas/meja_makan.webp", deskX: "32vw", deskY: "220vh", mobX: "26vw", mobY: "105vh" },
+    { id: 12, title: "Kulkas", img: "fasilitas/kulkas.webp", deskX: "0vw", deskY: "260vh", mobX: "0vw", mobY: "125vh" },
+    { id: 13, title: "Mesin Cuci", img: "fasilitas/mesin_cuci.webp", deskX: "-32vw", deskY: "300vh", mobX: "-26vw", mobY: "145vh" },
+    { id: 14, title: "Kompor", img: "fasilitas/kompor.webp", deskX: "32vw", deskY: "300vh", mobX: "26vw", mobY: "145vh" },
+    { id: 15, title: "Alat Masak", img: "fasilitas/alat_masak.webp", deskX: "0vw", deskY: "340vh", mobX: "0vw", mobY: "165vh" },
+    { id: 16, title: "Kipas Angin", img: "fasilitas/kipas_angin.webp", deskX: "-32vw", deskY: "380vh", mobX: "-26vw", mobY: "185vh" },
+    { id: 17, title: "Alat Kebersihan", img: "fasilitas/alat_kebersihan.webp", deskX: "32vw", deskY: "380vh", mobX: "26vw", mobY: "185vh" },
+    { id: 18, title: "Alat P3K", img: "fasilitas/alat_p3k.webp", deskX: "0vw", deskY: "420vh", mobX: "0vw", mobY: "205vh" },
+    { id: 19, title: "CCTV", img: "fasilitas/cctv.webp", deskX: "-32vw", deskY: "460vh", mobX: "-26vw", mobY: "225vh" },
+    { id: 20, title: "Permainan", img: "fasilitas/permainan.webp", deskX: "32vw", deskY: "460vh", mobX: "26vw", mobY: "225vh" },
+    { id: 21, title: "Mading", img: "fasilitas/mading.webp", deskX: "0vw", deskY: "500vh", mobX: "0vw", mobY: "245vh" },
 ];
 
 export default function Fasilitas() {
     const sectionRef = useRef(null);
     const wrapperRef = useRef(null);
+    const { get } = useSiteImages();
 
     useGSAP(() => {
         const mm = gsap.matchMedia();
@@ -136,7 +117,7 @@ export default function Fasilitas() {
                 Ini adalah kunci untuk memperbaiki lag parah pada scroll! */}
             <div
                 className="absolute inset-0 bg-cover bg-center opacity-10"
-                style={{ backgroundImage: `url(${bgFasilitas})` }}
+                style={{ backgroundImage: `url(${get('bg-fasilitas.webp')})` }}
             />
             {/* Overlay gradasi HANYA DI ATAS agar nyambung transisi, bawahnya 100% plong/transparan */}
             <div className="absolute top-0 left-0 right-0 h-[40vh] bg-gradient-to-b from-[#1e2a3b] via-[#1e2a3b]/50 to-transparent z-10 pointer-events-none" />
@@ -159,8 +140,8 @@ export default function Fasilitas() {
                         className="fasilitas-item absolute top-1/2 left-1/2 will-change-transform shadow-[0_2px_8px_rgba(0,0,0,0.2)] rounded-xl overflow-hidden flex flex-col items-center gap-1 md:gap-2 w-[38vw] sm:w-[32vw] md:w-[26vw] lg:w-[24vw] max-w-[160px] sm:max-w-[200px] md:max-w-[280px] lg:max-w-[340px]"
                         style={{ willChange: 'transform, opacity' }} // Optimasi tinggi per-item agar di-render oleh VRAM GPU langsung
                     >
-                        <img
-                            src={item.img}
+                        <SiteImage
+                            k={item.img}
                             alt={item.title}
                             // loading="lazy" & decoding="async" dihapus agar browser langsung memuat gambar (tidak telat muncul saat di-scroll)
                             // Shadow dihapus untuk mengoptimalkan FPS saat animasi GSAP berjalan

@@ -73,9 +73,8 @@ function useOprecCountdown() {
   return state;
 }
 
-// Import Assets (Sesuaikan path folder assets kamu)
-import gedungPoster from "../../assets/img/fasilitas/gedung.webp";
-import logoAis from "../../assets/img/logo-ais.webp";
+// Import Assets
+import { useSiteImages } from "../../utils/images";
 
 // ============================================================
 // COUNTDOWN DISPLAY COMPONENT
@@ -136,6 +135,7 @@ function CountdownDisplay() {
 
 export default function Hero() {
   const comp = useRef(null); // Ref untuk scope GSAP
+  const { get } = useSiteImages();
   const videoRef = useRef(null);
   const loaderRef = useRef(null);
   const logoRef = useRef(null);
@@ -227,7 +227,7 @@ export default function Hero() {
           className="relative z-10 w-full max-w-xl md:max-w-3xl lg:max-w-4xl opacity-0 scale-95 will-change-transform flex justify-center items-center"
         >
           <video 
-            src="/motion-logo-ais.mp4"
+            src={get("public/motion-logo-ais.mp4")}
             autoPlay 
             muted 
             playsInline
@@ -246,9 +246,9 @@ export default function Hero() {
           loop
           muted
           playsInline
-          poster={gedungPoster}
+          poster={get("fasilitas/gedung.webp")}
         >
-          <source src="/hero-ori.mp4" type="video/mp4" />
+          <source src={get("public/hero-ori.mp4")} type="video/mp4" />
         </video>
 
         {/* Overlay */}

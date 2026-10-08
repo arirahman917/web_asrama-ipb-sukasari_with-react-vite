@@ -3,44 +3,15 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// photo program
-import imgUpgrading2025 from '../../assets/img/program/kolam-upgrading.webp';
-import imgUpgrading2024 from '../../assets/img/program/nilai.webp';
-import imgRenang from '../../assets/img/program/renang.jpeg';
-import imgSukasariCup from '../../assets/img/program/sc1.webp';
-import imgOlahragaBulanan from '../../assets/img/program/voli.webp';
-import imgBentukKabinet from '../../assets/img/program/visi.webp';
-
-// photo pengurus
-import imgBph from '../../assets/img/pengurus/bph/menteri.webp';
-import imgKepenghunian from '../../assets/img/pengurus/kepenghunian/menteri.webp';
-import imgLingpras from '../../assets/img/pengurus/lingpras/menteri.webp';
-import imgJasroh from '../../assets/img/pengurus/jasroh/menteri.webp';
-import imgMediadigi from '../../assets/img/pengurus/mediadigi/menteri.webp';
-import imgKabinet from '../../assets/img/pengurus/kabinet.webp';
-import imgKabinetBahagia from '../../assets/img/pengurus/kabinet-bahagia.webp';
-
-// photo fasilitas
-import alatMasak from '../../assets/img/fasilitas/alat_masak.webp';
-import dapur from '../../assets/img/fasilitas/dapur.webp';
-import gedung from '../../assets/img/fasilitas/gedung.webp';
-import kompor from '../../assets/img/fasilitas/kompor.webp';
-import kulkas from '../../assets/img/fasilitas/kulkas.webp';
-import ruangTengah from '../../assets/img/fasilitas/ruang_tengah.webp';
-import mejaMakan from '../../assets/img/fasilitas/meja_makan.webp';
-import parkiran from '../../assets/img/fasilitas/parkiran.webp';
-import mushola from '../../assets/img/fasilitas/mushola.webp';
-import perpustakaan from '../../assets/img/fasilitas/non-blok.webp';
-import pekarangan from '../../assets/img/fasilitas/pekarangan.webp';
-import bgFasilitas from '../../assets/img/bg-fasilitas.webp';
+import SiteImage from '../core/SiteImage';
 
 // Daftarkan plugin ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
 
 const galleryImages = [
-    imgUpgrading2025, imgUpgrading2024, imgRenang, imgSukasariCup, imgOlahragaBulanan, imgBentukKabinet,
-    imgBph, imgKepenghunian, imgLingpras, imgJasroh, imgMediadigi, imgKabinet, imgKabinetBahagia,
-    alatMasak, dapur, gedung, kompor, kulkas, ruangTengah, mejaMakan, parkiran, mushola, perpustakaan, pekarangan, bgFasilitas
+    "program/kolam-upgrading.webp", "program/nilai.webp", "program/renang.jpeg", "program/sc1.webp", "program/voli.webp", "program/visi.webp",
+    "pengurus/bph/menteri.webp", "pengurus/kepenghunian/menteri.webp", "pengurus/lingpras/menteri.webp", "pengurus/jasroh/menteri.webp", "pengurus/mediadigi/menteri.webp", "pengurus/kabinet.webp", "pengurus/kabinet-bahagia.webp",
+    "fasilitas/alat_masak.webp", "fasilitas/dapur.webp", "fasilitas/gedung.webp", "fasilitas/kompor.webp", "fasilitas/kulkas.webp", "fasilitas/ruang_tengah.webp", "fasilitas/meja_makan.webp", "fasilitas/parkiran.webp", "fasilitas/mushola.webp", "fasilitas/non-blok.webp", "fasilitas/pekarangan.webp", "bg-fasilitas.webp"
 ];
 
 // Helper untuk variasi bentuk gambar
@@ -200,8 +171,8 @@ export default function Galeri() {
                             // top-1/2 left-1/2 dipadukan dengan xPercent -50 dan yPercent -50 dari GSAP
                             className={`absolute top-1/2 left-1/2 ${shapeClass} rounded-2xl md:rounded-3xl overflow-hidden shadow-xl will-change-transform bg-gray-100`}
                         >
-                            <img
-                                src={src}
+                            <SiteImage
+                                k={src}
                                 alt={`Gallery image ${index + 1}`}
                                 className="w-full h-full object-cover"
                             />

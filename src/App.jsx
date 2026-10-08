@@ -3,20 +3,18 @@ import Lenis from 'lenis';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 // Import Layout & Components
-// Sesuaikan path ini dengan letak folder komponenmu
 import Navbar from './components/core/navbar';
-import Hero from './components/sections/hero'; // Asumsi Loader menyatu di dalam Hero sesuai konversi sebelumnya
+import Hero from './components/sections/hero';
 import Tentang from './components/sections/tentang';
 import VisiMisiNilai from './components/sections/visiMisiNilai';
 import Sejarah from './components/sections/sejarah';
 import Pengurus from './components/sections/pengurus';
-// import Program from './components/sections/program';
 import ProgramSementara from './components/sections/programSementara';
 import Fasilitas from './components/sections/fasilitas';
 import Berita from './components/sections/berita';
 import Galeri from './components/sections/galeri';
 import Alumni from './components/sections/alumni';
-import Footer from './components/core/footer';  
+import Footer from './components/core/footer';
 
 import PengurusFull from './pages/pengurusFull';
 import BeritaDetail from './pages/detailBerita';
@@ -25,21 +23,47 @@ import FormOprec from './pages/FormOprec';
 import Login from './pages/Login';
 import ResponsOprec from './pages/ResponsOprec';
 
+// Admin
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/admin/ProtectedRoute';
+import AdminLayout from './components/admin/AdminLayout';
+import Dashboard from './pages/admin/Dashboard';
+import AdminBerita from './pages/admin/AdminBerita';
+import AdminBeritaForm from './pages/admin/AdminBeritaForm';
+import AdminAlumni from './pages/admin/AdminAlumni';
+import AdminAdmins from './pages/admin/AdminAdmins';
+
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useSiteImages } from './utils/images';
+
+// Set favicon dari registri gambar (mendukung override Firebase).
+function DynamicFavicon() {
+  const { overrides, get } = useSiteImages();
+  useEffect(() => {
+    const url = get('public/logo-ais.png') || get('logo-ais.webp');
+    if (!url) return;
+    let link = document.querySelector("link[rel='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.href = url;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [overrides]);
+  return null;
+}
 
 // Komponen ScrollToTop untuk mengatasi masalah posisi scroll saat ganti halaman
 function ScrollToTop() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    // Reset native scroll and Lenis scroll
     if (window.lenis) {
       window.lenis.scrollTo(0, { immediate: true });
     }
     window.scrollTo(0, 0);
 
-    // Refresh ScrollTrigger to recalculate positions on new page
-    // Using setTimeout to wait for React to finish rendering the new DOM
     setTimeout(() => {
       ScrollTrigger.refresh();
     }, 100);
@@ -78,7 +102,6 @@ function MainLayout({ children }) {
 }
 
 export default function App() {
-  // Konfigurasi Lenis Smooth Scroll
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -89,16 +112,13 @@ export default function App() {
       mouseMultiplier: 1,
     });
 
-    // Ekspos lenis ke global window agar bisa diakses oleh animasi GSAP di komponen lain
     window.lenis = lenis;
 
     let rafId;
-
     function raf(time) {
       lenis.raf(time);
       rafId = requestAnimationFrame(raf);
     }
-
     rafId = requestAnimationFrame(raf);
 
     return () => {
@@ -109,20 +129,35 @@ export default function App() {
   }, []);
 
   return (
-    <Router>
-      <ScrollToTop />
-      <Routes>
-        {/* Main Site Routes with Navbar & Footer */}
-        <Route path="/" element={<MainLayout><LandingPage /></MainLayout>} />
-        <Route path="/pengurus" element={<MainLayout><PengurusFull /></MainLayout>} />
-        <Route path="/berita" element={<MainLayout><BeritaDetail /></MainLayout>} />
-        <Route path="/berita/:id" element={<MainLayout><PilihBerita /></MainLayout>} />
-        
-        {/* OPREC & Admin Routes without Navbar & Footer */}
-        <Route path="/oprec" element={<FormOprec />} />
-        <Route path="/admin" element={<Login />} />
-        <Route path="/admin/respons" element={<ResponsOprec />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <DynamicFavicon />
+      <Router>
+        <ScrollToTop />
+        <Routes>
+          {/* Main Site Routes with Navbar & Footer */}
+          <Route path="/" element={<MainLayout><LandingPage /></MainLayout>} />
+          <Route path="/pengurus" element={<MainLayout><PengurusFull /></MainLayout>} />
+          <Route path="/berita" element={<MainLayout><BeritaDetail /></MainLayout>} />
+          <Route path="/berita/:id" element={<MainLayout><PilihBerita /></MainLayout>} />
+
+          {/* OPREC Route without Navbar & Footer */}
+          <Route path="/oprec" element={<FormOprec />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin">
+            <Route index element={<Login />} />
+            <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="berita" element={<AdminBerita />} />
+              <Route path="berita/baru" element={<AdminBeritaForm />} />
+              <Route path="berita/:id" element={<AdminBeritaForm />} />
+              <Route path="alumni" element={<AdminAlumni />} />
+              <Route path="respons" element={<ResponsOprec />} />
+              <Route path="admins" element={<AdminAdmins />} />
+            </Route>
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }

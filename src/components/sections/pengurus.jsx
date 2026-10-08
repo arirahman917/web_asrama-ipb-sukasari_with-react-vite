@@ -1,20 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-// Import gambar sesuai dengan struktur folder kamu
-import imgBph from '../../assets/img/pengurus/bph/menteri.webp';
-import imgKepenghunian from '../../assets/img/pengurus/kepenghunian/menteri.webp';
-import imgLingpras from '../../assets/img/pengurus/lingpras/menteri.webp';
-import imgJasroh from '../../assets/img/pengurus/jasroh/menteri.webp';
-import imgMediadigi from '../../assets/img/pengurus/mediadigi/menteri.webp';
+import SiteImage from '../core/SiteImage';
 
 export default function Pengurus() {
     const pengurusData = [
-        { id: 1, name: 'BPH', img: imgBph },
-        { id: 2, name: 'Kementerian Kepenghunian', img: imgKepenghunian },
-        { id: 3, name: 'Kementerian Lingpras', img: imgLingpras },
-        { id: 4, name: 'Kementerian Jasroh', img: imgJasroh },
-        { id: 5, name: 'Kementerian Mediadigi', img: imgMediadigi },
+        { id: 1, name: 'BPH', img: 'pengurus/bph/menteri.webp' },
+        { id: 2, name: 'Kementerian Kepenghunian', img: 'pengurus/kepenghunian/menteri.webp' },
+        { id: 3, name: 'Kementerian Lingpras', img: 'pengurus/lingpras/menteri.webp' },
+        { id: 4, name: 'Kementerian Jasroh', img: 'pengurus/jasroh/menteri.webp' },
+        { id: 5, name: 'Kementerian Mediadigi', img: 'pengurus/mediadigi/menteri.webp' },
     ];
 
     return (
@@ -43,8 +38,8 @@ export default function Pengurus() {
                             className="group relative flex-none w-[200px] md:w-[220px] lg:w-[250px] h-[280px] md:h-[320px] lg:h-[350px] rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-lg transition-shadow duration-300"
                         >
                             {/* Gambar dengan efek zoom pelan saat di-hover */}
-                            <img
-                                src={item.img}
+                            <SiteImage
+                                k={item.img}
                                 alt={item.name}
                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             />

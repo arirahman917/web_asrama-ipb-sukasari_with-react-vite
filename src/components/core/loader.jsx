@@ -1,11 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { useSiteImages } from '../../utils/images';
 
 export default function Loader() {
   const loaderRef = useRef(null);
   const videoContainerRef = useRef(null);
   const [videoDuration, setVideoDuration] = useState(0);
+  const { get } = useSiteImages();
 
   // 1. Ambil durasi video secara otomatis
   useEffect(() => {
@@ -64,7 +66,7 @@ export default function Loader() {
         className="absolute inset-0 z-10 opacity-0 will-change-transform flex justify-center items-center bg-transparent" // Ubah bg video container jadi transparent
       >
         <video
-          src="/motion-logo-ais.mp4"
+          src={get('public/motion-logo-ais.mp4')}
           autoPlay
           muted
           playsInline
