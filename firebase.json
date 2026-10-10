@@ -1,12 +1,12 @@
 {
   "hosting": {
-    "site": "asrama-ipb-sukasari",
     "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
     ],
+    "target": "website",
     "rewrites": [
       {
         "source": "**",
