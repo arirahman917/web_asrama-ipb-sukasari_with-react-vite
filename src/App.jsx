@@ -15,6 +15,7 @@ import Berita from './components/sections/berita';
 import Galeri from './components/sections/galeri';
 import Alumni from './components/sections/alumni';
 import Footer from './components/core/footer';
+import AiChatWidget from './components/ai/AiChatWidget';
 
 import PengurusFull from './pages/pengurusFull';
 import BeritaDetail from './pages/detailBerita';
@@ -97,6 +98,7 @@ function MainLayout({ children }) {
       <Navbar />
       {children}
       <Footer />
+      <AiChatWidget />
     </>
   );
 }

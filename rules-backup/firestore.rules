@@ -1,0 +1,84 @@
+rules_version = '2';
+
+// ============================================================
+// Firestore Security Rules — Asrama IPB Sukasari
+// ------------------------------------------------------------
+// Otorisasi ditegakkan DI SINI (server), bukan di kode frontend.
+// "Admin" = pengguna yang login Google DAN emailnya terdaftar
+// sebagai dokumen di collection `admins` (doc ID = email).
+//
+// PENTING: tambahkan admin lewat Firestore Console:
+//   collection: admins
+//   document ID: <email-admin-huruf-kecil>
+//   field: { active: true }
+// Daftar statis di src/config/admins.js hanya untuk gerbang UI,
+// TIDAK memberi akses data. Sumber kebenaran = collection `admins`.
+// ============================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        // Sumber utama: field isAdmin pada collection users (doc ID = uid).
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid))
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true)
+        // Fallback: collection admins (doc ID = email).
+        || exists(/databases/$(database)/documents/admins/$(request.auth.token.email))
+      );
+    }
+
+    // --- Berita: baca publik, tulis hanya admin ---
+    match /berita/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // --- Kata Alumni ---
+    match /alumni/{id} {
+      // Publik hanya boleh membaca yang sudah disetujui.
+      allow read: if resource.data.approved == true || isAdmin();
+      // Pengajuan dari publik (anonim) wajib bertanda submission & belum disetujui.
+      allow create: if isAdmin()
+        || (request.resource.data.approved == false
+            && request.resource.data.source == "submission");
+      allow update, delete: if isAdmin();
+    }
+
+    // --- Gambar website ---
+    match /siteImages/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // --- Daftar admin: tiap pengguna boleh membaca dokumennya sendiri ---
+    match /admins/{id} {
+      allow read: if isSignedIn() && (request.auth.token.email == id || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    // --- Users / anggota asrama ---
+    // Tiap pengguna boleh membaca dokumennya sendiri (untuk cek isAdmin),
+    // admin boleh membaca semuanya untuk halaman Kelola Admin.
+    match /users/{id} {
+      allow get: if isSignedIn()
+        && (request.auth.uid == id || request.auth.token.email == id || isAdmin());
+      allow list: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // --- Data pendaftar OPREC (data pribadi) -> hanya admin ---
+    match /bakalCalonPenghuni/{id} {
+      allow create: if isSignedIn();
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Default: tolak.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,18 +1,15 @@
 rules_version = '2';
 
 // ============================================================
-// Firestore Security Rules — Asrama IPB Sukasari
+// Firestore Security Rules — Asrama IPB Sukasari (GABUNGAN web + app)
 // ------------------------------------------------------------
-// Otorisasi ditegakkan DI SINI (server), bukan di kode frontend.
-// "Admin" = pengguna yang login Google DAN emailnya terdaftar
-// sebagai dokumen di collection `admins` (doc ID = email).
+// Satu project, satu ruleset. Mencakup collection /web (profil publik)
+// DAN /app (internal penghuni).
 //
-// PENTING: tambahkan admin lewat Firestore Console:
-//   collection: admins
-//   document ID: <email-admin-huruf-kecil>
-//   field: { active: true }
-// Daftar statis di src/config/admins.js hanya untuk gerbang UI,
-// TIDAK memberi akses data. Sumber kebenaran = collection `admins`.
+// Definisi "admin" mencakup BOTH konvensi:
+//   - users/<uid>.isAdmin == true           (konvensi /web)
+//   - users/<uid>.jabatan in [ketua, wakil ketua, kepenghunian]  (konvensi /app)
+//   - dokumen admins/<email>                 (fallback)
 // ============================================================
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -21,59 +18,81 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function userExists() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function userData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
     function isAdmin() {
       return isSignedIn() && (
-        // Sumber utama: field isAdmin pada collection users (doc ID = uid).
-        (exists(/databases/$(database)/documents/users/$(request.auth.uid))
-          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true)
-        // Fallback: collection admins (doc ID = email).
-        || exists(/databases/$(database)/documents/admins/$(request.auth.token.email))
+        (userExists() && userData().isAdmin == true)
+        || (userExists() && userData().jabatan in ["ketua", "wakil ketua", "kepenghunian"])
+        || (request.auth.token.email != null
+            && exists(/databases/$(database)/documents/admins/$(request.auth.token.email)))
       );
     }
 
-    // --- Berita: baca publik, tulis hanya admin ---
+    // ---------------- /web : konten profil publik ----------------
     match /berita/{id} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // --- Kata Alumni ---
     match /alumni/{id} {
-      // Publik hanya boleh membaca yang sudah disetujui.
       allow read: if resource.data.approved == true || isAdmin();
-      // Pengajuan dari publik (anonim) wajib bertanda submission & belum disetujui.
       allow create: if isAdmin()
         || (request.resource.data.approved == false
             && request.resource.data.source == "submission");
       allow update, delete: if isAdmin();
     }
 
-    // --- Gambar website ---
     match /siteImages/{id} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // --- Daftar admin: tiap pengguna boleh membaca dokumennya sendiri ---
     match /admins/{id} {
       allow read: if isSignedIn() && (request.auth.token.email == id || isAdmin());
       allow write: if isAdmin();
     }
 
-    // --- Users / anggota asrama ---
-    // Tiap pengguna boleh membaca dokumennya sendiri (untuk cek isAdmin),
-    // admin boleh membaca semuanya untuk halaman Kelola Admin.
+    // ---------------- users : dipakai web & app ----------------
     match /users/{id} {
+      // Baca dokumen sendiri (cek isAdmin) atau admin baca semua.
       allow get: if isSignedIn()
         && (request.auth.uid == id || request.auth.token.email == id || isAdmin());
-      allow list: if isAdmin();
-      allow create, update, delete: if isAdmin();
+      // /app butuh daftar anggota (mis. verifikasi, daftar piket).
+      allow list: if isSignedIn();
+      // SignUp mandiri: anggota baru membuat dokumen sendiri.
+      allow create: if isSignedIn() && request.auth.uid == id;
+      allow update: if isSignedIn() && (request.auth.uid == id || isAdmin());
+      allow delete: if isAdmin();
     }
 
-    // --- Data pendaftar OPREC (data pribadi) -> hanya admin ---
+    // ---------------- pendaftar OPREC (data pribadi) ----------------
     match /bakalCalonPenghuni/{id} {
       allow create: if isSignedIn();
       allow read, update, delete: if isAdmin();
+    }
+
+    // ---------------- /app : collection internal (anggota login) ----------------
+    match /piket/{id}        { allow read, write: if isSignedIn(); }
+    match /jamal/{id}        { allow read, write: if isSignedIn(); }
+    match /Spa/{id}          { allow read, write: if isSignedIn(); }
+    match /absenMalam/{id}   { allow read, write: if isSignedIn(); }
+    match /historyPoint/{id} { allow read, write: if isSignedIn(); }
+    match /kegiatan/{id}     { allow read, write: if isSignedIn(); }
+    match /catatanPiket/{id} { allow read, write: if isSignedIn(); }
+    match /databaseSPS/{id}  { allow read, write: if isSignedIn(); }
+    match /systemPoint/{id}  { allow read, write: if isSignedIn(); }
+
+    // ---------------- AI rate-limit (hanya diakses Admin SDK) ----------------
+    match /_aiRate/{id} {
+      allow read, write: if false;
     }
 
     // Default: tolak.
