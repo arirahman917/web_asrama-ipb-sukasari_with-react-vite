@@ -89,9 +89,6 @@ function CountdownDisplay() {
   return (
     <div className="mt-6 flex flex-col items-center">
       {/* Label */}
-      <p className="text-xs uppercase tracking-[0.2em] text-orange-300 font-semibold mb-3">
-        {oprec.status === "closed" ? "🔒 Pendaftaran Telah Ditutup" : `OPEN RECRUITMENT — ${oprec.label}`}
-      </p>
 
       {/* Countdown boxes */}
       {oprec.status !== "closed" && (
@@ -125,8 +122,8 @@ function CountdownDisplay() {
           Menunggu Pembukaan
         </div>
       ) : (
-        <div className="inline-flex items-center gap-2 px-6 py-3 bg-red-500/10 text-red-300 text-sm font-medium rounded-full border border-red-500/20 cursor-default">
-          🔒 Pendaftaran Ditutup
+        <div className="inline-flex items-center gap-2 px-6 py-3 text-red-300 text-sm font-medium cursor-default">
+          Pendaftaran Ditutup
         </div>
       )}
     </div>
