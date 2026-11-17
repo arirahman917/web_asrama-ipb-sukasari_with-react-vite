@@ -6,6 +6,14 @@ export default function Loader() {
   const loaderRef = useRef(null);
   const videoContainerRef = useRef(null);
   const [videoDuration, setVideoDuration] = useState(0);
+  const [videoSrc, setVideoSrc] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(min-width: 768px)').matches 
+        ? '/motion-ais-dekstop.mp4' 
+        : '/motion-ais-mobile.mp4';
+    }
+    return '/motion-ais-mobile.mp4';
+  });
 
   // 1. Ambil durasi video secara otomatis
   useEffect(() => {
@@ -14,8 +22,11 @@ export default function Loader() {
       videoElement.onloadedmetadata = () => {
         setVideoDuration(videoElement.duration);
       };
+      if (videoElement.readyState >= 1) {
+        setVideoDuration(videoElement.duration);
+      }
     }
-  }, []);
+  }, [videoSrc]);
 
   useGSAP(() => {
     // Pastikan video sudah diload dan punya durasi
@@ -64,11 +75,12 @@ export default function Loader() {
         className="absolute inset-0 z-10 opacity-0 will-change-transform flex justify-center items-center bg-transparent" // Ubah bg video container jadi transparent
       >
         <video
-          src="/motion-logo-ais.mp4"
+          key={videoSrc}
+          src={videoSrc}
           autoPlay
           muted
           playsInline
-          className="w-full h-full object-cover pointer-events-none"
+          className="w-full h-full object-fill pointer-events-none"
         />
       </div>
     </div>

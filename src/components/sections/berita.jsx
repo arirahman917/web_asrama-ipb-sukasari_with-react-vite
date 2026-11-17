@@ -179,6 +179,7 @@ export default function Berita() {
 
                                 {/* Image Container with Inverted Radius */}
                                 <div className="relative w-full h-[180px] md:h-[200px] rounded-[24px] md:rounded-[28px] overflow-hidden bg-gray-100">
+                                    {/* INFO: Jika ingin diblur dan diberi label SEGERA HADIR pada gambar, tambahkan class "blur-[2px]" pada tag img di bawah ini. Kemudian, aktifkan kembali (uncomment) blok "Coming Soon Overlay" di bawahnya. */}
                                     <img
                                         src={item.img}
                                         alt={item.title}
@@ -206,6 +207,7 @@ export default function Berita() {
 
                                 {/* Teks Konten */}
                                 <div className="px-1 md:px-2 relative mt-2">
+                                    {/* INFO: Jika ingin teks diblur, tambahkan class "blur-[4px] select-none opacity-50 pointer-events-none" pada div di bawah ini, lalu aktifkan (uncomment) div COMING SOON di bawahnya. */}
                                     <div className="blur-[4px] select-none opacity-50 pointer-events-none pb-2">
                                         <h3 className="font-bold text-base md:text-lg text-gray-900 mb-1.5 md:mb-2 leading-snug line-clamp-2">
                                             {item.title}

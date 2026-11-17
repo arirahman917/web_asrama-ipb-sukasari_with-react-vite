@@ -1,107 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../firebase";
-import { collection, getDocs, orderBy, query, doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, doc, updateDoc, runTransaction, setDoc } from "firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
+import PendaftarTab from "../components/admin/PendaftarTab";
+import PenilaianTab from "../components/admin/PenilaianTab";
+import ModernDropdown from "../components/admin/ModernDropdown";
+import { Toast, ConfirmModal } from "../components/admin/CustomModal";
 
-// ============================================================
-// SECTION CONFIG — Mengelompokkan field per section
-// ============================================================
-const SECTIONS = [
-  {
-    title: "Identitas Diri",
-    icon: "👤",
-    fields: [
-      { key: "email", label: "Email" },
-      { key: "namaLengkap", label: "Nama Lengkap" },
-      { key: "tanggalLahir", label: "Tanggal Lahir" },
-      { key: "programStudi", label: "Program Studi" },
-      { key: "agama", label: "Agama" },
-      { key: "jalurMasuk", label: "Jalur Masuk" },
-      { key: "anakKeDari", label: "Anak ke ... dari ..." },
-      { key: "asalDaerah", label: "Asal Daerah" },
-      { key: "asalSekolah", label: "Asal Sekolah" },
-      { key: "nomorWhatsapp", label: "Nomor WhatsApp" },
-      { key: "riwayatPenyakit", label: "Riwayat Penyakit" },
-    ],
-    files: [
-      { key: "fotoKtpUrl", label: "Foto KTP" },
-      { key: "buktiDiterimaUrl", label: "Bukti Diterima SV IPB" },
-    ],
-  },
-  {
-    title: "Data Orang Tua / Wali",
-    icon: "👨‍👩‍👦",
-    fields: [
-      { key: "namaAyah", label: "Nama Ayah" },
-      { key: "nomorTeleponAyah", label: "No. Telp Ayah" },
-      { key: "pekerjaanAyah", label: "Pekerjaan Ayah" },
-      { key: "penghasilanAyahPerBulan", label: "Penghasilan Ayah/Bulan" },
-      { key: "namaIbu", label: "Nama Ibu" },
-      { key: "nomorTeleponIbu", label: "No. Telp Ibu" },
-      { key: "pekerjaanIbu", label: "Pekerjaan Ibu" },
-      { key: "penghasilanIbuPerBulan", label: "Penghasilan Ibu/Bulan" },
-      { key: "namaWali", label: "Nama Wali" },
-      { key: "nomorTeleponWali", label: "No. Telp Wali" },
-    ],
-    files: [
-      { key: "slipGajiOrtuUrl", label: "Slip Gaji Orang Tua" },
-    ],
-  },
-  {
-    title: "Data Keuangan",
-    icon: "💰",
-    fields: [
-      { key: "penerimaKipK", label: "Penerima KIP-K" },
-      { key: "ukt", label: "UKT" },
-      { key: "rencanaUangKirimanBulanan", label: "Rencana Uang Kiriman" },
-      { key: "sumberUangBulanan", label: "Sumber Uang Bulanan" },
-      { key: "rencanaPengeluaranBulanan", label: "Rencana Pengeluaran" },
-      { key: "statusTempatTinggal", label: "Status Tempat Tinggal" },
-      { key: "rencanaTransportasi", label: "Rencana Transportasi" },
-      { key: "bersediaUangPangkal", label: "Bersedia Uang Pangkal" },
-      { key: "bersediaIuranBulanan", label: "Bersedia Iuran Bulanan" },
-    ],
-    files: [
-      { key: "buktiTagihanListrikUrl", label: "Bukti Tagihan Listrik" },
-    ],
-  },
-  {
-    title: "Pengalaman Pribadi",
-    icon: "🏆",
-    fields: [
-      { key: "ceritaDiri", label: "Cerita Diri" },
-      { key: "portofolio", label: "Portofolio" },
-    ],
-    files: [],
-  },
-  {
-    title: "Media & Bukti Syarat",
-    icon: "📸",
-    fields: [
-      { key: "usernameInstagram", label: "Username Instagram" }
-    ],
-    files: [
-      { key: "buktiUploadTwibbonUrl", label: "Bukti Upload Twibbon" },
-      { key: "buktiSharePosterUrl", label: "Bukti Share Poster" },
-      { key: "buktiFollowInstagramUrl", label: "Bukti Follow Instagram" },
-    ],
-  },
+const ALLOWED_EMAILS = [
+  "raihanalma@apps.ipb.ac.id",
+  "muhammadalfaatih@apps.ipb.ac.id",
+  "fawazdevan@apps.ipb.ac.id",
+  "ipb_rifqi@apps.ipb.ac.id",
+  "122705dias.dias@apps.ipb.ac.id",
+  "rafdirifansyah@apps.ipb.ac.id",
+  "febryanarrifai@apps.ipb.ac.id",
+  "muhammadfadhli@apps.ipb.ac.id",
+  "nandoravy@apps.ipb.ac.id",
+  "randhikapratama@apps.ipb.ac.id",
+  "bee2putra@apps.ipb.ac.id",
+  "arirahman@apps.ipb.ac.id",
+  "raihanhanief1220raihan@apps.ipb.ac.id"
 ];
 
 // ============================================================
-// IMAGE MODAL
+// MODAL NOT LOGGED IN
 // ============================================================
-function ImageModal({ src, alt, onClose }) {
-  if (!src) return null;
+function ErrorModal({ isOpen, onClose }) {
+  if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
-      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-        className="relative max-w-3xl max-h-[85vh] w-full">
-        <img src={src} alt={alt} className="w-full h-full object-contain rounded-2xl" />
-        <button onClick={onClose}
-          className="absolute top-3 right-3 w-10 h-10 bg-black/60 rounded-full flex items-center justify-center text-white hover:bg-black/80 transition-colors text-lg">
-          ✕
+    <div className="fixed inset-0 z-[300] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 text-center">
+        <div className="w-16 h-16 bg-red-500/20 text-red-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 border border-red-500/30">
+          🔒
+        </div>
+        <h3 className="text-xl font-bold text-white mb-2">Akses Ditolak</h3>
+        <p className="text-sm text-slate-400 mb-6 leading-relaxed">
+          Sebagai penilai Anda harus login terlebih dahulu. Penilai yang dapat memberikan nilai hanya 10 orang yang telah ditetapkan panitia, tidak bisa semuanya.
+        </p>
+        <button onClick={onClose} className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-xl transition w-full">
+          Mengerti
         </button>
       </motion.div>
     </div>
@@ -109,200 +48,57 @@ function ImageModal({ src, alt, onClose }) {
 }
 
 // ============================================================
-// PERSON CARD COMPONENT
+// MODAL LOGIN PENILAI
 // ============================================================
-function PersonCard({ data, index, onImageClick, onToggleWaStatus }) {
-  const [expanded, setExpanded] = useState(false);
+function LoginPenilaiModal({ isOpen, onClose, onLogin }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const formatDate = (val) => {
-    if (!val) return "-";
-    if (val.toDate) return val.toDate().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
-    return val;
-  };
+  if (!isOpen) return null;
 
-  const formatCurrency = (val) => {
-    if (!val || val === "-") return val;
-    const num = parseInt(val);
-    if (isNaN(num)) return val;
-    return `Rp${num.toLocaleString("id-ID")}`;
-  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const cleanEmail = email.trim().toLowerCase();
 
-  const isCurrency = (key) => ["penghasilanAyahPerBulan", "penghasilanIbuPerBulan", "rencanaUangKirimanBulanan", "rencanaPengeluaranBulanan", "ukt"].includes(key);
-
-  const handleFileClick = (url, label) => {
-    if (!url) return;
-    if (url.toLowerCase().includes('.pdf') || url.toLowerCase().includes('.pdf?')) {
-      window.open(url, '_blank');
+    if (ALLOWED_EMAILS.includes(cleanEmail) && password === 'penilai6162') {
+      const name = cleanEmail.split('@')[0];
+      onLogin({ email: cleanEmail, name: name });
+      setEmail('');
+      setPassword('');
+      setError('');
     } else {
-      onImageClick(url, label);
+      setError('Email belum terdaftar atau password salah!');
     }
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.4 }}
-      className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden hover:border-white/20 transition-all duration-300"
-    >
-      {/* Header - Foto + Nama + Prodi */}
-      <div className="bg-gradient-to-r from-[#182C4A] to-[#1E3A5F] p-5">
-        <div className="flex items-center gap-4">
-          {/* Foto 3x4 */}
-          <div className="w-20 h-24 rounded-xl overflow-hidden bg-gray-700 flex-shrink-0 border-2 border-white/20 shadow-lg cursor-pointer"
-            onClick={() => data.fotoFormalUrl && handleFileClick(data.fotoFormalUrl, data.namaLengkap)}>
-            {data.fotoFormalUrl ? (
-              data.fotoFormalUrl.toLowerCase().includes('.pdf') || data.fotoFormalUrl.toLowerCase().includes('.pdf?') ? (
-                <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 text-red-500">
-                   <svg className="w-8 h-8 mb-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2.001 16h-1.636v-6.993h2.385c1.439 0 2.227.674 2.227 1.942 0 1.258-.809 1.94-2.227 1.94h-.749v3.111zm4.12 0h-1.638v-6.993h2.613c1.332 0 2.257.771 2.257 2.052 0 .822-.441 1.488-1.121 1.834.723.36 1.139 1.054 1.139 1.921 0 1.298-.949 2.155-2.585 2.155h-2.296v-6.993h1.631zm3.899-3.882h-1.603v3.882h-1.637v-6.993h3.24c.001 0 2.502.046 2.502 1.556 0 1.551-2.502 1.555-2.502 1.555zm-6.236-1.503h.718c.594 0 .886-.246.886-.689 0-.462-.294-.688-.887-.688h-.717v1.377zm4.12.01h.749c.582 0 .861-.253.861-.7 0-.435-.295-.69-.877-.69h-.733v1.39zm0 2.13h.769c.642 0 .963-.284.963-.787 0-.528-.328-.806-.975-.806h-.757v1.593z" /></svg>
-                   <span className="text-[10px] font-bold text-white">PDF</span>
-                </div>
-              ) : (
-                <img src={data.fotoFormalUrl} alt={data.namaLengkap} className="w-full h-full object-cover" />
-              )
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-500 text-2xl">👤</div>
-            )}
-          </div>
-          {/* Info */}
-          <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-bold text-white truncate">{data.namaLengkap || "Tanpa Nama"}</h3>
-            <p className="text-sm text-orange-300 font-medium">{data.programStudi || "-"}</p>
-            <p className="text-xs text-gray-400 mt-1">{data.asalDaerah || "-"} • {data.asalSekolah || "-"}</p>
-            <div className="flex items-center gap-2 mt-2">
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/30">{data.batch || "-"}</span>
-              <span className="text-[10px] text-gray-500">{formatDate(data.createdAt)}</span>
-            </div>
-          </div>
-          {/* Nomor Urut */}
-          <div className="text-3xl font-black text-white/10">#{index + 1}</div>
-        </div>
-      </div>
+    <div className="fixed inset-0 z-[300] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-slate-900 border border-slate-700 rounded-2xl max-w-sm w-full p-6 relative">
+        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white transition">✕</button>
+        <h3 className="text-xl font-bold text-white mb-1">Login Penilai</h3>
+        <p className="text-xs text-slate-400 mb-6">Silakan masuk dengan akun evaluator Anda.</p>
 
-      {/* Quick Info Bar */}
-      <div className="grid grid-cols-4 divide-x divide-white/10 bg-white/3">
-        <div className="p-3 text-center">
-          <p className="text-[10px] text-gray-500 uppercase">WhatsApp</p>
-          <p className="text-xs text-white font-medium truncate">{data.nomorWhatsapp || "-"}</p>
-        </div>
-        <div className="p-3 text-center">
-          <p className="text-[10px] text-gray-500 uppercase">KIP-K</p>
-          <p className={`text-xs font-semibold ${data.penerimaKipK === "Ya" ? "text-green-400" : "text-gray-400"}`}>{data.penerimaKipK || "-"}</p>
-        </div>
-        <div className="p-3 text-center">
-          <p className="text-[10px] text-gray-500 uppercase">Tanda Tangan</p>
-          <p className={`text-xs font-semibold ${data.signatureUrl ? "text-green-400" : "text-red-400"}`}>{data.signatureUrl ? "Ada" : "Tidak Ada"}</p>
-        </div>
-        <div className="p-3 text-center flex flex-col items-center justify-center">
-          <p className="text-[10px] text-gray-500 uppercase mb-1">Grup WA</p>
-          <button 
-            onClick={(e) => { e.stopPropagation(); onToggleWaStatus(data.id, data.waGroupJoined); }}
-            className={`text-[9px] px-2 py-0.5 rounded-md border transition-all ${data.waGroupJoined ? "bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30" : "bg-red-500/20 text-red-400 border-red-500/30 hover:bg-red-500/30"}`}
-          >
-            {data.waGroupJoined ? "Sudah Masuk" : "Belum Masuk"}
+        {error && <div className="bg-red-500/20 border border-red-500/50 text-red-400 text-xs p-3 rounded-lg mb-4">{error}</div>}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-400 mb-1">Email</label>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} required className="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-2 text-white text-sm outline-none focus:border-blue-500" placeholder="Masukkan email..." />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-400 mb-1">Password</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} required className="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-2 text-white text-sm outline-none focus:border-blue-500" placeholder="Masukkan password..." />
+          </div>
+          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-xl transition mt-2">
+            Login
           </button>
-        </div>
-      </div>
-
-      {/* Toggle Details */}
-      <button onClick={() => setExpanded(!expanded)}
-        className="w-full py-3 text-xs text-gray-400 hover:text-white transition-colors flex items-center justify-center gap-2 bg-white/3 hover:bg-white/5">
-        {expanded ? "Sembunyikan Detail ▲" : "Lihat Detail ▼"}
-      </button>
-
-      {/* Expanded Details */}
-      <AnimatePresence>
-        {expanded && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }} className="overflow-hidden">
-            <div className="p-5 space-y-6">
-              {SECTIONS.map((section) => (
-                <div key={section.title}>
-                  <h4 className="text-sm font-bold text-orange-400 mb-3 flex items-center gap-2">
-                    <span>{section.icon}</span> {section.title}
-                  </h4>
-                  {/* Text Fields */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
-                    {section.fields.map(({ key, label }) => (
-                      <div key={key} className="bg-white/3 rounded-lg px-3 py-2">
-                        <p className="text-[10px] text-gray-500 uppercase">{label}</p>
-                        <p className="text-xs text-white font-medium break-words">
-                          {key === "ceritaDiri" || key === "portofolio" ? (data[key] || "-") : (isCurrency(key) ? formatCurrency(data[key]) : ((key === "namaAyah" || key === "namaIbu") && data[key] === "-" ? "Meninggal" : (data[key] || "-")))}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Dynamic Arrays (Pengalaman Pribadi) */}
-                  {section.title === "Pengalaman Pribadi" && (
-                    <div className="space-y-4 mb-3">
-                      {['prestasiArray', 'organisasiArray', 'komunitasArray'].map(arrKey => {
-                        const arr = data[arrKey] || [];
-                        const title = arrKey === 'prestasiArray' ? 'Prestasi' : arrKey === 'organisasiArray' ? 'Organisasi' : 'Komunitas';
-                        if(arr.length === 0) return null;
-                        return (
-                          <div key={arrKey} className="bg-white/5 rounded-xl p-3 border border-white/10">
-                            <h5 className="text-xs font-semibold text-orange-300 mb-2">{title}</h5>
-                            <div className="flex flex-col gap-2">
-                              {arr.map((item, idx) => (
-                                <div key={idx} className="flex items-center justify-between bg-black/20 p-2 rounded-lg">
-                                  <p className="text-xs text-white truncate max-w-[200px]" title={item.nama}>{item.nama}</p>
-                                  {item.url && (
-                                    <button onClick={() => handleFileClick(item.url, item.nama)} className="text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded">Lihat Bukti</button>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  {/* File Fields */}
-                  {section.files.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {section.files.map(({ key, label }) => (
-                        data[key] && data[key] !== "" ? (
-                          <div key={key} className="cursor-pointer group" onClick={() => handleFileClick(data[key], label)}>
-                            <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-800 border border-white/10 group-hover:border-orange-400/50 transition-all flex items-center justify-center">
-                              {data[key].toLowerCase().includes('.pdf') || data[key].toLowerCase().includes('.pdf?') ? (
-                                <div className="flex flex-col items-center justify-center text-red-500">
-                                   <svg className="w-8 h-8 mb-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2.001 16h-1.636v-6.993h2.385c1.439 0 2.227.674 2.227 1.942 0 1.258-.809 1.94-2.227 1.94h-.749v3.111zm4.12 0h-1.638v-6.993h2.613c1.332 0 2.257.771 2.257 2.052 0 .822-.441 1.488-1.121 1.834.723.36 1.139 1.054 1.139 1.921 0 1.298-.949 2.155-2.585 2.155h-2.296v-6.993h1.631zm3.899-3.882h-1.603v3.882h-1.637v-6.993h3.24c.001 0 2.502.046 2.502 1.556 0 1.551-2.502 1.555-2.502 1.555zm-6.236-1.503h.718c.594 0 .886-.246.886-.689 0-.462-.294-.688-.887-.688h-.717v1.377zm4.12.01h.749c.582 0 .861-.253.861-.7 0-.435-.295-.69-.877-.69h-.733v1.39zm0 2.13h.769c.642 0 .963-.284.963-.787 0-.528-.328-.806-.975-.806h-.757v1.593z" /></svg>
-                                   <span className="text-[10px] font-bold text-white">PDF</span>
-                                </div>
-                              ) : (
-                                <img src={data[key]} alt={label} className="w-full h-full object-cover" />
-                              )}
-                            </div>
-                            <p className="text-[9px] text-gray-500 mt-1 text-center truncate w-20">{label}</p>
-                          </div>
-                        ) : null
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-
-              {/* Tanda Tangan */}
-              <div>
-                 <h4 className="text-sm font-bold text-orange-400 mb-3 flex items-center gap-2"><span>✅</span> Pakta Integritas</h4>
-                 {data.signatureUrl ? (
-                    <div className="bg-white/80 rounded-xl p-2 w-fit border border-white/20 cursor-pointer" onClick={() => handleFileClick(data.signatureUrl, "Tanda Tangan")}>
-                      <img src={data.signatureUrl} alt="Tanda Tangan" className="h-20 w-auto object-contain" />
-                    </div>
-                 ) : (
-                    <p className="text-xs text-red-400">Belum ada tanda tangan</p>
-                 )}
-              </div>
-
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+        </form>
+      </motion.div>
+    </div>
   );
 }
+
 
 // ============================================================
 // MAIN COMPONENT
@@ -310,24 +106,157 @@ function PersonCard({ data, index, onImageClick, onToggleWaStatus }) {
 export default function ResponsOprec() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const [penilaianData, setPenilaianData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [modalImage, setModalImage] = useState(null);
+  const [activeTab, setActiveTab] = useState(() => {
+    return sessionStorage.getItem("oprecActiveTab") || "pendaftar";
+  });
+  
+  useEffect(() => {
+    sessionStorage.setItem("oprecActiveTab", activeTab);
+  }, [activeTab]);
 
-  // Auth check
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  // States for Penilai Login
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [penilaiUser, setPenilaiUser] = useState(null);
+
+  // Toast & Confirm states
+  const [toast, setToast] = useState({ isOpen: false, type: 'success', message: '' });
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, title: '', message: '', onConfirm: null, variant: 'danger' });
+
+  const showToast = (type, message) => setToast({ isOpen: true, type, message });
+  const closeToast = () => setToast(prev => ({ ...prev, isOpen: false }));
+
+  // Check Master Admin Auth
   useEffect(() => {
     if (sessionStorage.getItem("aisAdminLoggedIn") !== "true") {
       navigate("/admin");
     }
+    const savedPenilai = sessionStorage.getItem("penilaiUser");
+    if (savedPenilai) {
+      setPenilaiUser(JSON.parse(savedPenilai));
+    }
   }, [navigate]);
 
   // Fetch data
+  const handleMigrateData = async () => {
+    try {
+      const q = query(collection(db, "bakalCalonPenghuni"));
+      const snap = await getDocs(q);
+      let count = 0;
+      for (const docSnap of snap.docs) {
+        const d = docSnap.data();
+        const docRef = doc(db, "penilaianBakalCalonPenghuni", docSnap.id);
+        const dataToSave = {
+          nama: d.namaLengkap || "",
+          prodi: d.programStudi || "",
+          foto: d.fotoFormalUrl || "",
+        };
+        // Jika belum ada dokumen, atau untuk menimpa dengan data dasar
+        await setDoc(docRef, dataToSave, { merge: true });
+        count++;
+      }
+      showToast('success', `Migrasi Berhasil! ${count} data dipindahkan.`);
+    } catch (err) {
+      console.error(err);
+      showToast('error', 'Gagal migrasi: ' + err.message);
+    }
+  };
+
+  const handleTestConcurrency = async () => {
+    if (!penilaianData || penilaianData.length === 0) return showToast('error', 'Tidak ada data kandidat');
+    const targets = penilaianData.slice(0, 10);
+    showToast('warning', `Memulai test 10 input serentak ke ${targets.length} kandidat teratas...`);
+    
+    const fakeUsersS1 = Array.from({length: 5}).map((_,i) => ({ email: `test.s1.${i}@apps.ipb.ac.id`, name: `Tester Sesi 1 - ${i+1}`, session: 1 }));
+    const fakeUsersS2 = Array.from({length: 5}).map((_,i) => ({ email: `test.s2.${i}@apps.ipb.ac.id`, name: `Tester Sesi 2 - ${i+1}`, session: 2 }));
+    const allTesters = [...fakeUsersS1, ...fakeUsersS2];
+
+    const promises = [];
+    
+    for (const target of targets) {
+      for (const tester of allTesters) {
+        const candidateRef = doc(db, "penilaianBakalCalonPenghuni", target.id);
+        const p = runTransaction(db, async (transaction) => {
+          const candidateDoc = await transaction.get(candidateRef);
+          const candidateData = candidateDoc.data() || {};
+          const sessionKey = `sesi${tester.session}`;
+          const currentSessionData = candidateData[sessionKey] || [];
+          
+          const details = {};
+          const newRating = {
+            evaluatorEmail: tester.email,
+            evaluatorName: tester.name,
+            total: Math.floor(Math.random() * 50) + 200,
+            details: details,
+            catatan: "Ini catatan otomatis test concurrency",
+            updatedAt: new Date().toISOString()
+          };
+          
+          currentSessionData.push(newRating);
+          transaction.update(candidateRef, { [sessionKey]: currentSessionData });
+        });
+        promises.push(p);
+      }
+    }
+
+    try {
+      await Promise.all(promises);
+      showToast('success', 'Test Concurrency Selesai! Cek apakah 10 nilai tersimpan.');
+      // Refetch
+      const pq = query(collection(db, "penilaianBakalCalonPenghuni"));
+      const psnap = await getDocs(pq);
+      setPenilaianData(psnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+    } catch (e) {
+      console.error("Concurrency error:", e);
+      showToast('error', 'Terjadi error saat concurrency: ' + e.message);
+    }
+  };
+
+  const handleClearTest = async () => {
+    if (!penilaianData || penilaianData.length === 0) return;
+    const targets = penilaianData.slice(0, 10);
+    try {
+      const promises = targets.map(async (target) => {
+        const candidateRef = doc(db, "penilaianBakalCalonPenghuni", target.id);
+        return runTransaction(db, async (transaction) => {
+          const candidateDoc = await transaction.get(candidateRef);
+          const candidateData = candidateDoc.data() || {};
+          const filterTest = (arr) => (arr||[]).filter(x => !x.email?.includes('test.') && !x.evaluatorEmail?.includes('test.'));
+          transaction.update(candidateRef, {
+            sesi1: filterTest(candidateData.sesi1),
+            sesi2: filterTest(candidateData.sesi2)
+          });
+        });
+      });
+      await Promise.all(promises);
+      showToast('success', 'Data test berhasil dihapus!');
+      const pq = query(collection(db, "penilaianBakalCalonPenghuni"));
+      const psnap = await getDocs(pq);
+      setPenilaianData(psnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+    } catch (e) {
+      console.error(e);
+      showToast('error', 'Gagal hapus data test');
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const q = query(collection(db, "bakalCalonPenghuni"), orderBy("createdAt", "desc"));
         const snap = await getDocs(q);
-        setData(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+        const fetchedData = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setData(fetchedData);
+
+        const pq = query(collection(db, "penilaianBakalCalonPenghuni"));
+        const psnap = await getDocs(pq);
+        setPenilaianData(psnap.docs.map((doc) => {
+          const match = fetchedData.find((d) => d.id === doc.id);
+          return { id: doc.id, batch: match?.batch || "UNKNOWN", ...doc.data() };
+        }));
       } catch (err) {
         console.error("Fetch error:", err);
       } finally {
@@ -336,16 +265,6 @@ export default function ResponsOprec() {
     };
     fetchData();
   }, []);
-
-  const filteredData = data.filter((d) => {
-    const s = search.toLowerCase();
-    return (
-      (d.namaLengkap || "").toLowerCase().includes(s) ||
-      (d.programStudi || "").toLowerCase().includes(s) ||
-      (d.asalDaerah || "").toLowerCase().includes(s) ||
-      (d.email || "").toLowerCase().includes(s)
-    );
-  });
 
   const handleToggleWaStatus = async (id, currentStatus) => {
     try {
@@ -356,7 +275,7 @@ export default function ResponsOprec() {
       setData(prev => prev.map(d => d.id === id ? { ...d, waGroupJoined: newStatus } : d));
     } catch (err) {
       console.error("Failed to update WA status:", err);
-      alert("Gagal mengupdate status WA");
+      showToast('error', 'Gagal mengupdate status WA');
     }
   };
 
@@ -365,74 +284,262 @@ export default function ResponsOprec() {
     navigate("/admin");
   };
 
+  const handleLoginPenilai = (user) => {
+    setPenilaiUser(user);
+    sessionStorage.setItem("penilaiUser", JSON.stringify(user));
+    setShowLoginModal(false);
+  };
+
+  const handleLogoutPenilai = () => {
+    setPenilaiUser(null);
+    sessionStorage.removeItem("penilaiUser");
+  };
+
+  const handleSaveScore = async (candidateId, session, totalScore, details, catatan) => {
+    try {
+      const candidateRef = doc(db, "penilaianBakalCalonPenghuni", candidateId);
+
+      const updatedPenilaian = await runTransaction(db, async (transaction) => {
+        const candidateDoc = await transaction.get(candidateRef);
+        if (!candidateDoc.exists()) {
+          throw new Error("Kandidat tidak ditemukan di database!");
+        }
+
+        const candidateData = candidateDoc.data();
+
+        const sessionKey = `sesi${session}`;
+        const otherSessionKey = session === 1 ? 'sesi2' : 'sesi1';
+
+        const currentSessionData = candidateData[sessionKey] || [];
+        const otherSessionData = candidateData[otherSessionKey] || [];
+
+        // Check if user already rated in the OTHER session
+        const ratedInOther = otherSessionData.some(p => p.evaluatorEmail === penilaiUser.email);
+        if (ratedInOther) {
+          throw new Error(`Anda sudah menilai kandidat ini di ${session === 1 ? 'Sesi 2' : 'Sesi 1'}. Silakan hapus nilai Anda di sesi sebelumnya terlebih dahulu.`);
+        }
+
+        // Check if user already rated in CURRENT session
+        const existingIndex = currentSessionData.findIndex(p => p.evaluatorEmail === penilaiUser.email);
+        let newSessionData = [...currentSessionData];
+
+        const newRating = {
+          evaluatorEmail: penilaiUser.email,
+          evaluatorName: penilaiUser.name,
+          total: totalScore,
+          details: details,
+          catatan: catatan || "",
+          updatedAt: new Date().toISOString()
+        };
+
+        if (existingIndex >= 0) {
+          newSessionData[existingIndex] = newRating;
+        } else {
+          if (newSessionData.length >= 5) {
+            throw new Error('Sesi ini sudah dinilai oleh maksimal 5 orang penilai.');
+          }
+          newSessionData.push(newRating);
+        }
+
+        const updates = {
+          [sessionKey]: newSessionData
+        };
+
+        transaction.update(candidateRef, updates);
+        return updates;
+      });
+
+      // Update local state automatically after successful transaction
+      setPenilaianData(prev => prev.map(d => d.id === candidateId ? { ...d, ...updatedPenilaian } : d));
+      showToast('success', 'Nilai berhasil disimpan!');
+      return true;
+    } catch (err) {
+      console.error("Failed to save score:", err);
+      showToast('error', err.message || 'Terjadi kesalahan saat menyimpan nilai.');
+      return false;
+    }
+  };
+
+  const handleDeleteScore = async (candidateId, session) => {
+    try {
+      const candidateRef = doc(db, "penilaianBakalCalonPenghuni", candidateId);
+
+      const updatedPenilaian = await runTransaction(db, async (transaction) => {
+        const candidateDoc = await transaction.get(candidateRef);
+        if (!candidateDoc.exists()) {
+          throw new Error("Kandidat tidak ditemukan di database!");
+        }
+
+        const candidateData = candidateDoc.data();
+        const sessionKey = `sesi${session}`;
+        const currentSessionData = candidateData[sessionKey] || [];
+
+        const newSessionData = currentSessionData.filter(p => p.evaluatorEmail !== penilaiUser.email);
+
+        const updates = {
+          [sessionKey]: newSessionData
+        };
+
+        transaction.update(candidateRef, updates);
+        return updates;
+      });
+
+      // Update local state
+      setPenilaianData(prev => prev.map(d => d.id === candidateId ? { ...d, ...updatedPenilaian } : d));
+      showToast('success', 'Nilai berhasil dihapus!');
+    } catch (err) {
+      console.error("Failed to delete score:", err);
+      showToast('error', err.message || 'Terjadi kesalahan saat menghapus nilai.');
+    }
+  };
+
+  const requestDeleteScore = (candidateId, session) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Hapus Nilai Anda?',
+      message: `Apakah Anda yakin ingin menghapus nilai yang telah Anda berikan di Sesi ${session} untuk kandidat ini? Tindakan ini tidak dapat dibatalkan.`,
+      variant: 'danger',
+      onConfirm: () => {
+        setConfirmModal(prev => ({ ...prev, isOpen: false }));
+        handleDeleteScore(candidateId, session);
+      }
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A]">
-      {/* Modal */}
-      {modalImage && <ImageModal src={modalImage.src} alt={modalImage.alt} onClose={() => setModalImage(null)} />}
+    <div className="flex min-h-screen bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A]">
 
-      {/* Header */}
-      <div className="sticky top-0 z-50 bg-black/30 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-bold text-white">📋 Data Pendaftar OPREC</h1>
-            <p className="text-xs text-gray-400">Asrama IPB Sukasari 2026</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-gray-500 hidden sm:block">Total: <span className="text-orange-400 font-bold">{data.length}</span> pendaftar</span>
-            <button onClick={handleLogout}
-              className="px-4 py-2 text-xs bg-red-500/10 text-red-400 border border-red-500/30 rounded-xl hover:bg-red-500/20 transition-all font-medium">
-              Logout
-            </button>
+      <ErrorModal isOpen={showErrorModal} onClose={() => setShowErrorModal(false)} />
+      <LoginPenilaiModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} onLogin={handleLoginPenilai} />
+      <Toast isOpen={toast.isOpen} type={toast.type} message={toast.message} onClose={closeToast} />
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        variant={confirmModal.variant}
+        onConfirm={confirmModal.onConfirm}
+        onCancel={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+        confirmText="Ya, Hapus"
+        cancelText="Batal"
+      />
+
+      {/* SIDEBAR */}
+      <aside className={`bg-slate-900 border-r border-slate-700 hidden md:flex flex-col fixed top-0 left-0 h-screen z-50 transition-all duration-300 ease-in-out overflow-hidden ${isSidebarOpen ? 'w-64' : 'w-20'}`}>
+        <div className="p-6 border-b border-slate-700 flex items-center h-[73px]">
+          <div className={`whitespace-nowrap transition-all duration-300 ${isSidebarOpen ? 'opacity-100 w-auto' : 'opacity-0 w-0 overflow-hidden'}`}>
+            <h1 className="text-xl font-bold text-white leading-tight">Admin OPREC</h1>
+            <p className="text-xs text-orange-400 font-medium">Asrama IPB Sukasari</p>
           </div>
         </div>
-      </div>
-
-      {/* Search & Stats */}
-      <div className="max-w-5xl mx-auto px-4 py-6">
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between mb-6">
-          {/* Search */}
-          <div className="relative w-full sm:max-w-md">
-            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari nama, prodi, asal daerah, atau email..."
-              className="w-full bg-white/5 border border-white/15 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-orange-400 transition-all" />
-          </div>
-          <p className="text-sm text-gray-400">
-            Menampilkan <span className="text-white font-semibold">{filteredData.length}</span> dari <span className="text-white font-semibold">{data.length}</span>
-          </p>
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto overflow-x-hidden">
+          <button
+            onClick={() => setActiveTab("pendaftar")}
+            className={`w-full flex items-center gap-3 p-3 rounded-xl transition ${activeTab === "pendaftar" ? "bg-orange-500/10 text-orange-400 border border-orange-500/20" : "text-slate-400 hover:bg-slate-800 hover:text-white"}`}
+            title="Daftar Pendaftar"
+          >
+            <span className="text-xl flex-shrink-0 flex items-center justify-center w-6 h-6">📋</span>
+            <span className={`font-medium text-sm whitespace-nowrap transition-all duration-300 ${isSidebarOpen ? 'opacity-100 ml-1' : 'opacity-0 w-0 overflow-hidden'}`}>Daftar Pendaftar</span>
+          </button>
+          <button
+            onClick={() => setActiveTab("penilaian")}
+            className={`w-full flex items-center gap-3 p-3 rounded-xl transition ${activeTab === "penilaian" ? "bg-blue-500/10 text-blue-400 border border-blue-500/20" : "text-slate-400 hover:bg-slate-800 hover:text-white"}`}
+            title="Penilaian Wawancara"
+          >
+            <span className="text-xl flex-shrink-0 flex items-center justify-center w-6 h-6">📊</span>
+            <span className={`font-medium text-sm whitespace-nowrap transition-all duration-300 ${isSidebarOpen ? 'opacity-100 ml-1' : 'opacity-0 w-0 overflow-hidden'}`}>Penilaian Wawancara</span>
+          </button>
+        </nav>
+        <div className="p-4 border-t border-slate-700">
+          {/* <button onClick={handleMigrateData} className="w-full mb-2 flex items-center justify-center gap-2 p-2 text-xs bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 rounded-xl hover:bg-yellow-500/20 transition-all font-medium" title="Migrate DB">
+            <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+            <span className={`whitespace-nowrap transition-all duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>Migrate Data</span>
+          </button>
+          <button onClick={handleTestConcurrency} className="w-full mb-2 flex items-center justify-center gap-2 p-2 text-xs bg-purple-500/10 text-purple-400 border border-purple-500/30 rounded-xl hover:bg-purple-500/20 transition-all font-medium" title="Test Concurrency">
+            <span className={`whitespace-nowrap transition-all duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>Test 10 User</span>
+          </button>
+          <button onClick={handleClearTest} className="w-full mb-2 flex items-center justify-center gap-2 p-2 text-xs bg-slate-500/10 text-slate-400 border border-slate-500/30 rounded-xl hover:bg-slate-500/20 transition-all font-medium" title="Clear Test">
+            <span className={`whitespace-nowrap transition-all duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>Hapus Test</span>
+          </button> */}
+          <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 p-2 text-xs bg-red-500/10 text-red-400 border border-red-500/30 rounded-xl hover:bg-red-500/20 transition-all font-medium" title="Logout Admin">
+            <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+            <span className={`whitespace-nowrap transition-all duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>Logout Admin</span>
+          </button>
         </div>
+      </aside>
 
-        {/* Loading */}
-        {loading && (
-          <div className="flex items-center justify-center py-20">
-            <div className="flex flex-col items-center gap-3">
-              <svg className="animate-spin w-10 h-10 text-orange-500" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-              <p className="text-sm text-gray-400">Memuat data pendaftar...</p>
+      {/* MAIN CONTENT */}
+      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out ${isSidebarOpen ? 'md:ml-64' : 'md:ml-20'}`}>
+
+        {/* HEADER */}
+        <header className="sticky top-0 z-40 bg-black/40 backdrop-blur-xl border-b border-slate-700">
+          <div className="px-4 py-4 md:px-6 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="hidden md:flex items-center justify-center w-10 h-10 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+                title="Toggle Sidebar"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+              </button>
+              <div className="md:hidden w-40 sm:w-56">
+                <ModernDropdown
+                  value={activeTab}
+                  onChange={(val) => setActiveTab(val)}
+                  options={[
+                    { value: "pendaftar", label: "Daftar Pendaftar" },
+                    { value: "penilaian", label: "Penilaian Wawancara" }
+                  ]}
+                  placeholder="Pilih Menu"
+                  className="w-full text-sm"
+                />
+              </div>
+              <h2 className="hidden md:block text-lg font-bold text-white">
+                {activeTab === 'pendaftar' ? 'Daftar Pendaftar' : 'Dashboard Penilaian'}
+              </h2>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {activeTab === 'penilaian' && (
+                <>
+                  {!penilaiUser ? (
+                    <button onClick={() => setShowLoginModal(true)} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition text-xs shadow-md">
+                      👤 Login Penilai
+                    </button>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 hidden sm:flex">
+                        <div className="text-left">
+                          <div className="text-xs font-bold text-white leading-tight">{penilaiUser.name}</div>
+                          <div className="text-[9px] text-slate-400 leading-none mt-0.5">{penilaiUser.email}</div>
+                        </div>
+                      </div>
+                      <button onClick={handleLogoutPenilai} className="text-slate-400 hover:text-red-400 p-1 transition bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs" title="Logout Penilai">
+                        Logout Penilai
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           </div>
-        )}
+        </header>
 
-        {/* No Data */}
-        {!loading && filteredData.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-5xl mb-4">📭</p>
-            <p className="text-gray-400">{search ? "Tidak ditemukan pendaftar dengan pencarian tersebut." : "Belum ada data pendaftar."}</p>
-          </div>
-        )}
+        {/* CONTENT AREA */}
+        <main className="p-4 md:p-6 flex-1">
+          {activeTab === "pendaftar" ? (
+            <PendaftarTab data={data} loading={loading} onToggleWaStatus={handleToggleWaStatus} />
+          ) : (
+            <PenilaianTab
+              data={penilaianData}
+              penilaiLoggedIn={!!penilaiUser}
+              penilaiUser={penilaiUser}
+              onNotLoggedIn={() => setShowErrorModal(true)}
+              onSaveScore={handleSaveScore}
+              onDeleteScore={requestDeleteScore}
+            />
+          )}
+        </main>
 
-        {/* Cards Grid */}
-        {!loading && filteredData.length > 0 && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {filteredData.map((d, i) => (
-                <PersonCard key={d.id} data={d} index={i} onImageClick={(src, alt) => setModalImage({ src, alt })} onToggleWaStatus={handleToggleWaStatus} />
-              ))}
-            </div>
-        )}
       </div>
     </div>
   );

@@ -66,7 +66,7 @@ export default function Sejarah() {
 
     return (
         <section
-            id="sejarah-section sejarah"
+            id="sejarah-section"
             className="w-full h-auto py-6 lg:min-h-screen lg:py-10 flex flex-col justify-center px-5 md:px-12 lg:px-20 bg-white text-gray-900 font-sans overflow-x-hidden"
         >
             {/* Konten Utama: Teks Kiri + Gambar Kanan */}

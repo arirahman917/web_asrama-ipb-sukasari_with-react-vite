@@ -13,12 +13,16 @@ export const OPREC_BATCHES = [
     start: new Date("2026-05-25T00:00:00+07:00"),
     end: new Date("2026-05-29T23:59:59+07:00"),
   },
-  // Tambahkan batch baru di sini:
-  // {
-  //   name: "BATCH 2",
-  //   start: new Date("2026-06-01T00:00:00+07:00"),
-  //   end: new Date("2026-06-05T23:59:59+07:00"),
-  // },
+  {
+    name: "BATCH 2",
+    start: new Date("2026-06-22T00:00:00+07:00"),
+    end: new Date("2026-06-27T14:59:59+07:00"),
+  },
+  {
+    name: "BATCH 3",
+    start: new Date("2026-07-13T00:00:00+07:00"),
+    end: new Date("2026-07-17T17:59:59+07:00"),
+  },
 ];
 
 function useOprecCountdown() {
@@ -53,8 +57,6 @@ function useOprecCountdown() {
         });
         return;
       }
-      // All batches have passed
-      setState({ status: "closed", countdown: {}, label: "Pendaftaran Telah Ditutup", batchName: "" });
     };
 
     const msToCountdown = (ms) => {
@@ -82,20 +84,47 @@ import logoAis from "../../assets/img/logo-ais.webp";
 // ============================================================
 function CountdownDisplay() {
   const oprec = useOprecCountdown();
+  const [showClosedModal, setShowClosedModal] = useState(false);
   if (oprec.status === "loading") return null;
 
   const { countdown } = oprec;
   const pad = (n) => String(n).padStart(2, "0");
 
+  // Determine closed modal message
+  const getClosedMessage = () => {
+    const now = new Date();
+    // Find the last batch that has ended
+    const pastBatches = OPREC_BATCHES.filter(b => now > b.end);
+    const lastPast = pastBatches.length > 0 ? pastBatches[pastBatches.length - 1] : null;
+    // Find the next upcoming batch
+    const futureBatches = OPREC_BATCHES.filter(b => now < b.start).sort((a, b) => a.start - b.start);
+    const nextBatch = futureBatches.length > 0 ? futureBatches[0] : null;
+
+    if (!nextBatch) {
+      // All batches done
+      return "Pendaftaran Bakal Calon Penghuni Baru 2026 telah ditutup.";
+    }
+    return `Mohon maaf, pendaftaran ${lastPast ? lastPast.name : ''} telah ditutup. Nantikan ${nextBatch.name}!`;
+  };
+
+  const isAllClosed = oprec.status === "closed";
+  const isBetweenBatches = oprec.status === "upcoming";
+
   return (
     <div className="mt-6 flex flex-col items-center">
       {/* Label */}
-      <p className="text-xs uppercase tracking-[0.2em] text-orange-300 font-semibold mb-3">
-        {oprec.status === "closed" ? "🔒 Pendaftaran Telah Ditutup" : `OPEN RECRUITMENT — ${oprec.label}`}
-      </p>
+      {isAllClosed ? (
+        <p className="text-xs uppercase tracking-[0.2em] text-orange-300 font-semibold mb-3">
+          🔒 Pendaftaran Telah Ditutup
+        </p>
+      ) : (
+        <p className="text-xs uppercase tracking-[0.2em] text-orange-300 font-semibold mb-3">
+          OPEN RECRUITMENT — {oprec.label}
+        </p>
+      )}
 
-      {/* Countdown boxes */}
-      {oprec.status !== "closed" && (
+      {/* Countdown boxes - hide when all closed */}
+      {!isAllClosed && (
         <div className="flex gap-2 mb-4">
           {[
             { val: pad(countdown.days), label: "Hari" },
@@ -120,14 +149,28 @@ function CountdownDisplay() {
           Daftar Sekarang
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
         </Link>
-      ) : oprec.status === "upcoming" ? (
-        <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 text-gray-300 text-sm font-medium rounded-full border border-white/20 cursor-default">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          Menunggu Pembukaan
-        </div>
       ) : (
-        <div className="inline-flex items-center gap-2 px-6 py-3 bg-red-500/10 text-red-300 text-sm font-medium rounded-full border border-red-500/20 cursor-default">
-          🔒 Pendaftaran Ditutup
+        <button
+          onClick={() => setShowClosedModal(true)}
+          className="inline-flex items-center gap-2 px-6 py-3 text-red-300 text-sm font-medium hover:text-red-200 transition-all cursor-pointer"
+        >
+          🔒 Ditutup
+        </button>
+      )}
+
+      {/* Closed Modal */}
+      {showClosedModal && (
+        <div className="fixed inset-0 z-[200] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowClosedModal(false)}>
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-bold text-white mb-3">Pendaftaran Ditutup</h3>
+            <p className="text-sm text-slate-300 leading-relaxed mb-6">{getClosedMessage()}</p>
+            <button
+              onClick={() => setShowClosedModal(false)}
+              className="w-full bg-slate-700 hover:bg-slate-600 text-white font-medium py-2.5 rounded-xl transition"
+            >
+              Tutup
+            </button>
+          </div>
         </div>
       )}
     </div>
@@ -139,9 +182,17 @@ export default function Hero() {
   const videoRef = useRef(null);
   const loaderRef = useRef(null);
   const logoRef = useRef(null);
-  const titleLinesRef = useRef([]); // Array ref untuk stagger text
   const descRef = useRef(null);
   const [isLoaderDone, setIsLoaderDone] = useState(false);
+
+  const [videoSrc, setVideoSrc] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(min-width: 768px)').matches
+        ? '/motion-ais-dekstop.mp4'
+        : '/motion-ais-mobile.mp4';
+    }
+    return '/motion-ais-mobile.mp4';
+  });
 
   const [isFirstVisit] = useState(() => !sessionStorage.getItem("hasLoaderShown"));
 
@@ -152,7 +203,6 @@ export default function Hero() {
   }, [isFirstVisit]);
 
   useLayoutEffect(() => {
-    const titleLines = titleLinesRef.current;
 
     let ctx = gsap.context(() => {
       const tlHero = gsap.timeline({
@@ -172,7 +222,7 @@ export default function Hero() {
           .to(loaderRef.current, { backgroundColor: "#ffffff", duration: 0.4 }, 4.25)
           .to(logoRef.current, { y: -30, opacity: 0, duration: 0.8, ease: "power2.inOut" }, 6.0)
           .to(loaderRef.current, { autoAlpha: 0, duration: 1, ease: "power2.inOut" }, "-=0.4")
-          
+
           .fromTo(videoRef.current, { scale: 1.1 }, {
             scale: 1,
             duration: 2.5,
@@ -182,7 +232,7 @@ export default function Hero() {
         // Jika bukan visit pertama, hilangkan loader dan jangan tahan scroll
         gsap.set(loaderRef.current, { display: "none" });
         if (window.lenis) window.lenis.start();
-        
+
         tlHero.fromTo(videoRef.current, { scale: 1.1 }, {
           scale: 1,
           duration: 2.5,
@@ -190,13 +240,9 @@ export default function Hero() {
         }, 0);
       }
 
+
       tlHero
-        .fromTo("#navbar",
-          { y: -20, autoAlpha: 0 },
-          { y: 0, autoAlpha: 1, duration: 1, ease: "power3.out" },
-          isFirstVisit ? "-=1.5" : 0.2
-        )
-        .fromTo(titleLines,
+        .fromTo(".title-line",
           { y: 60, opacity: 0 },
           { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: "power4.out" },
           isFirstVisit ? "-=1.2" : 0.4
@@ -220,18 +266,19 @@ export default function Hero() {
       <div
         ref={loaderRef}
         id="loader"
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-black"
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black overflow-hidden"
       >
-        <div 
-          ref={logoRef} 
-          className="relative z-10 w-full max-w-xl md:max-w-3xl lg:max-w-4xl opacity-0 scale-95 will-change-transform flex justify-center items-center"
+        <div
+          ref={logoRef}
+          className="absolute inset-0 z-10 w-full h-full opacity-0 scale-95 will-change-transform flex justify-center items-center bg-transparent"
         >
-          <video 
-            src="/motion-logo-ais.mp4"
-            autoPlay 
-            muted 
+          <video
+            key={videoSrc}
+            src={videoSrc}
+            autoPlay
+            muted
             playsInline
-            className="w-full h-auto object-contain pointer-events-none" 
+            className="w-full h-full object-fill scale-[1.02] pointer-events-none"
           />
         </div>
       </div>
@@ -258,18 +305,12 @@ export default function Hero() {
         <div className="relative z-20 flex flex-col items-center text-center px-4 md:px-8 w-full max-w-4xl mt-9 md:mt-13">
           <h1 className="text-5xl xs:text-5xl md:text-6xl lg:text-5xl font-bold text-white leading-[1.1] drop-shadow-xl mb-5 md:mb-6">
             <span className="block overflow-hidden">
-              <span
-                ref={(el) => (titleLinesRef.current[0] = el)}
-                className="title-line block"
-              >
+              <span className="title-line block">
                 Asrama IPB
               </span>
             </span>
             <span className="block overflow-hidden">
-              <span
-                ref={(el) => (titleLinesRef.current[1] = el)}
-                className="title-line block"
-              >
+              <span className="title-line block">
                 Sukasari
               </span>
             </span>

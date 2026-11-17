@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import logoAis from '../../assets/img/logo-ais.webp';
+import { OPREC_BATCHES } from '../sections/hero';
 
 export default function Navbar() {
     // --- STATE ---
@@ -10,9 +11,28 @@ export default function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobileAccordionOpen, setIsMobileAccordionOpen] = useState(false);
     const [navTransform, setNavTransform] = useState('-150px');
+    const [showClosedModal, setShowClosedModal] = useState(false);
 
     const desktopDropdownRef = useRef(null);
     const mobileMenuRef = useRef(null);
+
+    // Check if oprec is currently open
+    const isOprecOpen = () => {
+        const now = new Date();
+        return OPREC_BATCHES.some(b => now >= b.start && now <= b.end);
+    };
+
+    const getClosedMessage = () => {
+        const now = new Date();
+        const pastBatches = OPREC_BATCHES.filter(b => now > b.end);
+        const lastPast = pastBatches.length > 0 ? pastBatches[pastBatches.length - 1] : null;
+        const futureBatches = OPREC_BATCHES.filter(b => now < b.start).sort((a, b) => a.start - b.start);
+        const nextBatch = futureBatches.length > 0 ? futureBatches[0] : null;
+        if (!nextBatch) {
+            return "Pendaftaran Bakal Calon Penghuni Baru 2026 telah ditutup.";
+        }
+        return `Mohon maaf, pendaftaran ${lastPast ? lastPast.name : ''} telah ditutup. Nantikan ${nextBatch.name}!`;
+    };
 
     // --- EFFECT: Initial Slide In ---
     useEffect(() => {
@@ -66,6 +86,7 @@ export default function Navbar() {
     }, [isMobileMenuOpen]);
 
     return (
+        <>
         <nav 
             id="navbar" 
             className="fixed top-4 md:top-5 left-0 right-0 mx-auto z-[90] w-[90%] max-w-2xl rounded-full bg-white/70 md:bg-white/60 backdrop-blur-md px-5 py-1.5 md:px-6 md:py-0 shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex justify-between items-center text-gray-900 border border-white/30 transition-transform duration-500 ease-in-out"
@@ -73,15 +94,15 @@ export default function Navbar() {
         >
             {/* Logo */}
             <div className="flex items-center gap-3">
-                <a href="/">
+                <Link to="/" onClick={() => { setIsMobileMenuOpen(false); setIsDesktopDropdownOpen(false); }}>
                     <img src={logoAis} alt="Logo Asrama" className="z-10 w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 object-contain" />
-                </a>
+                </Link>
             </div>
 
             {/* Desktop Menu & Button */}
             <div className="hidden lg:flex items-center gap-4 xl:gap-6">
                 <div className="flex items-center gap-5 xl:gap-6 text-[11px] lg:text-[9px] font-semibold">
-                    <a href="/#hero" className="hover:text-orange-500 transition-colors py-2">Beranda</a>
+                    <Link to="/#hero" className="hover:text-orange-500 transition-colors py-2" onClick={() => setIsDesktopDropdownOpen(false)}>Beranda</Link>
                     
                     {/* Dropdown Desktop */}
                     <div className="relative" ref={desktopDropdownRef}>
@@ -98,32 +119,43 @@ export default function Navbar() {
                         <div className={`absolute top-[110%] left-0 w-28 bg-white/95 backdrop-blur-xl rounded-md shadow-[0_10px_40px_rgb(0,0,0,0.1)] border border-gray-100 p-2 flex flex-col gap-1 transition-all duration-300 z-[100] ${isDesktopDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
                             <div className="overflow-hidden m-0.5">
                                 <div className="flex flex-col gap-3 border-l-2 border-gray-200 ml-1 pl-3 mt-2 mb-2">
-                                    <a href="/#about-section" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Tentang</a>
-                                    <a href="/#sejarah-section" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Sejarah</a>
-                                    <a href="/#pin-section" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Visi Misi</a>
-                                    <a href="/#pengurus" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Pengurus</a>
+                                    <Link to="/#about-section" onClick={() => setIsDesktopDropdownOpen(false)} className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Tentang</Link>
+                                    <Link to="/#pin-section" onClick={() => setIsDesktopDropdownOpen(false)} className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Visi Misi</Link>
+                                    <Link to="/#pengurus" onClick={() => setIsDesktopDropdownOpen(false)} className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Pengurus</Link>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <a href="/#program" className="hover:text-orange-500 transition-colors py-2">Program</a>
-                    <a href="/#fasilitas" className="hover:text-orange-500 transition-colors py-2">Fasilitas</a>
-                    <a href="/#berita" className="hover:text-orange-500 transition-colors py-2">Berita</a>
-                    <a href="/#galeri" className="hover:text-orange-500 transition-colors py-2">Galeri</a>
-                    <a href="/#alumni" className="hover:text-orange-500 transition-colors py-2">Kata Alumni</a>
-                    <a href="/#footer" className="hover:text-orange-500 transition-colors py-2">Kontak</a>
+                    <Link to="/#program" onClick={() => setIsDesktopDropdownOpen(false)} className="hover:text-orange-500 transition-colors py-2">Program</Link>
+                    <Link to="/#fasilitas" onClick={() => setIsDesktopDropdownOpen(false)} className="hover:text-orange-500 transition-colors py-2">Fasilitas</Link>
+                    <Link to="/#berita" onClick={() => setIsDesktopDropdownOpen(false)} className="hover:text-orange-500 transition-colors py-2">Berita</Link>
+                    <Link to="/#galeri" onClick={() => setIsDesktopDropdownOpen(false)} className="hover:text-orange-500 transition-colors py-2">Galeri</Link>
+                    <Link to="/#alumni" onClick={() => setIsDesktopDropdownOpen(false)} className="hover:text-orange-500 transition-colors py-2">Kata Alumni</Link>
+                    <Link to="/#footer" onClick={() => setIsDesktopDropdownOpen(false)} className="hover:text-orange-500 transition-colors py-2">Kontak</Link>
                 </div>
-                <Link to="/oprec" className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[11px] lg:text-[10px] font-semibold rounded-full hover:from-orange-600 hover:to-orange-700 transition-all shadow-md shadow-orange-500/20">
-                    Daftar
-                </Link>
+                {isOprecOpen() ? (
+                    <Link to="/oprec" className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[11px] lg:text-[10px] font-semibold rounded-full hover:from-orange-600 hover:to-orange-700 transition-all shadow-md shadow-orange-500/20">
+                        Daftar
+                    </Link>
+                ) : (
+                    <button onClick={() => setShowClosedModal(true)} className="px-4 py-2 bg-gray-400/80 text-white text-[11px] lg:text-[10px] font-semibold rounded-full cursor-pointer hover:bg-gray-500 transition-all shadow-md flex items-center gap-1">
+                        Ditutup
+                    </button>
+                )}
             </div>
             
             {/* Mobile Actions: Daftar Button + Hamburger */}
             <div className="flex lg:hidden items-center gap-3">
-                <Link to="/oprec" className="px-4 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[12px] font-semibold rounded-full shadow-md shadow-orange-500/20 active:scale-95 transition-all">
-                    Daftar
-                </Link>
+                {isOprecOpen() ? (
+                    <Link to="/oprec" className="px-4 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[12px] font-semibold rounded-full shadow-md shadow-orange-500/20 active:scale-95 transition-all">
+                        Daftar
+                    </Link>
+                ) : (
+                    <button onClick={() => setShowClosedModal(true)} className="px-4 py-1.5 bg-gray-400/80 text-white text-[12px] font-semibold rounded-full shadow-md active:scale-95 transition-all cursor-pointer flex items-center gap-1">
+                        🔒 Ditutup
+                    </button>
+                )}
                 {/* Hamburger Button */}
                 <button 
                     id="btn-hamburger"
@@ -141,7 +173,7 @@ export default function Navbar() {
                 ref={mobileMenuRef}
                 className={`absolute top-[120%] left-0 w-full bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_rgb(0,0,0,0.1)] border border-gray-100 p-4 flex-col gap-1 z-[100] transition-all ${isMobileMenuOpen ? 'flex' : 'hidden'}`}
             >
-                <a href="/#hero" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Beranda</a>
+                <Link to="/#hero" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Beranda</Link>
                 
                 <button 
                     onClick={() => setIsMobileAccordionOpen(!isMobileAccordionOpen)}
@@ -159,20 +191,37 @@ export default function Navbar() {
                 <div className={`grid transition-[grid-template-rows] duration-300 ease-in-out overflow-hidden ${isMobileAccordionOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
                     <div className="min-h-0">
                         <div className="bg-gray-50/80 border border-gray-100 rounded-xl p-2 mx-2 mb-2 flex flex-col gap-1 shadow-inner">
-                            <a href="/#about-section" className="px-4 py-2.5 hover:bg-white hover:text-orange-600 hover:shadow-sm rounded-lg transition-all font-medium text-gray-600 text-sm">Tentang</a>
-                            <a href="/#sejarah-section" className="px-4 py-2.5 hover:bg-white hover:text-orange-600 hover:shadow-sm rounded-lg transition-all font-medium text-gray-600 text-sm">Sejarah</a>
-                            <a href="/#pin-section" className="px-4 py-2.5 hover:bg-white hover:text-orange-600 hover:shadow-sm rounded-lg transition-all font-medium text-gray-600 text-sm">Visi Misi</a>
-                            <a href="/#pengurus" className="px-4 py-2.5 hover:bg-white hover:text-orange-600 hover:shadow-sm rounded-lg transition-all font-medium text-gray-600 text-sm">Pengurus</a>
+                            <Link to="/#about-section" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-2.5 hover:bg-white hover:text-orange-600 hover:shadow-sm rounded-lg transition-all font-medium text-gray-600 text-sm">Tentang</Link>
+                            <Link to="/#pin-section" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-2.5 hover:bg-white hover:text-orange-600 hover:shadow-sm rounded-lg transition-all font-medium text-gray-600 text-sm">Visi Misi</Link>
+                            <Link to="/#pengurus" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-2.5 hover:bg-white hover:text-orange-600 hover:shadow-sm rounded-lg transition-all font-medium text-gray-600 text-sm">Pengurus</Link>
                         </div>
                     </div>
                 </div>
                 
-                <a href="/#program" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Program</a>
-                <a href="/#fasilitas" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Fasilitas</a>
-                <a href="/#berita" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Berita</a>
-                <a href="/#galeri" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Galeri</a>
-                <a href="/#footer" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Kontak</a>
+                <Link to="/#program" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Program</Link>
+                <Link to="/#fasilitas" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Fasilitas</Link>
+                <Link to="/#berita" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Berita</Link>
+                <Link to="/#galeri" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Galeri</Link>
+                <Link to="/#footer" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Kontak</Link>
             </div>
         </nav>
+
+        {/* Closed Modal */}
+        {showClosedModal && (
+            <div className="fixed inset-0 z-[200] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowClosedModal(false)}>
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                    <div className="text-4xl mb-4">🔒</div>
+                    <h3 className="text-lg font-bold text-white mb-3">Pendaftaran Ditutup</h3>
+                    <p className="text-sm text-slate-300 leading-relaxed mb-6">{getClosedMessage()}</p>
+                    <button
+                        onClick={() => setShowClosedModal(false)}
+                        className="w-full bg-slate-700 hover:bg-slate-600 text-white font-medium py-2.5 rounded-xl transition"
+                    >
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        )}
+        </>
     );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { db, storage, auth, googleProvider } from "../firebase";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { collection, addDoc, Timestamp, doc, updateDoc, setDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { signInWithPopup, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -33,10 +33,10 @@ const PRODI_LIST = [
   "Teknik dan Manajemen Lingkungan",
   "Teknologi dan Manajemen Produksi Perkebunan",
   "Teknologi dan Manajemen Ternak",
-  "Teknologi Produksi dan Manajemen Perikanan Budidaya",
+  "Teknologi dan Manajemen Pembenihan Ikan",
   "Ekowisata",
   "Teknologi Produksi dan Pengembangan Masyarakat Pertanian",
-  "Pemuliaan Tanaman dan Teknologi Benih"
+  "Teknologi Industri Benih"
 ];
 
 const AGAMA_LIST = ["Islam", "Kristen Protestan", "Kristen Katolik", "Hindu", "Budha", "Konghucu"];
@@ -120,7 +120,7 @@ const getAllFilesFromDB = async (uid) => {
     const store = tx.objectStore(STORE_NAME);
     const request = store.openCursor();
     const files = {};
-    
+
     request.onsuccess = (e) => {
       const cursor = e.target.result;
       if (cursor) {
@@ -143,12 +143,12 @@ const clearFilesFromDB = async (uid) => {
     const tx = db.transaction(STORE_NAME, "readwrite");
     const store = tx.objectStore(STORE_NAME);
     const request = store.openCursor();
-    
+
     request.onsuccess = (e) => {
       const cursor = e.target.result;
       if (cursor) {
         if (cursor.key.startsWith(`${uid}_`)) {
-           store.delete(cursor.key);
+          store.delete(cursor.key);
         }
         cursor.continue();
       } else {
@@ -194,12 +194,11 @@ function FileUpload({ label, hint, accept, maxSizeMB, fileKey, files, onFileUpda
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
-        className={`relative border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-all duration-300 ${
-          dragOver ? "border-orange-400 bg-orange-400/10" :
-          file ? "border-green-500/50 bg-green-500/5" :
-          externalError && !file ? "border-red-500 bg-red-500/5" :
-          "border-white/20 bg-white/5 hover:border-white/40 hover:bg-white/10"
-        }`}
+        className={`relative border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-all duration-300 ${dragOver ? "border-orange-400 bg-orange-400/10" :
+            file ? "border-green-500/50 bg-green-500/5" :
+              externalError && !file ? "border-red-500 bg-red-500/5" :
+                "border-white/20 bg-white/5 hover:border-white/40 hover:bg-white/10"
+          }`}
       >
         <input ref={inputRef} type="file" accept={accept} className="hidden"
           onChange={(e) => { if (e.target.files[0]) handleFile(e.target.files[0]); }} />
@@ -212,11 +211,11 @@ function FileUpload({ label, hint, accept, maxSizeMB, fileKey, files, onFileUpda
               <p className="text-sm text-green-400 font-medium truncate max-w-[200px]">{file.name}</p>
               <p className="text-xs text-gray-400">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
             </div>
-            <button type="button" onClick={(e) => { 
-                e.stopPropagation(); 
-                onFileUpdate(fileKey, null); 
-                if (inputRef.current) inputRef.current.value = "";
-              }}
+            <button type="button" onClick={(e) => {
+              e.stopPropagation();
+              onFileUpdate(fileKey, null);
+              if (inputRef.current) inputRef.current.value = "";
+            }}
               className="ml-2 text-red-400 hover:text-red-300 text-lg">✕</button>
           </div>
         ) : (
@@ -246,31 +245,26 @@ function RadioGroup({ label, name, options, value, onChange, required, hasOther,
       </label>
       <div className="space-y-2">
         {options.map((opt) => (
-          <label key={opt} onClick={() => onChange(opt)} className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 ${
-            value === opt ? "bg-orange-500/20 border border-orange-500/50" : "bg-white/5 border border-white/10 hover:bg-white/10"
-          } ${error && !value ? "border-red-500 bg-red-500/5" : ""}`}>
-            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-              value === opt ? "border-orange-400" : error && !value ? "border-red-500" : "border-gray-500"
-            }`}>
+          <label key={opt} onClick={() => onChange(opt)} className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 ${value === opt ? "bg-orange-500/20 border border-orange-500/50" : "bg-white/5 border border-white/10 hover:bg-white/10"
+            } ${error && !value ? "border-red-500 bg-red-500/5" : ""}`}>
+            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${value === opt ? "border-orange-400" : error && !value ? "border-red-500" : "border-gray-500"
+              }`}>
               {value === opt && <div className="w-2.5 h-2.5 rounded-full bg-orange-400" />}
             </div>
             <span className={`text-sm ${error && !value ? "text-red-300" : "text-gray-200"}`}>{opt}</span>
           </label>
         ))}
         {hasOther && (
-          <label onClick={() => onChange("Lainnya")} className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 ${
-            value === "Lainnya" ? "bg-orange-500/20 border border-orange-500/50" : "bg-white/5 border border-white/10 hover:bg-white/10"
-          } ${error && !value ? "border-red-500 bg-red-500/5" : ""}`}>
-            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-              value === "Lainnya" ? "border-orange-400" : error && !value ? "border-red-500" : "border-gray-500"
-            }`}>
+          <label onClick={() => onChange("Lainnya")} className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 ${value === "Lainnya" ? "bg-orange-500/20 border border-orange-500/50" : "bg-white/5 border border-white/10 hover:bg-white/10"
+            } ${error && !value ? "border-red-500 bg-red-500/5" : ""}`}>
+            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${value === "Lainnya" ? "border-orange-400" : error && !value ? "border-red-500" : "border-gray-500"
+              }`}>
               {value === "Lainnya" && <div className="w-2.5 h-2.5 rounded-full bg-orange-400" />}
             </div>
             <span className={`text-sm mr-2 ${error && !value ? "text-red-300" : "text-gray-200"}`}>Lainnya:</span>
             <input type="text" value={otherValue || ""} placeholder="Tuliskan..."
-              className={`flex-1 bg-transparent border-b text-sm text-white outline-none focus:border-orange-400 py-0.5 ${
-                error && value === "Lainnya" && !otherValue ? "border-red-500 placeholder-red-400" : "border-gray-500"
-              }`}
+              className={`flex-1 bg-transparent border-b text-sm text-white outline-none focus:border-orange-400 py-0.5 ${error && value === "Lainnya" && !otherValue ? "border-red-500 placeholder-red-400" : "border-gray-500"
+                }`}
               onClick={(e) => { e.stopPropagation(); onChange("Lainnya"); }}
               onChange={(e) => { onChange("Lainnya"); onOtherChange?.(e.target.value); }} />
           </label>
@@ -291,9 +285,8 @@ function TextInput({ label, name, value, onChange, placeholder, required, type =
       {hint && <p className="text-xs text-gray-400 mb-2" dangerouslySetInnerHTML={{ __html: hint }}></p>}
       <input type={type} value={value} onChange={(e) => onChange(name, e.target.value)} placeholder={placeholder}
         style={{ colorScheme: "dark" }}
-        className={`w-full bg-white/5 border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:bg-white/10 transition-all duration-200 ${
-          error ? "border-red-500 focus:border-red-400 bg-red-500/5" : "border-white/15 focus:border-orange-400"
-        }`} />
+        className={`w-full bg-white/5 border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:bg-white/10 transition-all duration-200 ${error ? "border-red-500 focus:border-red-400 bg-red-500/5" : "border-white/15 focus:border-orange-400"
+          }`} />
       {error && <p className="text-xs text-red-400 mt-1">Field ini wajib diisi</p>}
     </div>
   );
@@ -317,22 +310,21 @@ function SelectDropdown({ value, onChange, options, placeholder, error, classNam
   const getLabel = (opt) => (typeof opt === 'object' ? opt.label : opt);
   const getValue = (opt) => (typeof opt === 'object' ? opt.value : opt);
 
-  const filteredOptions = options.filter(opt => 
+  const filteredOptions = options.filter(opt =>
     String(getLabel(opt)).toLowerCase().includes(search.toLowerCase())
   );
-  
+
   const showSearch = options.length > 10;
-  
+
   const selectedOpt = options.find(opt => getValue(opt) === value);
   const selectedLabel = value ? (selectedOpt ? getLabel(selectedOpt) : value) : placeholder;
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
-      <div 
+      <div
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full bg-white/5 border rounded-xl px-4 py-3 text-sm flex items-center justify-between outline-none transition-all duration-200 cursor-pointer ${
-          error ? "border-red-500 bg-red-500/5 text-red-200" : "border-white/15 hover:border-orange-400 text-white"
-        } ${isOpen ? "ring-2 ring-orange-500/50 border-orange-400 bg-white/10" : ""}`}
+        className={`w-full bg-white/5 border rounded-xl px-4 py-3 text-sm flex items-center justify-between outline-none transition-all duration-200 cursor-pointer ${error ? "border-red-500 bg-red-500/5 text-red-200" : "border-white/15 hover:border-orange-400 text-white"
+          } ${isOpen ? "ring-2 ring-orange-500/50 border-orange-400 bg-white/10" : ""}`}
       >
         <span className={value ? "text-white truncate" : "text-gray-400"}>
           {selectedLabel}
@@ -344,18 +336,18 @@ function SelectDropdown({ value, onChange, options, placeholder, error, classNam
 
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -10 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            exit={{ opacity: 0, y: -10 }} 
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
             className="absolute z-50 w-full mt-2 bg-gray-900 border border-white/20 rounded-xl shadow-2xl overflow-hidden"
           >
             {showSearch && (
               <div className="p-2 border-b border-white/10 bg-gray-800">
-                <input 
-                  type="text" 
-                  placeholder="Cari opsi..." 
+                <input
+                  type="text"
+                  placeholder="Cari opsi..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   onClick={(e) => e.stopPropagation()}
@@ -371,12 +363,11 @@ function SelectDropdown({ value, onChange, options, placeholder, error, classNam
                   const val = getValue(opt);
                   const lbl = getLabel(opt);
                   return (
-                    <div 
-                      key={i} 
+                    <div
+                      key={i}
                       onClick={() => { onChange(val); setIsOpen(false); setSearch(""); }}
-                      className={`px-4 py-3 text-sm cursor-pointer transition-colors ${
-                        value === val ? "bg-orange-500/20 text-orange-400 font-semibold" : "text-gray-200 hover:bg-white/10"
-                      }`}
+                      className={`px-4 py-3 text-sm cursor-pointer transition-colors ${value === val ? "bg-orange-500/20 text-orange-400 font-semibold" : "text-gray-200 hover:bg-white/10"
+                        }`}
                     >
                       {lbl}
                     </div>
@@ -416,9 +407,9 @@ function DateInput({ label, name, value, onChange, required, error }) {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 40 }, (_, i) => String(currentYear - i));
 
-  const handleDay = (newDay) => onChange(name, `${y || years[10]}-${m || "01"}-${newDay}`);
-  const handleMonth = (newMonth) => onChange(name, `${y || years[10]}-${newMonth}-${d || "01"}`);
-  const handleYear = (newYear) => onChange(name, `${newYear}-${m || "01"}-${d || "01"}`);
+  const handleDay = (newDay) => onChange(name, `${y}-${m}-${newDay}`);
+  const handleMonth = (newMonth) => onChange(name, `${y}-${newMonth}-${d}`);
+  const handleYear = (newYear) => onChange(name, `${newYear}-${m}-${d}`);
 
   return (
     <div className="mb-5">
@@ -448,12 +439,15 @@ export default function FormOprec() {
   const [prestasiList, setPrestasiList] = useState([{ id: Date.now(), nama: "", fileKey: `prestasi_${Date.now()}` }]);
   const [organisasiList, setOrganisasiList] = useState([{ id: Date.now() + 1, nama: "", fileKey: `organisasi_${Date.now() + 1}` }]);
   const [komunitasList, setKomunitasList] = useState([{ id: Date.now() + 2, nama: "", fileKey: `komunitas_${Date.now() + 2}` }]);
-  
+
   const [files, setFiles] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submittedDocId, setSubmittedDocId] = useState(null);
   const [errors, setErrors] = useState({});
   const [showValidationModal, setShowValidationModal] = useState(false);
+  const [waGroupClicked, setWaGroupClicked] = useState(false);
+  const [waGroupConfirmed, setWaGroupConfirmed] = useState(false);
   const formRef = useRef(null);
   const sigCanvas = useRef({});
 
@@ -478,7 +472,7 @@ export default function FormOprec() {
             console.error("Failed to parse draft", e);
           }
         }
-        
+
         // Load files from IDB
         getAllFilesFromDB(currentUser.uid)
           .then(loadedFiles => setFiles(loadedFiles))
@@ -547,9 +541,9 @@ export default function FormOprec() {
     const list = listType === 'prestasi' ? prestasiList : listType === 'organisasi' ? organisasiList : komunitasList;
     const itemToRemove = list.find(item => item.id === id);
     setList(prev => prev.filter(item => item.id !== id));
-    
+
     if (itemToRemove && itemToRemove.fileKey) {
-       handleFileUpdate(itemToRemove.fileKey, null);
+      handleFileUpdate(itemToRemove.fileKey, null);
     }
   };
 
@@ -574,7 +568,13 @@ export default function FormOprec() {
     const newErrors = {};
     if (step === 1) {
       if (!formData.namaLengkap) newErrors.namaLengkap = true;
-      if (!formData.tanggalLahir) newErrors.tanggalLahir = true;
+      // Validate that all three date components are filled
+      if (!formData.tanggalLahir) {
+        newErrors.tanggalLahir = true;
+      } else {
+        const [yr, mo, dy] = formData.tanggalLahir.split("-");
+        if (!yr || !mo || !dy) newErrors.tanggalLahir = true;
+      }
       if (!formData.programStudi) newErrors.programStudi = true;
       if (!formData.agama) newErrors.agama = true;
       if (formData.agama === "Lainnya" && !formData.agamaLainnya) newErrors.agama = true;
@@ -602,7 +602,7 @@ export default function FormOprec() {
       if (!formData.nomorTeleponWali) newErrors.nomorTeleponWali = true;
     } else if (step === 3) {
       if (!formData.penerimaKipK) newErrors.penerimaKipK = true;
-      if (formData.penerimaKipK === "Tidak" && formData.jalurMasuk === "SNBP" && !formData.ukt) newErrors.ukt = true;
+      if (formData.penerimaKipK === "Tidak" && (formData.jalurMasuk === "SNBP" || formData.jalurMasuk === "SNBT") && !formData.ukt) newErrors.ukt = true;
       if (!formData.rencanaUangKirimanBulanan) newErrors.rencanaUangKirimanBulanan = true;
       if (!formData.sumberUangBulanan) newErrors.sumberUangBulanan = true;
       if (formData.sumberUangBulanan === "Lainnya" && !formData.sumberUangLainnya) newErrors.sumberUangBulanan = true;
@@ -661,6 +661,8 @@ export default function FormOprec() {
       return;
     }
     setIsSubmitting(true);
+    // Scroll to top and show loading modal
+    formRef.current?.scrollTo({ top: 0, behavior: "smooth" });
 
     try {
       const timestamp = Date.now();
@@ -671,10 +673,10 @@ export default function FormOprec() {
         "fotoFormal", "fotoKtp", "buktiDiterima", "slipGajiOrtu",
         "buktiTagihanListrik", "buktiUploadTwibbon", "buktiSharePoster", "buktiFollowInstagram"
       ];
-      
+
       // Collect dynamic file keys
       [...prestasiList, ...organisasiList, ...komunitasList].forEach(item => {
-         if(item.nama) fileKeys.push(item.fileKey);
+        if (item.nama) fileKeys.push(item.fileKey);
       });
 
       for (const key of fileKeys) {
@@ -748,9 +750,24 @@ export default function FormOprec() {
 
         // Pakta Integritas
         signatureUrl: formData.signature,
+
+        // WA Group Tracking
+        waGroupJoined: false,
       };
 
-      await addDoc(collection(db, "bakalCalonPenghuni"), docData);
+      const docRef = await addDoc(collection(db, "bakalCalonPenghuni"), docData);
+
+      // Buat dokumen inisialisasi untuk penilaian
+      const penilaianData = {
+        nama: formData.namaLengkap,
+        prodi: formData.programStudi,
+        foto: fileUploads.fotoFormalUrl || "",
+        sesi1: [],
+        sesi2: []
+      };
+      await setDoc(doc(db, "penilaianBakalCalonPenghuni", docRef.id), penilaianData);
+
+      setSubmittedDocId(docRef.id);
       localStorage.removeItem(`oprec_draft_${user.uid}`);
       await clearFilesFromDB(user.uid);
       setFiles({});
@@ -801,6 +818,23 @@ export default function FormOprec() {
     );
   }
 
+  const handleWaGroupClick = () => {
+    setWaGroupClicked(true);
+    window.open("https://chat.whatsapp.com/I8NqWfEWUJJGm1bgW0qHLZ", "_blank");
+  };
+
+  const handleWaGroupConfirm = async () => {
+    if (submittedDocId) {
+      try {
+        await updateDoc(doc(db, "bakalCalonPenghuni", submittedDocId), { waGroupJoined: true });
+        setWaGroupConfirmed(true);
+      } catch (err) {
+        console.error("Failed to update WA status:", err);
+        alert("Gagal mengupdate status. Silakan coba lagi.");
+      }
+    }
+  };
+
   if (submitSuccess) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A] flex items-center justify-center px-4">
@@ -811,13 +845,62 @@ export default function FormOprec() {
           </div>
           <h2 className="text-2xl font-bold text-white mb-3">Pendaftaran Berhasil! 🎉</h2>
           <p className="text-gray-300 text-sm mb-6 leading-relaxed">
-            Data pendaftaran Anda telah kami terima. Langkah selanjutnya adalah <b>wajib bergabung dengan Grup WhatsApp</b> peserta rekrutmen.
+            Data pendaftaran Anda telah kami terima. Langkah selanjutnya adalah <b>wajib bergabung dengan Grup WhatsApp</b> peserta rekrutmen dan <b>konfirmasi kembali di website kami</b>.
           </p>
-          <a href="https://chat.whatsapp.com/GFZITLcvYXpLqBSgpwrHdo" target="_blank" rel="noopener noreferrer"
-             className="flex items-center justify-center gap-3 w-full mb-4 px-6 py-4 bg-[#25D366] text-white font-bold rounded-xl hover:bg-[#1DA851] transition-all shadow-[0_0_20px_rgba(37,211,102,0.3)] hover:shadow-[0_0_30px_rgba(37,211,102,0.5)] transform hover:-translate-y-1">
-             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.888-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.347-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.876 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-             Gabung Grup WhatsApp
-          </a>
+
+          {/* Step 1: Open WA Group Link */}
+          <button
+            onClick={handleWaGroupClick}
+            disabled={waGroupConfirmed}
+            className={`flex items-center justify-center gap-3 w-full mb-4 px-6 py-4 font-bold rounded-xl transition-all transform ${waGroupConfirmed
+                ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                : waGroupClicked
+                  ? "bg-[#1DA851] text-white shadow-[0_0_20px_rgba(37,211,102,0.3)]"
+                  : "bg-[#25D366] text-white hover:bg-[#1DA851] shadow-[0_0_20px_rgba(37,211,102,0.3)] hover:shadow-[0_0_30px_rgba(37,211,102,0.5)] hover:-translate-y-1"
+              }`}>
+            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.888-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.347-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.876 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" /></svg>
+            {waGroupConfirmed ? "✓ Sudah Dikonfirmasi" : waGroupClicked ? "Buka Lagi Grup WhatsApp" : "Gabung Grup WhatsApp"}
+          </button>
+
+          {/* Step 2: Confirm WA Group Join - Only shows after clicking WA button */}
+          <AnimatePresence>
+            {waGroupClicked && !waGroupConfirmed && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 mb-4">
+                  <p className="text-sm text-orange-200 mb-3">
+                    Apakah Anda sudah menekan tombol <b>"Join Group"</b> di dalam WhatsApp dan berhasil bergabung ke grup?
+                  </p>
+                  <button
+                    onClick={handleWaGroupConfirm}
+                    className="w-full px-4 py-3 bg-green-500 text-white font-semibold rounded-xl hover:bg-green-600 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                    Ya, Saya Sudah Bergabung ✓
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Confirmed message */}
+          <AnimatePresence>
+            {waGroupConfirmed && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-4"
+              >
+                <div className="flex items-center justify-center gap-2 text-green-400 text-sm font-semibold">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Status Grup WA telah dikonfirmasi
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <button onClick={() => navigate("/")}
             className="w-full px-6 py-3 bg-white/5 text-gray-300 font-semibold rounded-xl hover:bg-white/10 hover:text-white transition-all border border-white/10">
             Kembali ke Beranda
@@ -836,25 +919,25 @@ export default function FormOprec() {
           <motion.div key="step1" variants={slideVariant} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
             <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">👤 Identitas Diri</h3>
             <div className="flex items-center justify-between bg-white/5 border border-white/10 p-4 rounded-xl mb-6 relative z-10">
-               <div className="flex items-center gap-4">
-                 {user.photoURL ? (
-                   <img src={user.photoURL} alt="profile" className="w-12 h-12 rounded-full object-cover bg-white/10" onError={(e) => { e.target.onerror = null; e.target.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.displayName || "User") + "&background=random"; }} />
-                 ) : (
-                   <div className="w-12 h-12 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center text-xl font-bold">
-                     {(user.displayName || user.email || "U")[0].toUpperCase()}
-                   </div>
-                 )}
-                 <div>
-                   <p className="text-white font-medium text-sm">{user.displayName || "Pengguna OPREC"}</p>
-                   <p className="text-gray-400 text-xs">{user.email}</p>
-                 </div>
-               </div>
-               <button 
-                 type="button"
-                 onClick={() => handleGoogleLogin(true)} 
-                 className="text-xs px-3 py-1.5 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 rounded-lg transition-colors border border-red-500/20 cursor-pointer relative z-20">
-                 Ganti Akun
-               </button>
+              <div className="flex items-center gap-4">
+                {user.photoURL ? (
+                  <img src={user.photoURL} alt="profile" className="w-12 h-12 rounded-full object-cover bg-white/10" onError={(e) => { e.target.onerror = null; e.target.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.displayName || "User") + "&background=random"; }} />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center text-xl font-bold">
+                    {(user.displayName || user.email || "U")[0].toUpperCase()}
+                  </div>
+                )}
+                <div>
+                  <p className="text-white font-medium text-sm">{user.displayName || "Pengguna OPREC"}</p>
+                  <p className="text-gray-400 text-xs">{user.email}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleGoogleLogin(true)}
+                className="text-xs px-3 py-1.5 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 rounded-lg transition-colors border border-red-500/20 cursor-pointer relative z-20">
+                Ganti Akun
+              </button>
             </div>
             <TextInput label="Nama Lengkap" name="namaLengkap" value={formData.namaLengkap} onChange={handleChange} placeholder="Nama lengkap sesuai KTP" required error={errors.namaLengkap} />
             <DateInput label="Tanggal Lahir" name="tanggalLahir" value={formData.tanggalLahir} onChange={handleChange} required error={errors.tanggalLahir} />
@@ -897,8 +980,8 @@ export default function FormOprec() {
             <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">💰 Data Keuangan</h3>
             <RadioGroup label="Apakah Anda Penerima KIP-K?" name="penerimaKipK" options={["Ya", "Tidak"]}
               value={formData.penerimaKipK} onChange={(v) => handleChange("penerimaKipK", v)} required error={errors.penerimaKipK} />
-            
-            {formData.penerimaKipK === "Tidak" && formData.jalurMasuk === "SNBP" && (
+
+            {formData.penerimaKipK === "Tidak" && (formData.jalurMasuk === "SNBP" || formData.jalurMasuk === "SNBT" || formData.jalurMasuk === "Mandiri") && (
               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mb-5 overflow-hidden">
                 <TextInput label="Berapa UKT Anda" name="ukt" value={formData.ukt} onChange={handleChange} placeholder="Contoh: 4000000" required error={errors.ukt} />
               </motion.div>
@@ -933,7 +1016,7 @@ export default function FormOprec() {
         return (
           <motion.div key="step4" variants={slideVariant} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
             <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">🏆 Data Pengalaman Pribadi</h3>
-            
+
             {/* PRESTASI */}
             <div className="bg-white/5 p-4 rounded-xl mb-6 border border-white/10">
               <h4 className="font-semibold text-orange-400 mb-3">Prestasi</h4>
@@ -1034,7 +1117,7 @@ export default function FormOprec() {
                 <a href="https://drive.google.com/drive/folders/1Df5g_BB7jt1GRcCHfN_HyPtLg-C8iuzm" target="_blank" rel="noopener noreferrer" className="text-blue-400 ml-1 underline">Google Drive</a>
               </p>
             </div>
-            
+
             <TextInput label="Username Instagram" name="usernameInstagram" value={formData.usernameInstagram} onChange={handleChange} placeholder="@username" required error={errors.usernameInstagram} />
 
             <FileUpload label="Screenshot Bukti Upload Twibbon" hint="Upload twibbon dengan foto terbaikmu ke akun Instagram kamu" accept="image/*" maxSizeMB={1} fileKey="buktiUploadTwibbon" files={files} onFileUpdate={handleFileUpdate} required error={errors.buktiUploadTwibbon} />
@@ -1054,32 +1137,32 @@ export default function FormOprec() {
                 Apabila saya berbohong atau memanipulasi data maka saya siap untuk ditindak melalui proses hukum yang berlaku.
               </p>
             </div>
-            
+
             <div className="mb-6">
-               <label className={`block text-sm font-semibold mb-2 ${errors.signature ? "text-red-400" : "text-white"}`}>Tanda Tangan Elektronik <span className="text-orange-400">*</span></label>
-               <p className="text-xs text-gray-400 mb-3">Silakan gambar tanda tangan Anda di dalam kotak putih di bawah ini. Gunakan mouse atau sentuhan jari. Anda dapat menggoreskan pena berkali-kali. Jika sudah selesai, wajib tekan tombol <b>Simpan Tanda Tangan</b>.</p>
-               <div className={`bg-white rounded-xl overflow-hidden border-2 ${errors.signature && !formData.signature ? "border-red-500" : "border-gray-300"} h-48 w-full relative`}>
-                 <SignatureCanvas ref={sigCanvas} penColor="black" canvasProps={{ className: "w-full h-full" }} backgroundColor="white" />
-                 {formData.signature && (
-                    <div className="absolute top-2 right-2 flex items-center gap-1 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-md">
-                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg> Tersimpan
-                    </div>
-                 )}
-               </div>
-               <div className="flex justify-between items-center mt-3">
-                 <button onClick={() => { 
-                    if(!sigCanvas.current.isEmpty()) {
-                      setFormData(prev => ({ ...prev, signature: sigCanvas.current.getCanvas().toDataURL('image/png') }));
-                      if(errors.signature) setErrors(prev => ({ ...prev, signature: null }));
-                    }
-                 }} className="text-xs sm:text-sm text-white font-semibold bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg transition-colors">
-                    Simpan Tanda Tangan
-                 </button>
-                 <button onClick={() => { sigCanvas.current.clear(); setFormData(prev => ({ ...prev, signature: "" })); }} className="text-xs text-red-400 hover:text-red-300 font-medium bg-red-400/10 px-3 py-1.5 rounded-lg transition-colors">
-                    Hapus Ulang
-                 </button>
-               </div>
-               {errors.signature && !formData.signature && <p className="text-xs text-red-400 mt-2">Tanda tangan wajib diisi dan disimpan</p>}
+              <label className={`block text-sm font-semibold mb-2 ${errors.signature ? "text-red-400" : "text-white"}`}>Tanda Tangan Elektronik <span className="text-orange-400">*</span></label>
+              <p className="text-xs text-gray-400 mb-3">Silakan gambar tanda tangan Anda di dalam kotak putih di bawah ini. Gunakan mouse atau sentuhan jari. Anda dapat menggoreskan pena berkali-kali. Jika sudah selesai, wajib tekan tombol <b>Simpan Tanda Tangan</b>.</p>
+              <div className={`bg-white rounded-xl overflow-hidden border-2 ${errors.signature && !formData.signature ? "border-red-500" : "border-gray-300"} h-48 w-full relative`}>
+                <SignatureCanvas ref={sigCanvas} penColor="black" canvasProps={{ className: "w-full h-full" }} backgroundColor="white" />
+                {formData.signature && (
+                  <div className="absolute top-2 right-2 flex items-center gap-1 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-md">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg> Tersimpan
+                  </div>
+                )}
+              </div>
+              <div className="flex justify-between items-center mt-3">
+                <button onClick={() => {
+                  if (!sigCanvas.current.isEmpty()) {
+                    setFormData(prev => ({ ...prev, signature: sigCanvas.current.getCanvas().toDataURL('image/png') }));
+                    if (errors.signature) setErrors(prev => ({ ...prev, signature: null }));
+                  }
+                }} className="text-xs sm:text-sm text-white font-semibold bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg transition-colors">
+                  Simpan Tanda Tangan
+                </button>
+                <button onClick={() => { sigCanvas.current.clear(); setFormData(prev => ({ ...prev, signature: "" })); }} className="text-xs text-red-400 hover:text-red-300 font-medium bg-red-400/10 px-3 py-1.5 rounded-lg transition-colors">
+                  Hapus Ulang
+                </button>
+              </div>
+              {errors.signature && !formData.signature && <p className="text-xs text-red-400 mt-2">Tanda tangan wajib diisi dan disimpan</p>}
             </div>
 
           </motion.div>
@@ -1109,10 +1192,9 @@ export default function FormOprec() {
             {STEPS.map((step, i) => (
               <React.Fragment key={step.id}>
                 <button onClick={() => { if (step.id < currentStep) setCurrentStep(step.id); }}
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${
-                    currentStep === step.id ? "bg-orange-500 text-white scale-110 shadow-lg shadow-orange-500/30" :
-                    currentStep > step.id ? "bg-green-500 text-white" : "bg-white/10 text-gray-500"
-                  }`}>
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${currentStep === step.id ? "bg-orange-500 text-white scale-110 shadow-lg shadow-orange-500/30" :
+                      currentStep > step.id ? "bg-green-500 text-white" : "bg-white/10 text-gray-500"
+                    }`}>
                   {currentStep > step.id ? "✓" : step.id}
                 </button>
                 {i < STEPS.length - 1 && (
@@ -1149,9 +1231,8 @@ export default function FormOprec() {
             </button>
           ) : (
             <button onClick={handleSubmit} disabled={isSubmitting}
-              className={`px-8 py-2.5 text-white text-sm font-semibold rounded-xl transition-all shadow-lg ${
-                isSubmitting ? "bg-gray-600 cursor-wait" : "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-green-500/20"
-              }`}>
+              className={`px-8 py-2.5 text-white text-sm font-semibold rounded-xl transition-all shadow-lg ${isSubmitting ? "bg-gray-600 cursor-wait" : "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-green-500/20"
+                }`}>
               {isSubmitting ? (
                 <span className="flex items-center gap-2">
                   <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
@@ -1167,11 +1248,11 @@ export default function FormOprec() {
           <span className="font-medium text-gray-300">Contact Person (WA):</span>
           <div className="flex flex-col sm:flex-row gap-1 sm:gap-4 text-center">
             <a href="https://wa.me/6282249943990" target="_blank" rel="noopener noreferrer" className="hover:text-[#25D366] transition-colors flex items-center justify-center gap-1.5">
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.888-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.347-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.876 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.888-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.347-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.876 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" /></svg>
               <span>+62 822-4994-3990 (M. Febryan)</span>
             </a>
             <a href="https://wa.me/6281287094218" target="_blank" rel="noopener noreferrer" className="hover:text-[#25D366] transition-colors flex items-center justify-center gap-1.5">
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.888-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.347-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.876 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.888-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.347-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.876 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" /></svg>
               <span>+62 812-8709-4218 (Raihan Alma)</span>
             </a>
           </div>
@@ -1194,6 +1275,42 @@ export default function FormOprec() {
                 className="w-full py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition-all border border-white/10">
                 Mengerti
               </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Loading / Submitting Modal */}
+      <AnimatePresence>
+        {isSubmitting && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="bg-[#1E293B] border border-white/20 rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center"
+            >
+              {/* Spinning Loader */}
+              <div className="relative w-20 h-20 mx-auto mb-6">
+                <div className="absolute inset-0 rounded-full border-4 border-white/10"></div>
+                <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-orange-500 animate-spin"></div>
+                <div className="absolute inset-2 rounded-full border-4 border-transparent border-t-orange-300 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.8s' }}></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <svg className="w-8 h-8 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">Mohon Tunggu</h3>
+              <p className="text-sm text-gray-300 leading-relaxed">
+                Sedang memproses dan mengirim data pendaftaran Anda...
+              </p>
+              <div className="flex justify-center gap-1.5 mt-4">
+                <span className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></span>
+                <span className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></span>
+                <span className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></span>
+              </div>
             </motion.div>
           </div>
         )}

@@ -59,7 +59,7 @@ export default function VisiMisiNilai() {
     }, { scope: containerRef, dependencies: [] });
 
     return (
-        <section ref={containerRef} id="pin-section visiMisiNilai" className="w-full h-screen flex items-center justify-center bg-white relative z-10">
+        <section ref={containerRef} id="pin-section" className="w-full h-screen flex items-center justify-center bg-white relative z-10">
             <div className="relative w-[89%] max-w-[1450px] h-[90vh]">
 
                 <div className="absolute inset-0 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl pointer-events-none">

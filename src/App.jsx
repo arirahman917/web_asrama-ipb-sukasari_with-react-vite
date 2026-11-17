@@ -29,21 +29,44 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 // Komponen ScrollToTop untuk mengatasi masalah posisi scroll saat ganti halaman
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
+  const lastPathname = React.useRef(pathname);
 
   useEffect(() => {
-    // Reset native scroll and Lenis scroll
-    if (window.lenis) {
-      window.lenis.scrollTo(0, { immediate: true });
+    const isPathChanged = pathname !== lastPathname.current;
+    lastPathname.current = pathname;
+
+    // Selalu reset posisi ke paling atas jika terjadi perpindahan halaman (pathname berubah)
+    // Ini mencegah error kalkulasi posisi elemen jika sebelumnya user men-scroll jauh di halaman lain
+    if (isPathChanged) {
+      if (window.lenis) window.lenis.scrollTo(0, { immediate: true });
+      window.scrollTo(0, 0);
     }
-    window.scrollTo(0, 0);
+
+    if (hash) {
+      // Tunggu hingga layout dan animasi selesai dimuat sebelum scroll ke hash
+      // Jika pindah halaman, tunggu lebih lama (500ms)
+      setTimeout(() => {
+        const el = document.querySelector(hash);
+        if (el) {
+          if (window.lenis) {
+            window.lenis.scrollTo(el, { offset: -80 }); // offset agar tidak tertutup navbar
+          } else {
+            el.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+      }, isPathChanged ? 500 : 100); 
+    } else if (isPathChanged) {
+      // Pastikan ada di paling atas jika tidak ada hash
+      if (window.lenis) window.lenis.scrollTo(0, { immediate: true });
+      window.scrollTo(0, 0);
+    }
 
     // Refresh ScrollTrigger to recalculate positions on new page
-    // Using setTimeout to wait for React to finish rendering the new DOM
     setTimeout(() => {
       ScrollTrigger.refresh();
-    }, 100);
-  }, [pathname]);
+    }, isPathChanged ? 600 : 100);
+  }, [pathname, hash]);
 
   return null;
 }

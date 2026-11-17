@@ -49,7 +49,8 @@ const PilihBerita = () => {
             Berita
           </Link>
           <ChevronRight className="w-4 h-4" />
-          <span className="text-orange-500 font-medium bg-orange-50 px-3 py-1 rounded-md max-w-[200px] md:max-w-md truncate blur-[4px] select-none opacity-50">
+          {/* INFO: tambahkan kembali "blur-[4px] select-none opacity-40" di bawah */}
+          <span className="text-orange-500 font-medium bg-orange-50 px-3 py-1 rounded-md max-w-[200px] md:max-w-md truncate blur-[4px] select-none opacity-40">
             {berita.title}
           </span>
         </nav>
@@ -59,6 +60,7 @@ const PilihBerita = () => {
           
           {/* Kolom Kiri: Konten Utama Berita */}
           <article className="w-full md:w-2/3 lg:w-[70%]">
+          {/* INFO: tambahkan kembali "blur-[5px] select-none opacity-40" pada h1 di bawah */}
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-5 leading-snug blur-[5px] select-none opacity-40">
               {berita.title}
             </h1>
@@ -78,6 +80,7 @@ const PilihBerita = () => {
             </div>
 
             <div className="relative mb-8 overflow-hidden rounded-[24px] shadow-sm bg-gray-100">
+              {/* INFO: tambahkan " blur-[3px]" di dalam className img, dan uncomment comingsoon overlay di bawah */}
               <img
                 src={berita.img} 
                 alt={berita.title}
@@ -92,6 +95,7 @@ const PilihBerita = () => {
               </div>
             </div>
 
+            {/* INFO: tambahkan "blur-[5px] select-none opacity-40" di className div di bawah */}
             <div className="space-y-5 text-gray-700 leading-relaxed text-justify text-base md:text-lg blur-[5px] select-none opacity-40">
               {/* Jika desc berupa text biasa dengan baris baru \n, kita pisahkan jadi <p> terpisah */}
               {berita.desc.split('\n').map((paragraph, idx) => (
@@ -130,7 +134,8 @@ const PilihBerita = () => {
                     to={`/berita/${item.id}`} 
                     className="py-4 border-b border-gray-200 text-sm md:text-base text-gray-700 hover:text-orange-500 transition-colors font-medium leading-snug group relative"
                   >
-                    <div className="blur-[4px] select-none opacity-50 pointer-events-none">
+                    {/* INFO: tambahkan "blur-[5px] select-none opacity-40" di className div di bawah */}
+                    <div className="pointer-events-none blur-[5px] select-none opacity-40">
                         <span className="line-clamp-2">{item.title}</span>
                         <span className="block mt-2 text-xs text-gray-400 group-hover:text-orange-400">{item.date}</span>
                     </div>

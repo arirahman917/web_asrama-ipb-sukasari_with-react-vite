@@ -70,7 +70,7 @@ export default function Footer() {
               ></iframe>
             </div>
             <p className="text-[13px] text-gray-300 w-[280px] leading-relaxed text-left">
-              Sekolah Vokasi IPB University, Jl. Siliwangi No.43, RT.01/RW.03, Sukasari, Kec. Bogor Tim., Kota Bogor, Jawa Barat 16142
+              Jl. Siliwangi No.43, RT.01/RW.03, Sukasari, Kec. Bogor Tim., Kota Bogor, Jawa Barat 16142
             </p>
           </div>
 
@@ -91,10 +91,10 @@ export default function Footer() {
           <div className="flex flex-col items-center md:items-end">
             <h3 className="text-xl mb-6 tracking-wide md:pr-4">Kontak</h3>
             <div className="flex gap-5 justify-center md:justify-end">
-              <a href="https://wa.me/6285795016378" className="text-white hover:text-orange-400 transition-colors">
+              <a href="https://wa.me/6282249943990" className="text-white hover:text-orange-400 transition-colors">
                 <WhatsApp className="w-7 h-7" />
               </a>
-              <a href="https://www.instagram.com/arirahmanrise?igsh=MTd4eGQ4eTZncjNlMQ==#" className="text-white hover:text-orange-400 transition-colors">
+              <a href="https://www.instagram.com/asramaipbsukasari?igsh=MWNwbXc0eXZhMXk2cA==" className="text-white hover:text-orange-400 transition-colors">
                 <Instagram className="w-7 h-7" />
               </a>
               <a href="https://mail.google.com/mail/?view=cm&fs=1&to=asramasukasari43@gmail.com" className="text-white hover:text-orange-400 transition-colors">
