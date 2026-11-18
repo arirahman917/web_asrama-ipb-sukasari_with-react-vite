@@ -15,7 +15,9 @@ import Berita from './components/sections/berita';
 import Galeri from './components/sections/galeri';
 import Alumni from './components/sections/alumni';
 import Footer from './components/core/footer';
-import AiChatWidget from './components/ai/AiChatWidget';
+// [CATATAN FITUR AI] Project ini memiliki fitur AI Chat Widget (Asisten AIS) yang saat ini di-hide dulu.
+// Untuk mengaktifkan kembali, uncomment import di bawah dan <AiChatWidget /> di dalam MainLayout.
+// import AiChatWidget from './components/ai/AiChatWidget';
 
 import PengurusFull from './pages/pengurusFull';
 import BeritaDetail from './pages/detailBerita';
@@ -98,7 +100,8 @@ function MainLayout({ children }) {
       <Navbar />
       {children}
       <Footer />
-      <AiChatWidget />
+      {/* [FITUR AI DI-HIDE] Widget chat AI (Asisten AIS) sementara disembunyikan. Uncomment untuk menampilkan kembali: */}
+      {/* <AiChatWidget /> */}
     </>
   );
 }

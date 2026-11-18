@@ -1,3 +1,10 @@
+// ============================================================================
+// [CATATAN FITUR AI]
+// Project ini memiliki fitur AI Chat Widget ("Asisten AIS", terhubung ke
+// Cloud Function `webAiChat`), yang saat ini di-hide dulu dari tampilan web.
+// Untuk menampilkan kembali icon/widget AI ini, uncomment import dan pemanggilan
+// `<AiChatWidget />` di `src/App.jsx` (komponen `MainLayout`).
+// ============================================================================
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { httpsCallable } from "firebase/functions";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
