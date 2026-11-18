@@ -21,12 +21,38 @@ export const OPREC_BATCHES = [
   // },
 ];
 
+function addMonths(date, months) {
+  const result = new Date(date);
+  const targetDay = result.getDate();
+  result.setMonth(result.getMonth() + months);
+  if (result.getDate() !== targetDay) {
+    result.setDate(0);
+  }
+  return result;
+}
+
 function useOprecCountdown() {
   const [state, setState] = useState({ status: "loading", countdown: {}, label: "", batchName: "" });
 
   useEffect(() => {
     const tick = () => {
+      if (OPREC_BATCHES.length === 0) {
+        setState({ status: "hidden", countdown: {}, label: "", batchName: "" });
+        return;
+      }
+
       const now = new Date();
+      const sortedByStart = [...OPREC_BATCHES].sort((a, b) => a.start - b.start);
+      const sortedByEnd = [...OPREC_BATCHES].sort((a, b) => b.end - a.end);
+      const windowStart = addMonths(sortedByStart[0].start, -1);
+      const windowEnd = addMonths(sortedByEnd[0].end, 1);
+
+      // Sembunyikan informasi oprec di luar rentang 1 bulan sebelum batch pertama hingga 1 bulan setelah batch terakhir
+      if (now < windowStart || now > windowEnd) {
+        setState({ status: "hidden", countdown: {}, label: "", batchName: "" });
+        return;
+      }
+
       // Check active batch
       for (const batch of OPREC_BATCHES) {
         if (now >= batch.start && now <= batch.end) {
@@ -81,7 +107,7 @@ import { useSiteImages } from "../../utils/images";
 // ============================================================
 function CountdownDisplay() {
   const oprec = useOprecCountdown();
-  if (oprec.status === "loading") return null;
+  if (oprec.status === "loading" || oprec.status === "hidden") return null;
 
   const { countdown } = oprec;
   const pad = (n) => String(n).padStart(2, "0");
