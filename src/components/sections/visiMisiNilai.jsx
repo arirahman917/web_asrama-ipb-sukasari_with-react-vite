@@ -62,7 +62,7 @@ export default function VisiMisiNilai() {
 
                 <div className="absolute inset-0 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl pointer-events-none">
                     <div id="bg-visi" className="absolute inset-0 bg-cover bg-center md:bg-[center_70%]" style={{ backgroundImage: `url(${get('pengurus/kabinet.webp')})` }}></div>
-                    <div id="bg-misi" className="absolute inset-0 bg-cover bg-center md:bg-[center_70%] opacity-0" style={{ backgroundImage: `url(${get('program/upgrading-bendera.webp')})` }}></div>
+                    <div id="bg-misi" className="absolute inset-0 bg-cover bg-center md:bg-[center_70%] opacity-0" style={{ backgroundImage: `url(${get('program/upgrading-bendera.jpg')})` }}></div>
                     <div id="bg-nilai" className="absolute inset-0 bg-cover bg-[center_60%] md:bg-[center_60%] opacity-0" style={{ backgroundImage: `url(${get('program/kolam-upgrading.webp')})` }}></div>
 
                     {/* Pastikan grad-navy dan grad-orange sudah ada di index.css kamu */}

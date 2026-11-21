@@ -117,10 +117,10 @@ export default function Navbar() {
                 <button
                     type="button"
                     disabled
-                    className="px-4 py-2 bg-white/10 text-gray-400 border border-white/10 text-xs font-semibold rounded-full cursor-not-allowed opacity-80"
+                    className="px-4 py-1.5 bg-gray-100/90 text-gray-800 border-2 border-gray-400 text-xs font-semibold rounded-full cursor-not-allowed shadow-sm"
                     title="Pendaftaran saat ini sedang ditutup"
                 >
-                    Pendaftaran Ditutup
+                    Pendaftaran
                 </button>
             </div>
             
@@ -134,10 +134,10 @@ export default function Navbar() {
                 <button
                     type="button"
                     disabled
-                    className="px-3 sm:px-3.5 py-1.5 bg-white/10 text-gray-400 border border-white/10 text-xs font-medium rounded-full cursor-not-allowed opacity-80"
+                    className="px-3 sm:px-3.5 py-1.5 bg-gray-100/90 text-gray-800 border-2 border-gray-400 text-xs font-semibold rounded-full cursor-not-allowed shadow-sm"
                     title="Pendaftaran saat ini sedang ditutup"
                 >
-                    Ditutup
+                    Pendaftaran
                 </button>
                 {/* Hamburger Button */}
                 <button 

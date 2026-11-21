@@ -25,7 +25,7 @@ const PROJECT_ID = "asrama-ipb-sukasari";
 const SITE_IMAGES_COLLECTION = "siteImages";
 
 // File /public yang dipakai website (harus sesuai kunci di src/utils/images.js).
-const PUBLIC_ASSETS = ["logo-ais.webp", "hero-ori.webm", "motion-logo-ais.webm"];
+const PUBLIC_ASSETS = ["logo-ais.png", "hero-ori.mp4", "motion-logo-ais.mp4"];
 
 const app = initializeApp({
   credential: applicationDefault(),

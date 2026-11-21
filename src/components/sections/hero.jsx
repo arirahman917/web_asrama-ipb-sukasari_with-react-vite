@@ -156,10 +156,10 @@ function CountdownDisplay() {
       <button
         type="button"
         disabled
-        className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 text-gray-400 border border-white/15 text-sm font-medium rounded-full cursor-not-allowed shadow-none"
+        className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 text-white border-2 border-white/60 text-sm font-semibold rounded-full cursor-not-allowed shadow-md backdrop-blur-sm"
       >
-        <span className="w-2 h-2 rounded-full bg-red-400/80"></span>
-        Pendaftaran Ditutup
+        <span className="w-2 h-2 rounded-full bg-red-400"></span>
+        Pendaftaran
       </button>
     </div>
   );
