@@ -436,10 +436,94 @@ function DateInput({ label, name, value, onChange, required, error }) {
 }
 
 // ============================================================
+// STATUS FITUR PENDAFTARAN
+// Ubah IS_REGISTRATION_OPEN = true untuk mengaktifkan kembali formulir
+// ============================================================
+export const IS_REGISTRATION_OPEN = false;
+
+// ============================================================
 // MAIN FORM COMPONENT
 // ============================================================
 export default function FormOprec() {
   const navigate = useNavigate();
+
+  // ------------------------------------------------------------
+  // MODE NONAKTIF SEMENTARA: HALAMAN PEMBERITAHUAN PENDAFTARAN DITUTUP
+  // ------------------------------------------------------------
+  if (!IS_REGISTRATION_OPEN) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A] flex items-center justify-center px-4 py-12 relative overflow-hidden font-sans">
+        {/* Background Gradients */}
+        <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-orange-500/10 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
+
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-7 sm:p-10 text-center max-w-lg w-full shadow-2xl relative z-10"
+        >
+          {/* Ikon Gembok / Peringatan */}
+          <div className="w-20 h-20 mx-auto mb-6 bg-red-500/10 rounded-2xl flex items-center justify-center border border-red-500/20 shadow-inner">
+            <svg className="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+
+          <span className="inline-block px-3.5 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-300 border border-red-500/30 mb-4 tracking-wider uppercase">
+            Status: Ditutup
+          </span>
+
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3">
+            Pendaftaran Telah Ditutup
+          </h1>
+
+          <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-8">
+            Mohon maaf, periode pendaftaran rekrutmen penghuni baru Asrama IPB Sukasari saat ini sedang tidak aktif atau telah ditutup. Informasi pembukaan batch berikutnya akan diumumkan secara resmi melalui saluran media sosial kami.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
+            <button
+              type="button"
+              onClick={() => navigate("/")}
+              className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold text-sm rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg shadow-orange-500/20 active:scale-95"
+            >
+              Kembali ke Beranda
+            </button>
+            <a
+              href="https://www.instagram.com/arirahmanrise?igsh=MTd4eGQ4eTZncjNlMQ==#"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto px-6 py-3 bg-white/10 hover:bg-white/15 text-white font-semibold text-sm rounded-xl transition-all border border-white/10 text-center"
+            >
+              Instagram Asrama
+            </a>
+          </div>
+
+          {/* Contact Person */}
+          <div className="pt-6 border-t border-white/10 text-xs text-gray-400">
+            <p className="mb-2 text-gray-300 font-medium">Narahubung Panitia (WhatsApp):</p>
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center">
+              <a href="https://wa.me/6282249943990" target="_blank" rel="noopener noreferrer" className="hover:text-green-400 transition-colors">
+                +62 822-4994-3990 (M. Febryan)
+              </a>
+              <span className="hidden sm:inline text-gray-600">•</span>
+              <a href="https://wa.me/6281287094218" target="_blank" rel="noopener noreferrer" className="hover:text-green-400 transition-colors">
+                +62 812-8709-4218 (Raihan Alma)
+              </a>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
+  /* ============================================================
+   * KODE FORMULIR ASLI (DI-NONAKTIFKAN SEMENTARA):
+   * Seluruh handler, validasi, dan integrasi Firestore/Storage tetap utuh di bawah ini.
+   * Untuk mengaktifkan kembali formulir pendaftaran:
+   * 1. Ubah variabel IS_REGISTRATION_OPEN di atas menjadi true
+   * ============================================================ */
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
 

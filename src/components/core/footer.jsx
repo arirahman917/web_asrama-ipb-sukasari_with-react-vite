@@ -53,23 +53,25 @@ export default function Footer() {
         ref={blueBoxRef}
         className="w-full bg-[#0a2f4c] pt-16 pb-12 text-white relative z-10 will-change-transform"
       >
-        <div className="max-w-6xl mx-auto px-8 md:px-16 grid grid-cols-1 md:grid-cols-3 gap-12 items-start text-center md:text-left">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 md:px-16 grid grid-cols-1 md:grid-cols-3 gap-12 items-start text-center md:text-left">
 
           {/* Kolom Lokasi */}
-          <div className="flex flex-col items-center md:items-start">
+          <div className="flex flex-col items-center md:items-start w-full">
             <h3 className="text-xl mb-6 tracking-wide">Lokasi</h3>
             {/* Embed Map Kecil */}
-            <div className="w-[280px] h-[150px] bg-gray-200 rounded-md overflow-hidden mb-4 border border-white/10">
+            <div className="w-full max-w-[280px] h-[150px] bg-gray-200 rounded-md overflow-hidden mb-4 border border-white/10">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.2643714141145!2d106.8062608749938!3d-6.61403959338005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69c561607ca6cf%3A0x92c537da16058b0a!2sAsrama%20IPB%20Sukasari%20SV%20IPB!5e0!3m2!1sen!2sid!4v1777201648366!5m2!1sen!2sid"
                 className="w-full h-full border-0"
+                width="280"
+                height="150"
                 allowFullScreen=""
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 title="Map Asrama Sukasari"
               ></iframe>
             </div>
-            <p className="text-[13px] text-gray-300 w-[280px] leading-relaxed text-left">
+            <p className="text-[13px] text-gray-300 w-full max-w-[280px] leading-relaxed text-center md:text-left">
               Sekolah Vokasi IPB University, Jl. Siliwangi No.43, RT.01/RW.03, Sukasari, Kec. Bogor Tim., Kota Bogor, Jawa Barat 16142
             </p>
           </div>
@@ -91,13 +93,13 @@ export default function Footer() {
           <div className="flex flex-col items-center md:items-end">
             <h3 className="text-xl mb-6 tracking-wide md:pr-4">Kontak</h3>
             <div className="flex gap-5 justify-center md:justify-end">
-              <a href="https://wa.me/6285795016378" className="text-white hover:text-orange-400 transition-colors">
+              <a href="https://wa.me/6285795016378" target="_blank" rel="noopener noreferrer" aria-label="Hubungi WhatsApp Asrama Sukasari" className="text-white hover:text-orange-400 transition-colors p-2">
                 <WhatsApp className="w-7 h-7" />
               </a>
-              <a href="https://www.instagram.com/arirahmanrise?igsh=MTd4eGQ4eTZncjNlMQ==#" className="text-white hover:text-orange-400 transition-colors">
+              <a href="https://www.instagram.com/arirahmanrise?igsh=MTd4eGQ4eTZncjNlMQ==#" target="_blank" rel="noopener noreferrer" aria-label="Kunjungi Instagram Asrama Sukasari" className="text-white hover:text-orange-400 transition-colors p-2">
                 <Instagram className="w-7 h-7" />
               </a>
-              <a href="https://mail.google.com/mail/?view=cm&fs=1&to=asramasukasari43@gmail.com" className="text-white hover:text-orange-400 transition-colors">
+              <a href="https://mail.google.com/mail/?view=cm&fs=1&to=asramasukasari43@gmail.com" target="_blank" rel="noopener noreferrer" aria-label="Kirim Email ke Asrama Sukasari" className="text-white hover:text-orange-400 transition-colors p-2">
                 <Mail className="w-7 h-7" />
               </a>
             </div>
@@ -106,7 +108,7 @@ export default function Footer() {
         </div>
 
         {/* Footer Bottom Bar */}
-        <div className="max-w-6xl mx-auto px-8 md:px-16 mt-16 flex justify-center items-center text-[12px] text-gray-400 text-center">
+        <div className="max-w-6xl mx-auto px-8 md:px-16 mt-16 flex justify-center items-center text-xs text-gray-300 text-center">
           <p>© Asrama IPB Sukasari 2026. All Rights Reserved.</p>
         </div>
       </div>
@@ -118,7 +120,7 @@ export default function Footer() {
       >
         <p className="text-gray-600 text-[13px] font-medium mb-3">You are always in my heart.</p>
         <div className="flex items-center justify-center">
-          <SiteImage k="logo-ais.webp" alt="Logo Asrama Sukasari" className="h-12 w-auto object-contain opacity-90" />
+          <SiteImage k="logo-ais.webp" alt="Logo Asrama Sukasari" width="48" height="48" loading="lazy" className="h-12 w-auto object-contain opacity-90" />
         </div>
       </div>
 

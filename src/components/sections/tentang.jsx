@@ -65,33 +65,33 @@ export default function Tentang() {
     }, { scope: containerRef });
 
     return (
-        <section ref={containerRef} id="about-section tentang" className="relative w-full h-screen flex items-center justify-center bg-white overflow-hidden">
+        <section ref={containerRef} id="about-section" className="relative w-full h-screen flex items-center justify-center bg-white overflow-hidden">
             <div id="about-card" className="relative w-full h-full overflow-hidden flex items-center justify-center bg-white shadow-2xl will-change-transform">
                 
                 <div className="absolute inset-0 flex w-full h-full bg-[#1b2a47]">
                     <div id="mobile-img-container" className="w-full h-full block lg:hidden origin-top">
-                        <SiteImage id="mobile-img" k="pengurus/kabinet-bahagia.webp" alt="Kabinet Asrama" className="w-full h-full object-cover" style={{ objectPosition: '50% 0%' }} />
+                        <SiteImage id="mobile-img" k="pengurus/kabinet-bahagia.webp" alt="Kabinet Pengurus Asrama Sukasari" width="600" height="400" loading="lazy" className="w-full h-full object-cover" style={{ objectPosition: '50% 0%' }} />
                     </div>
 
                     <div className="hidden lg:flex w-full h-full">
                         <div className="w-full lg:w-1/2 h-full">
-                            <SiteImage k="fasilitas/gedung.webp" alt="Gedung Asrama" className="w-full h-full object-cover object-[54%_center]" />
+                            <SiteImage k="fasilitas/gedung.webp" alt="Gedung Asrama IPB Sukasari" width="600" height="800" loading="lazy" className="w-full h-full object-cover object-[54%_center]" />
                         </div>
                         <div className="hidden lg:flex flex-col w-1/2 h-full bg-gray-200">
-                            <div className="w-full h-1/2 relative"><SiteImage k="program/upgrading.webp" alt="Foto Atas" className="w-full h-full object-cover object-[center_65%]" /></div>
-                            <div className="w-full h-1/2 relative"><SiteImage k="pengurus/kabinet-bahagia.webp" alt="Foto Bawah" className="w-full h-full object-cover object-[50%_center]" /></div>
+                            <div className="w-full h-1/2 relative"><SiteImage k="program/upgrading.webp" alt="Kegiatan Upgrading Pengurus Asrama" width="600" height="400" loading="lazy" className="w-full h-full object-cover object-[center_65%]" /></div>
+                            <div className="w-full h-1/2 relative"><SiteImage k="pengurus/kabinet-bahagia.webp" alt="Foto Bersama Kabinet Asrama Sukasari" width="600" height="400" loading="lazy" className="w-full h-full object-cover object-[50%_center]" /></div>
                         </div>
                     </div>
                 </div>
 
-                <div id="blue-panel" className="absolute bottom-0 left-0 w-full h-[55%] md:h-[50%] lg:top-0 lg:bottom-auto lg:right-0 lg:left-auto lg:w-1/2 lg:h-full bg-[#1b2a47] flex flex-col justify-end md:justify-start lg:justify-center px-6 pb-8 md:pb-16 md:pt-4 lg:px-14 z-20 will-change-transform items-center lg:items-start">
+                <div id="blue-panel" className="absolute bottom-0 left-0 w-full h-[58%] sm:h-[55%] md:h-[50%] lg:top-0 lg:bottom-auto lg:right-0 lg:left-auto lg:w-1/2 lg:h-full bg-[#1b2a47] flex flex-col justify-end md:justify-start lg:justify-center px-4 sm:px-6 pb-6 sm:pb-8 md:pb-16 md:pt-4 lg:px-14 z-20 will-change-transform items-center lg:items-start">
                     
                     <div className="absolute top-0 bottom-0 right-full w-28 translate-x-[2px] bg-gradient-to-r from-transparent to-[#1b2a47] pointer-events-none hidden lg:block z-30"></div>
                     <div className="absolute bottom-full left-0 w-full h-40 md:h-72 translate-y-[2px] bg-gradient-to-t from-[#1b2a47] to-transparent pointer-events-none block lg:hidden z-30"></div>
 
                     <div className="w-full md:max-w-2xl lg:max-w-none flex flex-col relative z-10 mb-4 sm:mb-6 md:mb-24 lg:mt-32">
-                        <h2 className="about-text text-[22px] md:text-3xl lg:text-4xl font-bold text-white mb-3 lg:mb-5 tracking-tight text-center lg:text-left">Tentang Kami</h2>
-                        <p className="about-text px-2 md:px-0 text-white text-[13px] sm:text-[14px] md:text-[16px] lg:text-[12px] leading-[1.6] text-justify md:text-center lg:text-justify">
+                        <h2 className="about-text text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 sm:mb-3 lg:mb-5 tracking-tight text-center lg:text-left">Tentang Kami</h2>
+                        <p className="about-text px-1 sm:px-2 md:px-0 text-white text-xs sm:text-[14px] md:text-[16px] lg:text-[12px] leading-[1.5] sm:leading-[1.6] text-justify md:text-center lg:text-justify">
                             Asrama IPB Sukasari merupakan fasilitas hunian mahasiswa Institut Pertanian Bogor yang menyediakan lingkungan tinggal yang aman, tertib, dan nyaman. Asrama ini berperan sebagai ruang tumbuh mahasiswa dalam mendukung kegiatan akademik, pembinaan karakter, dan kebersamaan. Sebagai bagian dari ekosistem pendidikan IPB, asrama juga menjadi wadah pembelajaran nilai kedisiplinan, tanggung jawab, dan kehidupan bermasyarakat.
                         </p>
                     </div>

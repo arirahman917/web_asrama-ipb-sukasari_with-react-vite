@@ -110,7 +110,7 @@ export default function AdminAdmins() {
               <div key={u.id} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 sm:items-center">
                 <div className="flex items-center gap-4 flex-1 min-w-0">
                   {u.photo ? (
-                    <img src={u.photo} alt="" className="w-11 h-11 rounded-full object-cover bg-black/20 shrink-0" />
+                    <img src={u.photo} alt="" loading="lazy" className="w-11 h-11 rounded-full object-cover bg-black/20 shrink-0" />
                   ) : (
                     <div className="w-11 h-11 rounded-full bg-black/20 flex items-center justify-center text-gray-300 font-bold shrink-0">
                       {(u.name || u.email).charAt(0).toUpperCase()}

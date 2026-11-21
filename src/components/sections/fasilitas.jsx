@@ -15,10 +15,10 @@ const fasilitasData = [
     { id: 1, title: "Gedung Asrama", img: "fasilitas/gedung.webp", deskX: "-32vw", deskY: "-20vh", mobX: "-26vw", mobY: "-15vh" },
     { id: 2, title: "Kamar", img: "fasilitas/kamar.webp", deskX: "32vw", deskY: "-20vh", mobX: "26vw", mobY: "-15vh" },
     { id: 3, title: "Ruang Tengah", img: "fasilitas/ruang_tengah.webp", deskX: "0vw", deskY: "20vh", mobX: "0vw", mobY: "4vh" },
-    { id: 4, title: "Kamar Mandi", img: "fasilitas/kamar_mandi.jpg", deskX: "-32vw", deskY: "60vh", mobX: "-26vw", mobY: "24vh" },
+    { id: 4, title: "Kamar Mandi", img: "fasilitas/kamar_mandi.webp", deskX: "-32vw", deskY: "60vh", mobX: "-26vw", mobY: "24vh" },
     { id: 5, title: "Dapur", img: "fasilitas/dapur.webp", deskX: "32vw", deskY: "60vh", mobX: "26vw", mobY: "24vh" },
     { id: 6, title: "Mushola", img: "fasilitas/mushola.webp", deskX: "0vw", deskY: "100vh", mobX: "0vw", mobY: "44vh" },
-    { id: 7, title: "Lapang Voli", img: "fasilitas/lapang_voli.png", deskX: "-32vw", deskY: "140vh", mobX: "-26vw", mobY: "65vh" },
+    { id: 7, title: "Lapang Voli", img: "fasilitas/lapang_voli.webp", deskX: "-32vw", deskY: "140vh", mobX: "-26vw", mobY: "65vh" },
     { id: 8, title: "Parkiran", img: "fasilitas/parkiran.webp", deskX: "32vw", deskY: "140vh", mobX: "26vw", mobY: "65vh" },
     { id: 9, title: "Ruang Non-Blok", img: "fasilitas/non-blok.webp", deskX: "0vw", deskY: "180vh", mobX: "0vw", mobY: "84vh" },
     { id: 10, title: "Pekarangan", img: "fasilitas/pekarangan.webp", deskX: "-32vw", deskY: "220vh", mobX: "-26vw", mobY: "105vh" },
@@ -142,12 +142,13 @@ export default function Fasilitas() {
                     >
                         <SiteImage
                             k={item.img}
-                            alt={item.title}
-                            // loading="lazy" & decoding="async" dihapus agar browser langsung memuat gambar (tidak telat muncul saat di-scroll)
-                            // Shadow dihapus untuk mengoptimalkan FPS saat animasi GSAP berjalan
+                            alt={`Fasilitas Asrama: ${item.title}`}
+                            width="340"
+                            height="255"
+                            loading="lazy"
                             className="w-full aspect-[4/3] object-cover rounded-xl md:rounded-2xl border border-white/20 bg-[#0d1520]/80"
                         />
-                        <p className="text-white font-semibold text-[11px] sm:text-[13px] md:text-[16px] text-center bg-[#0d1520]/80 px-2 py-1 md:px-3 rounded-full mt-1">
+                        <p className="text-white font-semibold text-xs sm:text-sm md:text-base text-center bg-[#0d1520]/80 px-2.5 py-1 md:px-3 rounded-full mt-1">
                             {item.title}
                         </p>
                     </div>

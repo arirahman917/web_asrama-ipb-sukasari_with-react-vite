@@ -153,7 +153,7 @@ export default function ProgramSementara() {
                                         <h3 className="text-white font-bold text-sm sm:text-[13px] md:text-sm lg:text-base leading-snug mb-1.5">
                                             {program.title}
                                         </h3>
-                                        <span className={`inline-block text-[10px] font-semibold px-2.5 py-0.5 rounded-full border ${freqColors[program.freq]}`}>
+                                        <span className={`inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full border ${freqColors[program.freq]}`}>
                                             {program.freq}
                                         </span>
                                     </div>
@@ -194,7 +194,7 @@ export default function ProgramSementara() {
                 whileInView={{ opacity: 1, y: 0 }} 
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="relative max-w-3xl mx-auto mt-14 flex items-center justify-center gap-8 md:gap-16"
+                className="relative max-w-3xl mx-auto mt-10 sm:mt-14 flex items-center justify-center gap-4 sm:gap-8 md:gap-16 px-2"
             >
                 {[
                     { num: "5", label: "Program Harian", color: "text-orange-400" },
@@ -203,7 +203,7 @@ export default function ProgramSementara() {
                 ].map((stat, i) => (
                     <div key={i} className="text-center">
                         <p className={`text-3xl md:text-4xl font-black ${stat.color}`}>{stat.num}</p>
-                        <p className="text-[11px] md:text-xs text-gray-400 mt-1 font-medium">{stat.label}</p>
+                        <p className="text-xs text-gray-300 mt-1 font-medium">{stat.label}</p>
                     </div>
                 ))}
             </motion.div>

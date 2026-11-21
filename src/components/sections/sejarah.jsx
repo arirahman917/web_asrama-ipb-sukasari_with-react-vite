@@ -100,7 +100,10 @@ export default function Sejarah() {
                     <div className="relative w-full h-80 md:h-[42vh] lg:h-[70vh] rounded-2xl lg:rounded-[1.5rem] overflow-hidden bg-gray-200 shadow-lg mb-10 md:mb-0">
                         <SiteImage
                             k={activeData.images[activePhotoIndex]}
-                            alt="Sejarah Asrama"
+                            alt={`Foto Dokumentasi Sejarah Asrama IPB Sukasari ${activeData.year}`}
+                            width="800"
+                            height="600"
+                            loading="lazy"
                             className="w-full h-full object-cover transition-opacity duration-200"
                             style={{ opacity: isImageTransitioning ? 0 : 1 }}
                         />
@@ -120,8 +123,11 @@ export default function Sejarah() {
                                 >
                                     <SiteImage
                                         k={img}
+                                        width="56"
+                                        height="56"
+                                        loading="lazy"
                                         className="w-9 h-9 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full object-cover aspect-square shadow-md"
-                                        alt="thumbnail"
+                                        alt={`Thumbnail foto sejarah Asrama tahun ${activeData.year}`}
                                     />
                                 </div>
                             ))}
@@ -162,25 +168,27 @@ export default function Sejarah() {
                                 )}
 
                                 {/* Titik & Tahun */}
-                                <div
-                                    className="relative z-10 flex flex-col items-center cursor-pointer"
+                                <button
+                                    type="button"
+                                    aria-label={`Pilih sejarah tahun ${item.year}`}
+                                    className="relative z-10 flex flex-col items-center cursor-pointer p-1 focus:outline-none"
                                     onClick={() => handleYearChange(index)}
                                 >
                                     <div
                                         className={`w-5 h-5 md:w-6 md:h-6 rounded-full shadow-sm transition-all duration-300 mb-1.5 shrink-0 aspect-square ${
                                             isActive
-                                                ? 'bg-[#f97316] scale-110'
-                                                : 'bg-gray-300 group-hover:bg-orange-300'
+                                                ? 'bg-[#ea580c] scale-110'
+                                                : 'bg-gray-400 group-hover:bg-orange-400'
                                         }`}
                                     />
                                     <span
-                                        className={`text-[10px] md:text-xs font-semibold transition-colors duration-300 text-center whitespace-nowrap ${
-                                            isActive ? 'text-[#f97316]' : 'text-gray-400 group-hover:text-orange-400'
+                                        className={`text-xs font-semibold transition-colors duration-300 text-center whitespace-nowrap ${
+                                            isActive ? 'text-[#c2410c] font-bold' : 'text-gray-600 group-hover:text-orange-600'
                                         }`}
                                     >
                                         {item.year}
                                     </span>
-                                </div>
+                                </button>
                             </div>
                         );
                     })}

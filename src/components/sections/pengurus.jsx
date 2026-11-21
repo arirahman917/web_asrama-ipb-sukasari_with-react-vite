@@ -18,7 +18,7 @@ export default function Pengurus() {
 
             {/* Judul Section */}
             <h2
-                className="text-4xl md:text-5xl lg:text-5xl font-extrabold text-[#ea580c] mb-10 md:mb-16 mt-4 md:mt-4 tracking-wide text-center px-4"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-extrabold text-[#ea580c] mb-8 md:mb-16 mt-4 md:mt-4 tracking-wide text-center px-4"
             >
                 Pengurus Asrama
             </h2>
@@ -40,7 +40,10 @@ export default function Pengurus() {
                             {/* Gambar dengan efek zoom pelan saat di-hover */}
                             <SiteImage
                                 k={item.img}
-                                alt={item.name}
+                                alt={`Foto Kementerian ${item.name}`}
+                                width="250"
+                                height="350"
+                                loading="lazy"
                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             />
 

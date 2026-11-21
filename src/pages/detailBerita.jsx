@@ -142,7 +142,7 @@ export default function BeritaDetail() {
 
                     <div className="absolute bottom-0 left-1/2 -translate-x-1/2 md:left-auto md:right-6 lg:right-10 md:translate-x-0 w-[320px] md:w-[220px] lg:w-[220px] max-h-[90%] md:max-h-[95%] opacity-90 md:opacity-100 pointer-events-none z-10 flex items-end">
                         <SiteImage
-                            k="berita/model.png"
+                            k="berita/model.webp"
                             alt="Model Berita"
                             className="w-full h-full object-contain object-bottom"
                             onError={(e) => { e.target.style.display = 'none'; }}

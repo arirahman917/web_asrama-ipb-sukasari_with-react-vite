@@ -74,7 +74,7 @@ export default function AdminBerita() {
             <div key={item.id} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 sm:items-center">
               <div className="flex gap-4 items-center flex-1 min-w-0">
                 {item.imageUrl ? (
-                  <img src={item.imageUrl} alt="" className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover shrink-0 bg-black/20" />
+                  <img src={item.imageUrl} alt="" loading="lazy" className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover shrink-0 bg-black/20" />
                 ) : (
                   <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-black/20 shrink-0" />
                 )}

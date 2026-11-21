@@ -9,7 +9,7 @@ import SiteImage from '../core/SiteImage';
 gsap.registerPlugin(ScrollTrigger);
 
 const galleryImages = [
-    "program/kolam-upgrading.webp", "program/nilai.webp", "program/renang.jpeg", "program/sc1.webp", "program/voli.webp", "program/visi.webp",
+    "program/kolam-upgrading.webp", "program/nilai.webp", "program/renang.webp", "program/sc1.webp", "program/voli.webp", "program/visi.webp",
     "pengurus/bph/menteri.webp", "pengurus/kepenghunian/menteri.webp", "pengurus/lingpras/menteri.webp", "pengurus/jasroh/menteri.webp", "pengurus/mediadigi/menteri.webp", "pengurus/kabinet.webp", "pengurus/kabinet-bahagia.webp",
     "fasilitas/alat_masak.webp", "fasilitas/dapur.webp", "fasilitas/gedung.webp", "fasilitas/kompor.webp", "fasilitas/kulkas.webp", "fasilitas/ruang_tengah.webp", "fasilitas/meja_makan.webp", "fasilitas/parkiran.webp", "fasilitas/mushola.webp", "fasilitas/non-blok.webp", "fasilitas/pekarangan.webp", "bg-fasilitas.webp"
 ];
@@ -173,7 +173,10 @@ export default function Galeri() {
                         >
                             <SiteImage
                                 k={src}
-                                alt={`Gallery image ${index + 1}`}
+                                alt={`Dokumentasi kegiatan galeri Asrama Sukasari ${index + 1}`}
+                                width="384"
+                                height="240"
+                                loading="lazy"
                                 className="w-full h-full object-cover"
                             />
                         </div>

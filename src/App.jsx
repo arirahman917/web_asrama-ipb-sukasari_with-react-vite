@@ -1,49 +1,45 @@
-import React, { useEffect } from 'react';
-import Lenis from 'lenis';
+import React, { useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
-// Import Layout & Components
+// Import Critical Path Components (Hanya Navbar & Hero untuk render pertama super cepat)
 import Navbar from './components/core/navbar';
 import Hero from './components/sections/hero';
-import Tentang from './components/sections/tentang';
-import VisiMisiNilai from './components/sections/visiMisiNilai';
-import Sejarah from './components/sections/sejarah';
-import Pengurus from './components/sections/pengurus';
-import ProgramSementara from './components/sections/programSementara';
-import Fasilitas from './components/sections/fasilitas';
-import Berita from './components/sections/berita';
-import Galeri from './components/sections/galeri';
-import Alumni from './components/sections/alumni';
-import Footer from './components/core/footer';
-// [CATATAN FITUR AI] Project ini memiliki fitur AI Chat Widget (Asisten AIS) yang saat ini di-hide dulu.
-// Untuk mengaktifkan kembali, uncomment import di bawah dan <AiChatWidget /> di dalam MainLayout.
-// import AiChatWidget from './components/ai/AiChatWidget';
 
-import PengurusFull from './pages/pengurusFull';
-import BeritaDetail from './pages/detailBerita';
-import PilihBerita from './pages/pilihBerita';
-import FormOprec from './pages/FormOprec';
-import Login from './pages/Login';
-import ResponsOprec from './pages/ResponsOprec';
+// Lazy Loaded Below-the-fold Landing Sections (Code splitting ekstrem untuk skor Performance 95+)
+const Tentang = lazy(() => import('./components/sections/tentang'));
+const VisiMisiNilai = lazy(() => import('./components/sections/visiMisiNilai'));
+const Pengurus = lazy(() => import('./components/sections/pengurus'));
+const ProgramSementara = lazy(() => import('./components/sections/programSementara'));
+const Fasilitas = lazy(() => import('./components/sections/fasilitas'));
+const Berita = lazy(() => import('./components/sections/berita'));
+const Galeri = lazy(() => import('./components/sections/galeri'));
+const Alumni = lazy(() => import('./components/sections/alumni'));
+const Footer = lazy(() => import('./components/core/footer'));
 
-// Admin
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/admin/ProtectedRoute';
-import AdminLayout from './components/admin/AdminLayout';
-import Dashboard from './pages/admin/Dashboard';
-import AdminBerita from './pages/admin/AdminBerita';
-import AdminBeritaForm from './pages/admin/AdminBeritaForm';
-import AdminAlumni from './pages/admin/AdminAlumni';
-import AdminAdmins from './pages/admin/AdminAdmins';
+// Lazy Loaded Non-Critical Pages
+const PengurusFull = lazy(() => import('./pages/pengurusFull'));
+const BeritaDetail = lazy(() => import('./pages/detailBerita'));
+const PilihBerita = lazy(() => import('./pages/pilihBerita'));
+const FormOprec = lazy(() => import('./pages/FormOprec'));
+const Login = lazy(() => import('./pages/Login'));
+const ResponsOprec = lazy(() => import('./pages/ResponsOprec'));
 
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+// Admin Pages & Auth (Lazy Loaded agar Firebase Auth tidak masuk ke bundle landing page)
+const AuthProvider = lazy(() => import('./context/AuthContext').then(m => ({ default: m.AuthProvider })));
+const ProtectedRoute = lazy(() => import('./components/admin/ProtectedRoute'));
+const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const AdminBerita = lazy(() => import('./pages/admin/AdminBerita'));
+const AdminBeritaForm = lazy(() => import('./pages/admin/AdminBeritaForm'));
+const AdminAlumni = lazy(() => import('./pages/admin/AdminAlumni'));
+const AdminAdmins = lazy(() => import('./pages/admin/AdminAdmins'));
 import { useSiteImages } from './utils/images';
 
 // Set favicon dari registri gambar (mendukung override Firebase).
 function DynamicFavicon() {
   const { overrides, get } = useSiteImages();
   useEffect(() => {
-    const url = get('public/logo-ais.png') || get('logo-ais.webp');
+    const url = get('public/logo-ais.webp') || get('logo-ais.webp');
     if (!url) return;
     let link = document.querySelector("link[rel='icon']");
     if (!link) {
@@ -68,7 +64,9 @@ function ScrollToTop() {
     window.scrollTo(0, 0);
 
     setTimeout(() => {
-      ScrollTrigger.refresh();
+      if (typeof window !== "undefined" && window.ScrollTrigger) {
+        window.ScrollTrigger.refresh();
+      }
     }, 100);
   }, [pathname]);
 
@@ -80,16 +78,18 @@ function LandingPage() {
   return (
     <main className="relative w-full min-h-screen bg-[#f3f4f6] font-sans">
       <Hero />
-      <Tentang />
-      {/* <Sejarah /> */}
-      <VisiMisiNilai />
-      <Pengurus />
-      {/* <Program /> */}
-      <ProgramSementara />
-      <Fasilitas />
-      <Berita />
-      <Galeri />
-      <Alumni />
+      <Suspense fallback={<div className="py-20 text-center text-gray-400">Memuat...</div>}>
+        <Tentang />
+        {/* <Sejarah /> */}
+        <VisiMisiNilai />
+        <Pengurus />
+        {/* <Program /> */}
+        <ProgramSementara />
+        <Fasilitas />
+        <Berita />
+        <Galeri />
+        <Alumni />
+      </Suspense>
     </main>
   );
 }
@@ -99,45 +99,58 @@ function MainLayout({ children }) {
     <>
       <Navbar />
       {children}
-      <Footer />
-      {/* [FITUR AI DI-HIDE] Widget chat AI (Asisten AIS) sementara disembunyikan. Uncomment untuk menampilkan kembali: */}
-      {/* <AiChatWidget /> */}
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
     </>
   );
 }
 
 export default function App() {
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      direction: 'vertical',
-      gestureDirection: 'vertical',
-      smooth: true,
-      mouseMultiplier: 1,
+    // Nonaktifkan smooth scroll di mobile agar performa scroll native 60fps & TBT 0ms
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      return;
+    }
+
+    let isCancelled = false;
+    let rafId;
+
+    import('lenis').then(({ default: Lenis }) => {
+      if (isCancelled) return;
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical',
+        gestureDirection: 'vertical',
+        smooth: true,
+        mouseMultiplier: 1,
+      });
+
+      window.lenis = lenis;
+
+      function raf(time) {
+        lenis.raf(time);
+        rafId = requestAnimationFrame(raf);
+      }
+      rafId = requestAnimationFrame(raf);
     });
 
-    window.lenis = lenis;
-
-    let rafId;
-    function raf(time) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
-    rafId = requestAnimationFrame(raf);
-
     return () => {
-      lenis.destroy();
-      cancelAnimationFrame(rafId);
-      window.lenis = null;
+      isCancelled = true;
+      if (window.lenis) {
+        window.lenis.destroy();
+        window.lenis = null;
+      }
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 
   return (
-    <AuthProvider>
+    <Router>
       <DynamicFavicon />
-      <Router>
-        <ScrollToTop />
+      <ScrollToTop />
+      <Suspense fallback={<div className="min-h-screen bg-[#0F172A] flex items-center justify-center text-white/50 text-sm">Memuat...</div>}>
         <Routes>
           {/* Main Site Routes with Navbar & Footer */}
           <Route path="/" element={<MainLayout><LandingPage /></MainLayout>} />
@@ -148,21 +161,28 @@ export default function App() {
           {/* OPREC Route without Navbar & Footer */}
           <Route path="/oprec" element={<FormOprec />} />
 
-          {/* Admin Routes */}
-          <Route path="/admin">
-            <Route index element={<Login />} />
-            <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="berita" element={<AdminBerita />} />
-              <Route path="berita/baru" element={<AdminBeritaForm />} />
-              <Route path="berita/:id" element={<AdminBeritaForm />} />
-              <Route path="alumni" element={<AdminAlumni />} />
-              <Route path="respons" element={<ResponsOprec />} />
-              <Route path="admins" element={<AdminAdmins />} />
-            </Route>
-          </Route>
+          {/* Admin Routes (Dilindungi AuthProvider) */}
+          <Route
+            path="/admin/*"
+            element={
+              <AuthProvider>
+                <Routes>
+                  <Route index element={<Login />} />
+                  <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="berita" element={<AdminBerita />} />
+                    <Route path="berita/baru" element={<AdminBeritaForm />} />
+                    <Route path="berita/:id" element={<AdminBeritaForm />} />
+                    <Route path="alumni" element={<AdminAlumni />} />
+                    <Route path="respons" element={<ResponsOprec />} />
+                    <Route path="admins" element={<AdminAdmins />} />
+                  </Route>
+                </Routes>
+              </AuthProvider>
+            }
+          />
         </Routes>
-      </Router>
-    </AuthProvider>
+      </Suspense>
+    </Router>
   );
 }

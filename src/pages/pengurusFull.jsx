@@ -14,11 +14,11 @@ export default function PengurusFull() {
         {
             title: "Badan Pengurus Harian",
             rows: [
-                [{ name: "M. Febryan Ar-Rifa'i", role: "Presiden", img: "pengurus/bph/individu/febryan.png" }],
+                [{ name: "M. Febryan Ar-Rifa'i", role: "Presiden", img: "pengurus/bph/individu/febryan.webp" }],
                 [
-                    { name: "Raffi Arrasyid", role: "Sekretaris", img: "pengurus/bph/individu/rasyid.png", imgSize: "w-[98%] h-[98%]"},
-                    { name: "Dias Adiyasa", role: "Wakil Presiden", img: "pengurus/bph/individu/dias.png", imgSize: "w-[110%] h-[110%]"},
-                    { name: "Nur Hamdan Agustian", role: "Bendahara", img: "pengurus/bph/individu/hamdan.png", imgSize: "w-[110%] h-[110%]"}
+                    { name: "Raffi Arrasyid", role: "Sekretaris", img: "pengurus/bph/individu/rasyid.webp", imgSize: "w-[98%] h-[98%]"},
+                    { name: "Dias Adiyasa", role: "Wakil Presiden", img: "pengurus/bph/individu/dias.webp", imgSize: "w-[110%] h-[110%]"},
+                    { name: "Nur Hamdan Agustian", role: "Bendahara", img: "pengurus/bph/individu/hamdan.webp", imgSize: "w-[110%] h-[110%]"}
                 ]
             ]
         },
@@ -26,13 +26,13 @@ export default function PengurusFull() {
             title: "Kementerian Kepenghunian",
             rows: [
                 [
-                    { name: "Raihan Alma Putra", role: "Menteri", img: "pengurus/kepenghunian/individu/raihan61.png" },
-                    { name: "Fawaz Devan Putra", role: "Wakil Menteri", img: "pengurus/kepenghunian/individu/devan.png" }
+                    { name: "Raihan Alma Putra", role: "Menteri", img: "pengurus/kepenghunian/individu/raihan61.webp" },
+                    { name: "Fawaz Devan Putra", role: "Wakil Menteri", img: "pengurus/kepenghunian/individu/devan.webp" }
                 ],
                 [
-                    { name: "Raihan Hanief Ramadhan", role: "Staff", img: "pengurus/kepenghunian/individu/raihan62.png" },
-                    { name: "Randhika Pratama Putra ", role: "Staff", img: "pengurus/kepenghunian/individu/randhika.png" },
-                    { name: "Muhammad Fadhli Ramadhan", role: "Staff", img: "pengurus/kepenghunian/individu/fadli.png" }
+                    { name: "Raihan Hanief Ramadhan", role: "Staff", img: "pengurus/kepenghunian/individu/raihan62.webp" },
+                    { name: "Randhika Pratama Putra ", role: "Staff", img: "pengurus/kepenghunian/individu/randhika.webp" },
+                    { name: "Muhammad Fadhli Ramadhan", role: "Staff", img: "pengurus/kepenghunian/individu/fadli.webp" }
                 ]
             ]
         },
@@ -40,14 +40,14 @@ export default function PengurusFull() {
             title: "Kementerian Lingkungan dan Sarana Prasarana",
             rows: [
                 [
-                    { name: "Muhammad Al - Faatih", role: "Menteri", img: "pengurus/lingpras/individu/faatih.png" },
-                    { name: "Didin Fakhrudin", role: "Wakil Menteri", img: "pengurus/lingpras/individu/didin.png" }
+                    { name: "Muhammad Al - Faatih", role: "Menteri", img: "pengurus/lingpras/individu/faatih.webp" },
+                    { name: "Didin Fakhrudin", role: "Wakil Menteri", img: "pengurus/lingpras/individu/didin.webp" }
                 ],
                 [
-                    { name: "Rivat Maulana Nur Sidiq", role: "Staff", img: "pengurus/lingpras/individu/rivat.png", imgSize: "w-[120%] h-[120%]" },
-                    { name: "Brili Anfus Tsakib H. H.", role: "Staff", img: "pengurus/lingpras/individu/brili.png" },
-                    { name: "Abi Dwi Putra", role: "Staff", img: "pengurus/lingpras/individu/abi.png" },
-                    { name: "Rizeki Yuhendri ", role: "Staff", img: "pengurus/lingpras/individu/rizeki.png", imgSize: "w-[130%] h-[130%]" }
+                    { name: "Rivat Maulana Nur Sidiq", role: "Staff", img: "pengurus/lingpras/individu/rivat.webp", imgSize: "w-[120%] h-[120%]" },
+                    { name: "Brili Anfus Tsakib H. H.", role: "Staff", img: "pengurus/lingpras/individu/brili.webp" },
+                    { name: "Abi Dwi Putra", role: "Staff", img: "pengurus/lingpras/individu/abi.webp" },
+                    { name: "Rizeki Yuhendri ", role: "Staff", img: "pengurus/lingpras/individu/rizeki.webp", imgSize: "w-[130%] h-[130%]" }
                 ]
             ]
         },
@@ -55,9 +55,9 @@ export default function PengurusFull() {
             title: "Kementerian Jasmani dan Rohani",
             rows: [
                 [
-                    { name: "Rafidani Elfirdaus", role: "Menteri", img: "pengurus/jasroh/individu/rafidani.png" },
-                    { name: "Rahmad Aditri Saputra", role: "Wakil Menteri", img: "pengurus/jasroh/individu/rahmad.png" },
-                    { name: "Naufal Mochamad Maliq", role: "Staff", img: "pengurus/jasroh/individu/naufal.png" }
+                    { name: "Rafidani Elfirdaus", role: "Menteri", img: "pengurus/jasroh/individu/rafidani.webp" },
+                    { name: "Rahmad Aditri Saputra", role: "Wakil Menteri", img: "pengurus/jasroh/individu/rahmad.webp" },
+                    { name: "Naufal Mochamad Maliq", role: "Staff", img: "pengurus/jasroh/individu/naufal.webp" }
                 ]
             ]
         },
@@ -65,13 +65,13 @@ export default function PengurusFull() {
             title: "Kementerian Media dan Digital",
             rows: [
                 [
-                    { name: "M. Rafdi Rifansyah S.", role: "Menteri", img: "pengurus/mediadigi/individu/rafdi.png", imgSize: "w-[103%] h-[103%]" },
-                    { name: "Nando Ravy Ardyansyah", role: "Wakil Menteri", img: "pengurus/mediadigi/individu/nando.png" }
+                    { name: "M. Rafdi Rifansyah S.", role: "Menteri", img: "pengurus/mediadigi/individu/rafdi.webp", imgSize: "w-[103%] h-[103%]" },
+                    { name: "Nando Ravy Ardyansyah", role: "Wakil Menteri", img: "pengurus/mediadigi/individu/nando.webp" }
                 ],
                 [
-                    { name: "Rifqi Adli Hernawan", role: "Staff IT", img: "pengurus/mediadigi/individu/rifqi.png" },
-                    { name: "Andi Rafael M. Arumpone L.", role: "Staff", img: "pengurus/mediadigi/individu/rafael.png", imgSize: "w-[105%] h-[105%]" },
-                    { name: "Ari Rahman", role: "Staff IT", img: "pengurus/mediadigi/individu/ari.png", imgSize: "w-[105%] h-[105%]" }
+                    { name: "Rifqi Adli Hernawan", role: "Staff IT", img: "pengurus/mediadigi/individu/rifqi.webp" },
+                    { name: "Andi Rafael M. Arumpone L.", role: "Staff", img: "pengurus/mediadigi/individu/rafael.webp", imgSize: "w-[105%] h-[105%]" },
+                    { name: "Ari Rahman", role: "Staff IT", img: "pengurus/mediadigi/individu/ari.webp", imgSize: "w-[105%] h-[105%]" }
                 ]
             ]
         }
@@ -182,6 +182,7 @@ export default function PengurusFull() {
                                                     <SiteImage
                                                         k={person.img}
                                                         alt={person.name}
+                                                        loading="lazy"
                                                         className={`${person.imgSize || "w-[95%] h-full"} max-w-none object-contain object-bottom transition-transform duration-500 origin-bottom group-hover:scale-110`}
                                                     />
                                                 </div>

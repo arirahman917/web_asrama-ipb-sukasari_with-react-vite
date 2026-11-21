@@ -108,7 +108,7 @@ function AlumniFormModal({ open, onClose }) {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Foto (opsional)</label>
                   <div className="flex items-center gap-3">
-                    {form.image && <img src={form.image} alt="" className="w-11 h-11 rounded-full object-cover" />}
+                    {form.image && <img src={form.image} alt="" loading="lazy" className="w-11 h-11 rounded-full object-cover" />}
                     <label className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 cursor-pointer hover:bg-gray-50">
                       {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                       Pilih Foto
@@ -145,7 +145,9 @@ export default function KataAlumni() {
         const data = await fetchApprovedAlumni();
         if (active) setAlumniData(data);
       } catch (err) {
-        console.error('Gagal memuat alumni:', err);
+        if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+            console.warn('Gagal memuat alumni:', err?.message || err);
+        }
       } finally {
         if (active) setLoading(false);
       }
@@ -207,9 +209,9 @@ export default function KataAlumni() {
                   <div className="relative bg-white rounded-3xl p-5 pt-12 shadow-[0_10px_40px_rgba(0,0,0,0.3)] flex flex-col items-center text-center h-full">
                     <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full overflow-hidden bg-gray-200 shadow-md flex items-center justify-center">
                       {alumni.image ? (
-                        <img src={alumni.image} alt={alumni.name} className="w-full h-full object-cover" />
+                        <img src={alumni.image} alt={`Foto alumni ${alumni.name}`} width="80" height="80" loading="lazy" className="w-full h-full object-cover" />
                       ) : (
-                        <span className="text-2xl font-bold text-gray-500">{alumni.name?.charAt(0)?.toUpperCase()}</span>
+                        <span className="text-2xl font-bold text-gray-700">{alumni.name?.charAt(0)?.toUpperCase()}</span>
                       )}
                     </div>
 
@@ -218,14 +220,14 @@ export default function KataAlumni() {
                         {alumni.name}
                       </h3>
                       {alumni.role && (
-                        <p className="text-[10px] md:text-[11px] font-semibold text-gray-500 mb-4">{alumni.role}</p>
+                        <p className="text-xs font-semibold text-gray-700 mb-4">{alumni.role}</p>
                       )}
 
                       <div className="w-16 h-[2px] bg-orange-400 mb-4"></div>
 
                       <div className="relative flex-grow flex items-center w-full">
                         <Quote className="absolute -top-2 -left-2 w-5 h-5 text-gray-200 -z-10 rotate-180" />
-                        <p className="text-gray-600 leading-relaxed text-[11px] md:text-xs">{alumni.quote}</p>
+                        <p className="text-gray-700 leading-relaxed text-xs md:text-sm">{alumni.quote}</p>
                         <Quote className="absolute -bottom-2 -right-2 w-5 h-5 text-gray-200 -z-10" />
                       </div>
                     </div>

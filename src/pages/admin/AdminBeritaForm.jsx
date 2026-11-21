@@ -129,7 +129,7 @@ export default function AdminBeritaForm() {
           <label className="block text-sm font-medium text-gray-300 mb-2">Gambar Utama</label>
           <div className="flex flex-wrap items-center gap-4">
             {form.imageUrl && (
-              <img src={form.imageUrl} alt="preview" className="w-32 h-24 rounded-xl object-cover bg-black/20" />
+              <img src={form.imageUrl} alt="preview" loading="lazy" className="w-32 h-24 rounded-xl object-cover bg-black/20" />
             )}
             <label className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/5 border border-white/15 rounded-xl text-sm text-gray-200 cursor-pointer hover:bg-white/10 transition-all">
               {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}

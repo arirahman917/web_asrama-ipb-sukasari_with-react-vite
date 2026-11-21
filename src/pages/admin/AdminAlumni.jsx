@@ -146,7 +146,7 @@ export default function AdminAlumni() {
                 <div key={item.id} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 sm:items-center">
                   <div className="flex gap-4 items-center flex-1 min-w-0">
                     {item.image ? (
-                      <img src={item.image} alt="" className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover bg-black/20 shrink-0" />
+                      <img src={item.image} alt="" loading="lazy" className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover bg-black/20 shrink-0" />
                     ) : (
                       <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-black/20 shrink-0 flex items-center justify-center text-gray-400 text-lg font-bold">
                         {item.name.charAt(0).toUpperCase()}
@@ -196,7 +196,7 @@ export default function AdminAlumni() {
               <div>
                 <label className="block text-sm text-gray-300 mb-1.5">Foto (opsional)</label>
                 <div className="flex items-center gap-3">
-                  {form.image && <img src={form.image} alt="" className="w-12 h-12 rounded-full object-cover" />}
+                  {form.image && <img src={form.image} alt="" loading="lazy" className="w-12 h-12 rounded-full object-cover" />}
                   <label className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/15 rounded-xl text-sm text-gray-200 cursor-pointer hover:bg-white/10">
                     {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                     Upload

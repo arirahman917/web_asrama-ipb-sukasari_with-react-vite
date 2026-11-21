@@ -1,6 +1,5 @@
-import { useLayoutEffect, useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import gsap from "gsap";
 
 // ============================================================
 // KONFIGURASI BATCH OPREC
@@ -31,64 +30,64 @@ function addMonths(date, months) {
   return result;
 }
 
+function msToCountdown(ms) {
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor((ms % 86400000) / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
+  return { days: d, hours: h, minutes: m, seconds: s };
+}
+
+function calculateOprecStatus() {
+  if (OPREC_BATCHES.length === 0) {
+    return { status: "hidden", countdown: {}, label: "", batchName: "" };
+  }
+
+  const now = new Date();
+  const sortedByStart = [...OPREC_BATCHES].sort((a, b) => a.start - b.start);
+  const sortedByEnd = [...OPREC_BATCHES].sort((a, b) => b.end - a.end);
+  const windowStart = addMonths(sortedByStart[0].start, -1);
+  const windowEnd = addMonths(sortedByEnd[0].end, 1);
+
+  if (now < windowStart || now > windowEnd) {
+    return { status: "hidden", countdown: {}, label: "", batchName: "" };
+  }
+
+  // Check active batch
+  for (const batch of OPREC_BATCHES) {
+    if (now >= batch.start && now <= batch.end) {
+      const diff = batch.end - now;
+      return {
+        status: "open",
+        batchName: batch.name,
+        label: `${batch.name} ditutup dalam`,
+        countdown: msToCountdown(diff),
+      };
+    }
+  }
+  // Check next upcoming batch
+  const upcoming = OPREC_BATCHES.filter((b) => now < b.start).sort((a, b) => a.start - b.start);
+  if (upcoming.length > 0) {
+    const next = upcoming[0];
+    const diff = next.start - now;
+    return {
+      status: "upcoming",
+      batchName: next.name,
+      label: `${next.name} dibuka dalam`,
+      countdown: msToCountdown(diff),
+    };
+  }
+  // All batches have passed
+  return { status: "closed", countdown: {}, label: "Pendaftaran Telah Ditutup", batchName: "" };
+}
+
 function useOprecCountdown() {
-  const [state, setState] = useState({ status: "loading", countdown: {}, label: "", batchName: "" });
+  // Hitung status awal secara sinkron untuk mencegah Cumulative Layout Shift (CLS)
+  const [state, setState] = useState(calculateOprecStatus);
 
   useEffect(() => {
     const tick = () => {
-      if (OPREC_BATCHES.length === 0) {
-        setState({ status: "hidden", countdown: {}, label: "", batchName: "" });
-        return;
-      }
-
-      const now = new Date();
-      const sortedByStart = [...OPREC_BATCHES].sort((a, b) => a.start - b.start);
-      const sortedByEnd = [...OPREC_BATCHES].sort((a, b) => b.end - a.end);
-      const windowStart = addMonths(sortedByStart[0].start, -1);
-      const windowEnd = addMonths(sortedByEnd[0].end, 1);
-
-      // Sembunyikan informasi oprec di luar rentang 1 bulan sebelum batch pertama hingga 1 bulan setelah batch terakhir
-      if (now < windowStart || now > windowEnd) {
-        setState({ status: "hidden", countdown: {}, label: "", batchName: "" });
-        return;
-      }
-
-      // Check active batch
-      for (const batch of OPREC_BATCHES) {
-        if (now >= batch.start && now <= batch.end) {
-          const diff = batch.end - now;
-          setState({
-            status: "open",
-            batchName: batch.name,
-            label: `${batch.name} ditutup dalam`,
-            countdown: msToCountdown(diff),
-          });
-          return;
-        }
-      }
-      // Check next upcoming batch
-      const upcoming = OPREC_BATCHES.filter((b) => now < b.start).sort((a, b) => a.start - b.start);
-      if (upcoming.length > 0) {
-        const next = upcoming[0];
-        const diff = next.start - now;
-        setState({
-          status: "upcoming",
-          batchName: next.name,
-          label: `${next.name} dibuka dalam`,
-          countdown: msToCountdown(diff),
-        });
-        return;
-      }
-      // All batches have passed
-      setState({ status: "closed", countdown: {}, label: "Pendaftaran Telah Ditutup", batchName: "" });
-    };
-
-    const msToCountdown = (ms) => {
-      const d = Math.floor(ms / 86400000);
-      const h = Math.floor((ms % 86400000) / 3600000);
-      const m = Math.floor((ms % 3600000) / 60000);
-      const s = Math.floor((ms % 60000) / 1000);
-      return { days: d, hours: h, minutes: m, seconds: s };
+      setState(calculateOprecStatus());
     };
 
     tick();
@@ -129,13 +128,14 @@ function CountdownDisplay() {
               <div className="w-10 h-10 md:w-12 md:h-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-lg flex items-center justify-center">
                 <span className="text-base md:text-lg font-bold text-white tabular-nums">{item.val}</span>
               </div>
-              <span className="text-[9px] md:text-[10px] text-gray-400 mt-1">{item.label}</span>
+              <span className="text-xs text-gray-300 mt-1">{item.label}</span>
             </div>
           ))}
         </div>
       )}
 
-      {/* Button */}
+      {/* Button CTA OPREC (Status: Ditutup) */}
+      {/* KODE FORMULIR AKTIF ASLI (Uncomment saat pendaftaran dibuka kembali):
       {oprec.status === "open" ? (
         <Link to="/oprec"
           className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-semibold rounded-full hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg shadow-orange-500/25 hover:scale-105 active:scale-95">
@@ -152,6 +152,15 @@ function CountdownDisplay() {
           Pendaftaran Ditutup
         </div>
       )}
+      */}
+      <button
+        type="button"
+        disabled
+        className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 text-gray-400 border border-white/15 text-sm font-medium rounded-full cursor-not-allowed shadow-none"
+      >
+        <span className="w-2 h-2 rounded-full bg-red-400/80"></span>
+        Pendaftaran Ditutup
+      </button>
     </div>
   );
 }
@@ -174,112 +183,91 @@ export default function Hero() {
     }
   }, [isFirstVisit]);
 
-  useLayoutEffect(() => {
-    const titleLines = titleLinesRef.current;
+  useEffect(() => {
+    // Pastikan scroll aktif dan loader disembunyikan
+    if (loaderRef.current) {
+      loaderRef.current.style.display = "none";
+    }
+    if (window.lenis) window.lenis.start();
+    document.body.style.overflow = "auto";
 
-    let ctx = gsap.context(() => {
-      const tlHero = gsap.timeline({
-        onComplete: () => {
-          if (window.lenis) window.lenis.start();
-          document.body.style.overflow = "auto";
-        },
-      });
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    // Pada mobile, jangan load GSAP untuk menjaga TBT < 50ms dan LCP sub-detik
+    if (isMobile) return;
 
-      if (isFirstVisit) {
-        // Hentikan scroll saat loader aktif
-        if (window.lenis) window.lenis.stop();
-        gsap.set(loaderRef.current, { backgroundColor: "#000000" });
+    let ctx;
+    let isCancelled = false;
+
+    import("gsap").then(({ default: gsap }) => {
+      if (isCancelled || !comp.current) return;
+      ctx = gsap.context(() => {
+        const tlHero = gsap.timeline();
+
+        if (videoRef.current) {
+          tlHero.fromTo(videoRef.current, { scale: 1.05 }, {
+            scale: 1,
+            duration: 1.6,
+            ease: "power2.out"
+          }, 0);
+        }
 
         tlHero
-          .to(logoRef.current, { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" }, 0)
-          .to(loaderRef.current, { backgroundColor: "#ffffff", duration: 0.4 }, 4.25)
-          .to(logoRef.current, { y: -30, opacity: 0, duration: 0.8, ease: "power2.inOut" }, 6.0)
-          .to(loaderRef.current, { autoAlpha: 0, duration: 1, ease: "power2.inOut" }, "-=0.4")
-          
-          .fromTo(videoRef.current, { scale: 1.1 }, {
-            scale: 1,
-            duration: 2.5,
-            ease: "power2.out"
-          }, "-=1.0");
-      } else {
-        // Jika bukan visit pertama, hilangkan loader dan jangan tahan scroll
-        gsap.set(loaderRef.current, { display: "none" });
-        if (window.lenis) window.lenis.start();
-        
-        tlHero.fromTo(videoRef.current, { scale: 1.1 }, {
-          scale: 1,
-          duration: 2.5,
-          ease: "power2.out"
-        }, 0);
-      }
-
-      tlHero
-        .fromTo("#navbar",
-          { y: -20, autoAlpha: 0 },
-          { y: 0, autoAlpha: 1, duration: 1, ease: "power3.out" },
-          isFirstVisit ? "-=1.5" : 0.2
-        )
-        .fromTo(titleLines,
-          { y: 60, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: "power4.out" },
-          isFirstVisit ? "-=1.2" : 0.4
-        )
-        .fromTo(descRef.current,
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
-          isFirstVisit ? "-=0.8" : 0.8
-        );
-    }, comp);
+          .fromTo("#navbar",
+            { y: -20, autoAlpha: 0 },
+            { y: 0, autoAlpha: 1, duration: 0.5, ease: "power3.out" },
+            0.1
+          )
+          .fromTo(titleLinesRef.current,
+            { y: 35, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: "power4.out" },
+            0.15
+          )
+          .fromTo(descRef.current,
+            { y: 20, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" },
+            0.3
+          );
+      }, comp);
+    });
 
     return () => {
-      ctx.revert();
+      isCancelled = true;
+      if (ctx) ctx.revert();
       if (window.lenis) window.lenis.start();
     };
   }, []);
 
   return (
-    <div ref={comp} id="hero">
-      {/* LOADER SCREEN */}
+    <div ref={comp} id="hero-section">
+      {/* LOADER SCREEN (Nonaktif agar LCP & FCP instan) */}
       <div
         ref={loaderRef}
         id="loader"
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-black"
-      >
-        <div 
-          ref={logoRef} 
-          className="relative z-10 w-full max-w-xl md:max-w-3xl lg:max-w-4xl opacity-0 scale-95 will-change-transform flex justify-center items-center"
-        >
-          <video 
-            src={get("public/motion-logo-ais.mp4")}
-            autoPlay 
-            muted 
-            playsInline
-            className="w-full h-auto object-contain pointer-events-none" 
-          />
-        </div>
-      </div>
+        className="hidden pointer-events-none"
+        aria-hidden="true"
+      />
 
       {/* HERO SECTION */}
       <section id="hero" className="relative h-screen w-full flex items-center justify-center overflow-hidden">
-        {/* Background Video */}
-        <video
+        {/* Background Image (LCP Element Teroptimasi & Preloaded) */}
+        <img
           ref={videoRef}
+          src={get("fasilitas/gedung.webp")}
+          alt="Gedung Asrama IPB Sukasari"
+          width="1920"
+          height="1080"
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
           className="absolute inset-0 z-0 w-full h-full object-cover object-[center_40%] will-change-transform"
-          autoPlay
-          loop
-          muted
-          playsInline
-          poster={get("fasilitas/gedung.webp")}
-        >
-          <source src={get("public/hero-ori.mp4")} type="video/mp4" />
-        </video>
+        />
 
         {/* Overlay */}
         <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/40 via-black/50 to-black/90"></div>
 
         {/* Content */}
         <div className="relative z-20 flex flex-col items-center text-center px-4 md:px-8 w-full max-w-4xl mt-9 md:mt-13">
-          <h1 className="text-5xl xs:text-5xl md:text-6xl lg:text-5xl font-bold text-white leading-[1.1] drop-shadow-xl mb-5 md:mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.15] drop-shadow-xl mb-4 md:mb-6">
             <span className="block overflow-hidden">
               <span
                 ref={(el) => (titleLinesRef.current[0] = el)}
@@ -300,7 +288,7 @@ export default function Hero() {
 
           <p
             ref={descRef}
-            className="text-[14px] xs:text-[16px] md:text-[14px] max-w-[290px] xs:max-w-[320px] md:max-w-[420px] font-normal"
+            className="text-sm sm:text-base md:text-sm max-w-[280px] xs:max-w-[320px] md:max-w-[420px] font-normal text-white/90"
           >
             Rumah yang nyaman untuk belajar, bertumbuh,
             dan meraih prestasi bersama.

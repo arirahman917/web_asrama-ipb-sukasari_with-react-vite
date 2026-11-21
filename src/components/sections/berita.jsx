@@ -34,7 +34,9 @@ export default function Berita() {
                 const data = await fetchBerita();
                 if (active) setItems(data.slice(0, LATEST_COUNT));
             } catch (err) {
-                console.error('Gagal memuat berita:', err);
+                if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+                    console.warn('Gagal memuat berita:', err?.message || err);
+                }
             } finally {
                 if (active) setLoading(false);
             }
@@ -111,7 +113,9 @@ export default function Berita() {
                                         {item.imageUrl ? (
                                             <img
                                                 src={item.imageUrl}
-                                                alt={item.title}
+                                                alt={`Berita: ${item.title}`}
+                                                width="280"
+                                                height="200"
                                                 loading="lazy"
                                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                             />
@@ -127,13 +131,13 @@ export default function Berita() {
                                     </div>
 
                                     <div className="px-1 md:px-2 relative mt-2">
-                                        <span className="inline-block text-[10px] uppercase tracking-wider font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full mb-2">
+                                        <span className="inline-block text-xs uppercase tracking-wider font-semibold text-orange-700 bg-orange-100 px-2.5 py-1 rounded-full mb-2">
                                             {item.kategori}
                                         </span>
                                         <h3 className="font-bold text-base md:text-lg text-gray-900 mb-1.5 md:mb-2 leading-snug line-clamp-2">
                                             {item.title}
                                         </h3>
-                                        <p className="text-[13px] md:text-sm text-gray-500 leading-relaxed line-clamp-3">
+                                        <p className="text-xs md:text-sm text-gray-600 leading-relaxed line-clamp-3">
                                             {toExcerpt(item.content)}
                                         </p>
                                     </div>

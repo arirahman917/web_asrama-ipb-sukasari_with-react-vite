@@ -15,7 +15,7 @@ export default function ProgramAsrama() {
             id: 2,
             title: "Renang Bersama",
             description: "Program rekreasi dan olahraga air yang diadakan secara berkala sebagai sarana refreshing dari kesibukan akademik.",
-            image: "program/renang.jpeg"
+            image: "program/renang.webp"
         },
         {
             id: 3,
@@ -104,7 +104,10 @@ export default function ProgramAsrama() {
                             >
                                 <SiteImage
                                     k={program.image}
-                                    alt={program.title}
+                                    alt={`Program Kegiatan: ${program.title}`}
+                                    width="400"
+                                    height="225"
+                                    loading="lazy"
                                     className={`w-full h-full object-cover ${program.imgClass || 'object-center'}`}
                                 />
                             </div>

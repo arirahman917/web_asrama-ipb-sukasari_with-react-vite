@@ -66,7 +66,7 @@ export default function Loader() {
         className="absolute inset-0 z-10 opacity-0 will-change-transform flex justify-center items-center bg-transparent" // Ubah bg video container jadi transparent
       >
         <video
-          src={get('public/motion-logo-ais.mp4')}
+          src={get('public/motion-logo-ais.webm')}
           autoPlay
           muted
           playsInline

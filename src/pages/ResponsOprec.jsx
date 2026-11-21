@@ -157,7 +157,7 @@ function PersonCard({ data, index, onImageClick, onToggleWaStatus }) {
                    <span className="text-[10px] font-bold text-white">PDF</span>
                 </div>
               ) : (
-                <img src={data.fotoFormalUrl} alt={data.namaLengkap} className="w-full h-full object-cover" />
+                <img src={data.fotoFormalUrl} alt={data.namaLengkap} loading="lazy" className="w-full h-full object-cover" />
               )
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-500 text-2xl">👤</div>
@@ -271,7 +271,7 @@ function PersonCard({ data, index, onImageClick, onToggleWaStatus }) {
                                    <span className="text-[10px] font-bold text-white">PDF</span>
                                 </div>
                               ) : (
-                                <img src={data[key]} alt={label} className="w-full h-full object-cover" />
+                                <img src={data[key]} alt={label} loading="lazy" className="w-full h-full object-cover" />
                               )}
                             </div>
                             <p className="text-[9px] text-gray-500 mt-1 text-center truncate w-20">{label}</p>
@@ -288,7 +288,7 @@ function PersonCard({ data, index, onImageClick, onToggleWaStatus }) {
                  <h4 className="text-sm font-bold text-orange-400 mb-3 flex items-center gap-2"><span>✅</span> Pakta Integritas</h4>
                  {data.signatureUrl ? (
                     <div className="bg-white/80 rounded-xl p-2 w-fit border border-white/20 cursor-pointer" onClick={() => handleFileClick(data.signatureUrl, "Tanda Tangan")}>
-                      <img src={data.signatureUrl} alt="Tanda Tangan" className="h-20 w-auto object-contain" />
+                      <img src={data.signatureUrl} alt="Tanda Tangan" loading="lazy" className="h-20 w-auto object-contain" />
                     </div>
                  ) : (
                     <p className="text-xs text-red-400">Belum ada tanda tangan</p>

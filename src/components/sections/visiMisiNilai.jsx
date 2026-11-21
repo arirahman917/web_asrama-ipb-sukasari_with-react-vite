@@ -57,12 +57,12 @@ export default function VisiMisiNilai() {
     }, { scope: containerRef, dependencies: [] });
 
     return (
-        <section ref={containerRef} id="pin-section visiMisiNilai" className="w-full h-screen flex items-center justify-center bg-white relative z-10">
-            <div className="relative w-[89%] max-w-[1450px] h-[90vh]">
+        <section ref={containerRef} id="pin-section" className="w-full h-screen flex items-center justify-center bg-white relative z-10">
+            <div className="relative w-[92%] sm:w-[89%] max-w-[1450px] h-[92vh] sm:h-[90vh]">
 
                 <div className="absolute inset-0 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl pointer-events-none">
                     <div id="bg-visi" className="absolute inset-0 bg-cover bg-center md:bg-[center_70%]" style={{ backgroundImage: `url(${get('pengurus/kabinet.webp')})` }}></div>
-                    <div id="bg-misi" className="absolute inset-0 bg-cover bg-center md:bg-[center_70%] opacity-0" style={{ backgroundImage: `url(${get('program/upgrading-bendera.jpg')})` }}></div>
+                    <div id="bg-misi" className="absolute inset-0 bg-cover bg-center md:bg-[center_70%] opacity-0" style={{ backgroundImage: `url(${get('program/upgrading-bendera.webp')})` }}></div>
                     <div id="bg-nilai" className="absolute inset-0 bg-cover bg-[center_60%] md:bg-[center_60%] opacity-0" style={{ backgroundImage: `url(${get('program/kolam-upgrading.webp')})` }}></div>
 
                     {/* Pastikan grad-navy dan grad-orange sudah ada di index.css kamu */}
@@ -94,19 +94,19 @@ export default function VisiMisiNilai() {
                     </div>
 
                     <div className="w-full md:w-1/2 h-[75%] md:h-full relative z-30">
-                        <div id="card-visi" className="absolute left-0 right-0 mx-auto w-[90%] md:w-full max-w-xs md:max-w-sm bg-[#0f172a]/50 backdrop-blur-xl rounded-xl md:rounded-2xl p-7 md:p-7 shadow-2xl">
-                            <p className="text-white text-[14px] md:text-[12px] lg:text-[14px] leading-relaxed font-light text-center md:text-left">
+                        <div id="card-visi" className="absolute left-0 right-0 mx-auto w-[92%] sm:w-[90%] md:w-full max-w-xs md:max-w-sm bg-[#0f172a]/50 backdrop-blur-xl rounded-xl md:rounded-2xl p-5 sm:p-7 shadow-2xl">
+                            <p className="text-white text-xs sm:text-[13px] md:text-[12px] lg:text-[14px] leading-relaxed font-light text-center md:text-left">
                                 Menjadi asrama yang mendukung terciptanya lingkungan hunian yang aman, nyaman, dan kondusif bagi pengembangan akademik serta karakter mahasiswa.
                             </p>
                         </div>
-                        <div id="card-misi" className="absolute left-0 right-0 mx-auto w-[90%] md:w-full max-w-xs md:max-w-sm bg-[#ea580c]/50 backdrop-blur-xl rounded-xl md:rounded-2xl p-7 md:p-7 shadow-2xl">
-                            <ul className="text-white text-[14px] md:text-[12px] lg:text-[14px] leading-relaxed font-light list-disc pl-4 space-y-2 md:space-y-3 marker:text-white/70">
+                        <div id="card-misi" className="absolute left-0 right-0 mx-auto w-[92%] sm:w-[90%] md:w-full max-w-xs md:max-w-sm bg-[#ea580c]/50 backdrop-blur-xl rounded-xl md:rounded-2xl p-5 sm:p-7 shadow-2xl">
+                            <ul className="text-white text-xs sm:text-[13px] md:text-[12px] lg:text-[14px] leading-relaxed font-light list-disc pl-4 space-y-1.5 sm:space-y-2 md:space-y-3 marker:text-white/70">
                                 <li>Menyediakan lingkungan hunian yang aman, tertib, dan nyaman bagi mahasiswa.</li>
                                 <li>Mendukung proses pembelajaran dan pengembangan karakter mahasiswa.</li>
                                 <li>Mendorong terciptanya kehidupan asrama yang disiplin, inklusif, dan berbudaya.</li>
                             </ul>
                         </div>
-                        <div id="card-nilai" className="absolute left-0 right-0 mx-auto w-[90%] md:w-full max-w-xs md:max-w-sm bg-[#0f172a]/50 backdrop-blur-xl rounded-xl md:rounded-2xl px-7 md:px-7 py-8 md:py-8 shadow-2xl">
+                        <div id="card-nilai" className="absolute left-0 right-0 mx-auto w-[92%] sm:w-[90%] md:w-full max-w-xs md:max-w-sm bg-[#0f172a]/50 backdrop-blur-xl rounded-xl md:rounded-2xl px-5 sm:px-7 py-6 sm:py-8 shadow-2xl">
                             <div className="grid grid-cols-2 gap-8 md:gap-6">
                                 {/* Card Nilai 1 */}
                                 <div className="flex flex-col items-center text-center space-y-1.5 md:space-y-2">

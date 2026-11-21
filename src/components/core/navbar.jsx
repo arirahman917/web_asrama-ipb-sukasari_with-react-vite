@@ -4,24 +4,15 @@ import SiteImage from './SiteImage';
 
 export default function Navbar() {
     // --- STATE ---
-    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
     const [isDesktopDropdownOpen, setIsDesktopDropdownOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobileAccordionOpen, setIsMobileAccordionOpen] = useState(false);
-    const [navTransform, setNavTransform] = useState('-150px');
+    const [navTransform, setNavTransform] = useState('0px');
 
     const desktopDropdownRef = useRef(null);
     const mobileMenuRef = useRef(null);
-
-    // --- EFFECT: Initial Slide In ---
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setNavTransform('0px');
-            setIsVisible(true);
-        }, 100);
-        return () => clearTimeout(timer);
-    }, []);
 
     // --- EFFECT: Scroll Logic ---
     useEffect(() => {
@@ -68,25 +59,27 @@ export default function Navbar() {
     return (
         <nav 
             id="navbar" 
-            className="fixed top-4 md:top-5 left-0 right-0 mx-auto z-[90] w-[90%] max-w-2xl rounded-full bg-white/70 md:bg-white/60 backdrop-blur-md px-5 py-1.5 md:px-6 md:py-0 shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex justify-between items-center text-gray-900 border border-white/30 transition-transform duration-500 ease-in-out"
+            className="fixed top-3 sm:top-4 md:top-5 left-0 right-0 mx-auto z-[90] w-[94%] sm:w-[90%] max-w-2xl rounded-full bg-white/80 md:bg-white/60 backdrop-blur-md px-3 sm:px-5 py-1.5 md:px-6 md:py-0 shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex justify-between items-center text-gray-900 border border-white/30 transition-transform duration-500 ease-in-out"
             style={{ transform: `translateY(${navTransform})` }}
         >
             {/* Logo */}
             <div className="flex items-center gap-3">
-                <a href="/">
-                    <SiteImage k="logo-ais.webp" alt="Logo Asrama" className="z-10 w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 object-contain" />
+                <a href="/" aria-label="Beranda Asrama IPB Sukasari">
+                    <SiteImage k="logo-ais.webp" alt="Logo Asrama IPB Sukasari" width="40" height="40" className="z-10 w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 object-contain" />
                 </a>
             </div>
 
             {/* Desktop Menu & Button */}
             <div className="hidden lg:flex items-center gap-4 xl:gap-6">
-                <div className="flex items-center gap-5 xl:gap-6 text-[11px] lg:text-[9px] font-semibold">
+                <div className="flex items-center gap-5 xl:gap-6 text-xs font-semibold">
                     <a href="/#hero" className="hover:text-orange-500 transition-colors py-2">Beranda</a>
                     
                     {/* Dropdown Desktop */}
                     <div className="relative" ref={desktopDropdownRef}>
                         <button 
+                            type="button"
                             onClick={() => setIsDesktopDropdownOpen(!isDesktopDropdownOpen)}
+                            aria-expanded={isDesktopDropdownOpen}
                             className="flex items-center justify-between w-full text-left py-2 focus:outline-none group cursor-pointer"
                         >
                             <span className="group-hover:text-orange-500 transition-colors py-2">Identitas</span>
@@ -98,10 +91,10 @@ export default function Navbar() {
                         <div className={`absolute top-[110%] left-0 w-28 bg-white/95 backdrop-blur-xl rounded-md shadow-[0_10px_40px_rgb(0,0,0,0.1)] border border-gray-100 p-2 flex flex-col gap-1 transition-all duration-300 z-[100] ${isDesktopDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
                             <div className="overflow-hidden m-0.5">
                                 <div className="flex flex-col gap-3 border-l-2 border-gray-200 ml-1 pl-3 mt-2 mb-2">
-                                    <a href="/#about-section" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Tentang</a>
-                                    <a href="/#sejarah-section" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Sejarah</a>
-                                    <a href="/#pin-section" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Visi Misi</a>
-                                    <a href="/#pengurus" className="text-[11px] lg:text-[9px] font-medium text-gray-600 hover:text-orange-500 transition-colors">Pengurus</a>
+                                    <a href="/#about-section" className="text-xs font-medium text-gray-700 hover:text-orange-500 transition-colors">Tentang</a>
+                                    <a href="/#sejarah-section" className="text-xs font-medium text-gray-700 hover:text-orange-500 transition-colors">Sejarah</a>
+                                    <a href="/#pin-section" className="text-xs font-medium text-gray-700 hover:text-orange-500 transition-colors">Visi Misi</a>
+                                    <a href="/#pengurus" className="text-xs font-medium text-gray-700 hover:text-orange-500 transition-colors">Pengurus</a>
                                 </div>
                             </div>
                         </div>
@@ -114,21 +107,46 @@ export default function Navbar() {
                     <a href="/#alumni" className="hover:text-orange-500 transition-colors py-2">Kata Alumni</a>
                     <a href="/#footer" className="hover:text-orange-500 transition-colors py-2">Kontak</a>
                 </div>
-                <Link to="/oprec" className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[11px] lg:text-[10px] font-semibold rounded-full hover:from-orange-600 hover:to-orange-700 transition-all shadow-md shadow-orange-500/20">
+
+                {/* Tombol CTA OPREC (Status: Ditutup) */}
+                {/* KODE FORMULIR AKTIF ASLI (Uncomment saat pendaftaran dibuka kembali):
+                <Link to="/oprec" className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-semibold rounded-full hover:from-orange-600 hover:to-orange-700 transition-all shadow-md shadow-orange-500/20">
                     Daftar
                 </Link>
+                */}
+                <button
+                    type="button"
+                    disabled
+                    className="px-4 py-2 bg-white/10 text-gray-400 border border-white/10 text-xs font-semibold rounded-full cursor-not-allowed opacity-80"
+                    title="Pendaftaran saat ini sedang ditutup"
+                >
+                    Pendaftaran Ditutup
+                </button>
             </div>
             
             {/* Mobile Actions: Daftar Button + Hamburger */}
-            <div className="flex lg:hidden items-center gap-3">
-                <Link to="/oprec" className="px-4 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[12px] font-semibold rounded-full shadow-md shadow-orange-500/20 active:scale-95 transition-all">
+            <div className="flex lg:hidden items-center gap-2 sm:gap-3">
+                {/* KODE FORMULIR AKTIF ASLI (Uncomment saat pendaftaran dibuka kembali):
+                <Link to="/oprec" className="px-3.5 sm:px-4 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-semibold rounded-full shadow-md shadow-orange-500/20 active:scale-95 transition-all">
                     Daftar
                 </Link>
+                */}
+                <button
+                    type="button"
+                    disabled
+                    className="px-3 sm:px-3.5 py-1.5 bg-white/10 text-gray-400 border border-white/10 text-xs font-medium rounded-full cursor-not-allowed opacity-80"
+                    title="Pendaftaran saat ini sedang ditutup"
+                >
+                    Ditutup
+                </button>
                 {/* Hamburger Button */}
                 <button 
                     id="btn-hamburger"
+                    type="button"
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    className="cursor-pointer p-1.5 -mr-1 rounded-full hover:bg-gray-200 transition"
+                    aria-label="Buka menu navigasi"
+                    aria-expanded={isMobileMenuOpen}
+                    className="cursor-pointer p-2 -mr-1 rounded-full hover:bg-gray-200 transition focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
