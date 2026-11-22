@@ -9,7 +9,7 @@ import SiteImage from '../core/SiteImage';
 gsap.registerPlugin(ScrollTrigger);
 
 const galleryImages = [
-    "program/kolam-upgrading.webp", "program/nilai.webp", "program/renang.jpeg", "program/sc1.webp", "program/voli.webp", "program/visi.webp",
+    "program/kolam-upgrading.webp", "program/nilai.webp", "program/renang.webp", "program/sc1.webp", "program/voli.webp", "program/visi.webp",
     "pengurus/bph/menteri.webp", "pengurus/kepenghunian/menteri.webp", "pengurus/lingpras/menteri.webp", "pengurus/jasroh/menteri.webp", "pengurus/mediadigi/menteri.webp", "pengurus/kabinet.webp", "pengurus/kabinet-bahagia.webp",
     "fasilitas/alat_masak.webp", "fasilitas/dapur.webp", "fasilitas/gedung.webp", "fasilitas/kompor.webp", "fasilitas/kulkas.webp", "fasilitas/ruang_tengah.webp", "fasilitas/meja_makan.webp", "fasilitas/parkiran.webp", "fasilitas/mushola.webp", "fasilitas/non-blok.webp", "fasilitas/pekarangan.webp", "bg-fasilitas.webp"
 ];
@@ -35,141 +35,139 @@ export default function Galeri() {
     useGSAP(() => {
         const mm = gsap.matchMedia();
 
-        // Efek kursor mouse hanya untuk desktop
+        // Efek kursor mouse halus hanya untuk desktop (dibatasi agar tidak tabrakan dengan scroll)
         mm.add("(min-width: 768px)", () => {
+            let lastMove = 0;
             const handleMouseMove = (e) => {
+                const now = performance.now();
+                if (now - lastMove < 30) return; // Throttle 30ms
+                lastMove = now;
+
                 const { clientX, clientY } = e;
-                const xPos = (clientX / window.innerWidth - 0.5) * 40; 
-                const yPos = (clientY / window.innerHeight - 0.5) * -40;
+                const xPos = (clientX / window.innerWidth - 0.5) * 25;
+                const yPos = (clientY / window.innerHeight - 0.5) * -25;
 
                 if (containerRef.current) {
                     gsap.to(containerRef.current, {
                         rotationY: xPos,
                         rotationX: yPos,
-                        ease: "power2.out",
-                        duration: 1.5,
-                        force3D: true
+                        ease: "power1.out",
+                        duration: 1.2,
+                        force3D: true,
+                        overwrite: "auto"
                     });
                 }
 
                 if (titleRef.current) {
                     gsap.to(titleRef.current, {
-                        rotationY: xPos * 0.8,
-                        rotationX: yPos * 0.8,
-                        ease: "power2.out",
-                        duration: 1.5,
-                        force3D: true
+                        rotationY: xPos * 0.5,
+                        rotationX: yPos * 0.5,
+                        ease: "power1.out",
+                        duration: 1.2,
+                        force3D: true,
+                        overwrite: "auto"
                     });
                 }
             };
 
-            window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('mousemove', handleMouseMove, { passive: true });
             return () => window.removeEventListener('mousemove', handleMouseMove);
         });
 
-        // --- ANIMASI SCROLL (Estafet Konstan) ---
-        let tl = gsap.timeline({
+        // --- ANIMASI SCROLL OPTIMASI TINGGI ---
+        const tl = gsap.timeline({
             scrollTrigger: {
                 trigger: sectionRef.current,
                 start: "top top",
-                end: "+=800%", // Panjang scroll sangat lama agar lambat
+                end: () => (window.innerWidth < 768 ? "+=1800" : "+=2600"),
                 pin: true,
-                scrub: 1.5,
+                anticipatePin: 1,
+                scrub: 0.6,
+                fastScrollEnd: true,
+                preventOverlaps: true
             }
         });
 
-        const batchSize = 5; // Jumlah gambar per gelombang (estafet)
+        const batchSize = 5;
 
         imagesRef.current.forEach((el, index) => {
             if (!el) return;
             const batchIndex = Math.floor(index / batchSize);
 
-            // 1. Kondisi Awal: Transparan, ukuran proporsional (tidak terlalu kecil), dari tengah layar
+            // Kondisi Awal: Terpusat di tengah dengan hardware acceleration
             gsap.set(el, {
-                xPercent: -50, // GSAP centering yang tidak ditimpa oleh transform biasa
+                xPercent: -50,
                 yPercent: -50,
                 opacity: 0,
-                scale: 0.3, // Tidak mulai dari terlalu kecil
+                scale: 0.35,
                 x: 0,
                 y: 0,
-                rotationZ: 0 // Tidak ada yang miring
+                rotationZ: 0,
+                force3D: true
             });
 
-            // Hitung posisi acak estetik di sekitar layar untuk titik akhir (terlempar keluar layar)
             const angle = gsap.utils.random(0, Math.PI * 2);
-            const radius = gsap.utils.random(500, window.innerWidth > 768 ? 1200 : 800);
+            const radius = gsap.utils.random(450, window.innerWidth > 768 ? 1000 : 700);
             const flyOutX = Math.cos(angle) * radius;
             const flyOutY = Math.sin(angle) * radius;
 
-            const startTime = batchIndex * 2.5; // Kapan batch ini mulai muncul di timeline
-            const delay = gsap.utils.random(0, 1.5); // Stagger acak yang natural
+            const startTime = batchIndex * 1.8;
+            const delay = gsap.utils.random(0, 0.8);
 
-            // Gerakan bergeser dan membesar secara konstan dan terus menerus (tanpa henti)
+            // Gerakan bergeser dan membesar
             tl.to(el, {
                 x: flyOutX,
                 y: flyOutY,
-                scale: 1.5, // Membesarnya tidak terlalu ekstrem
-                duration: 7, // Durasi panjang agar lambat dan halus
-                ease: "none", // Konstan (linear)
+                scale: 1.35,
+                duration: 5,
+                ease: "none",
                 force3D: true
             }, startTime + delay);
 
-            // Muncul secara bertahap di awal
+            // Muncul secara bertahap
             tl.to(el, {
                 opacity: 1,
-                duration: 1,
+                duration: 0.8,
                 ease: "power1.inOut"
             }, startTime + delay);
 
-            // Menghilang perlahan sebelum mencapai ujung
+            // Menghilang perlahan sebelum keluar layar
             tl.to(el, {
                 opacity: 0,
-                duration: 1.5,
+                duration: 1.2,
                 ease: "power1.inOut"
-            }, startTime + delay + 5.5);
+            }, startTime + delay + 3.8);
         });
 
+        return () => mm.revert();
     }, { scope: sectionRef });
 
     return (
         <section
             id="galeri"
             ref={sectionRef}
-            className="relative w-full h-screen bg-white text-gray-900 overflow-hidden flex items-center justify-center perspective-[1200px]"
+            className="relative w-full h-screen bg-white text-gray-900 overflow-hidden flex items-center justify-center perspective-[1000px] transform-gpu"
         >
-            {/* Judul Section */}
+            {/* Judul Section dengan kontras memenuhi rasio WCAG 4.5:1+ */}
             <h2
                 ref={titleRef}
-                className="absolute z-10 text-5xl md:text-7xl lg:text-8xl font-black tracking-widest pointer-events-none opacity-5 transform-style-3d will-change-transform"
+                className="absolute z-10 text-5xl md:text-7xl lg:text-8xl font-black tracking-widest pointer-events-none text-gray-700 opacity-80 transform-style-3d will-change-transform"
             >
                 GALERI
             </h2>
 
-            {/* Tombol Selengkapnya */}
-            {/* <div className="absolute z-[100] mt-[600px] md:mt-80">
-                <a 
-                    href="#" 
-                    className="flex items-center gap-2 px-6 py-3 bg-white/40 backdrop-blur-md border border-white/60 text-gray-800 font-semibold rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.1)] hover:bg-white/70 hover:shadow-[0_8px_30px_rgb(0,0,0,0.15)] hover:scale-105 transition-all duration-300"
-                >
-                    <span className="text-[12px]">Selengkapnya</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
-                </a>
-            </div> */}
-
             {/* Container untuk efek Tilt Mouse */}
             <div
                 ref={containerRef}
-                className="relative w-full h-full flex items-center justify-center transform-style-3d pointer-events-none"
+                className="relative w-full h-full flex items-center justify-center transform-style-3d pointer-events-none transform-gpu"
             >
-                {/* Gambar-gambar (awalnya ngumpul di tengah) */}
                 {galleryImages.map((src, index) => {
                     const shapeClass = getShapeClasses(index);
                     return (
                         <div
                             key={index}
                             ref={(el) => (imagesRef.current[index] = el)}
-                            // top-1/2 left-1/2 dipadukan dengan xPercent -50 dan yPercent -50 dari GSAP
-                            className={`absolute top-1/2 left-1/2 ${shapeClass} rounded-2xl md:rounded-3xl overflow-hidden shadow-xl will-change-transform bg-gray-100`}
+                            className={`absolute top-1/2 left-1/2 ${shapeClass} rounded-2xl md:rounded-3xl overflow-hidden shadow-md will-change-transform bg-gray-100 transform-gpu`}
                         >
                             <SiteImage
                                 k={src}
@@ -177,6 +175,7 @@ export default function Galeri() {
                                 width="384"
                                 height="240"
                                 loading="lazy"
+                                decoding="async"
                                 className="w-full h-full object-cover"
                             />
                         </div>

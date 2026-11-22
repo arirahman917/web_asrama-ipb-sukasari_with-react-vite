@@ -7,13 +7,33 @@
     <meta name="description" content="Website Resmi Asrama IPB Sukasari - Fasilitas hunian mahasiswa Sekolah Vokasi IPB University yang aman, tertib, dan nyaman dalam mendukung kegiatan akademik dan karakter." />
     <meta name="theme-color" content="#111827" />
 
-    <link rel="icon" type="image/png" href="/logo-ais.png" />
-    <meta property="og:image" content="/logo-ais.png" />
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://asrama-ipb-sukasari.firebaseapp.com/" />
 
-    <!-- Google Fonts -->
+    <!-- Favicon & Icons -->
+    <link rel="icon" type="image/webp" href="/logo-ais.webp" />
+    <link rel="apple-touch-icon" href="/logo-ais.webp" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://asrama-ipb-sukasari.firebaseapp.com/" />
+    <meta property="og:title" content="Asrama IPB Sukasari - Hunian Nyaman Mahasiswa SV IPB" />
+    <meta property="og:description" content="Fasilitas hunian mahasiswa Sekolah Vokasi IPB University yang aman, tertib, dan nyaman dalam mendukung kegiatan akademik dan karakter." />
+    <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/asrama-ipb-sukasari.firebasestorage.app/o/site%2Fpublic%2Flogo-ais.webp?alt=media" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Asrama IPB Sukasari - Hunian Nyaman Mahasiswa SV IPB" />
+    <meta name="twitter:description" content="Fasilitas hunian mahasiswa Sekolah Vokasi IPB University yang aman, tertib, dan nyaman dalam mendukung kegiatan akademik dan karakter." />
+    <meta name="twitter:image" content="https://firebasestorage.googleapis.com/v0/b/asrama-ipb-sukasari.firebasestorage.app/o/site%2Fpublic%2Flogo-ais.webp?alt=media" />
+
+    <!-- Non-blocking Google Fonts dengan font-display: swap -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" />
+    </noscript>
 </head>
 <body class="bg-gray-900 text-white selection:bg-blue-500 selection:text-white">
     <div id="root"></div>

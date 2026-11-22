@@ -106,7 +106,7 @@ export default function AiChatWidget() {
       {open && (
         <div className="fixed z-[200] bottom-6 right-6 left-4 sm:left-auto w-auto sm:w-[360px] h-[520px] max-h-[calc(100vh-3rem)] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-[#f97316] text-white">
+          <div className="flex items-center justify-between px-4 py-3 bg-[#c2410c] text-white">
             <div className="flex items-center gap-2">
               <MessageCircle className="w-5 h-5" />
               <span className="font-semibold text-sm">Asisten Asrama AIS</span>
@@ -131,7 +131,7 @@ export default function AiChatWidget() {
                 <div
                   className={`max-w-[80%] px-3 py-2 rounded-2xl text-sm whitespace-pre-wrap break-words ${
                     m.role === "user"
-                      ? "bg-[#f97316] text-white rounded-br-sm"
+                      ? "bg-[#c2410c] text-white rounded-br-sm"
                       : "bg-gray-200 text-gray-800 rounded-bl-sm"
                   }`}
                 >
@@ -168,14 +168,14 @@ export default function AiChatWidget() {
               onKeyDown={handleKeyDown}
               rows={1}
               placeholder="Tulis pertanyaanmu..."
-              className="flex-1 resize-none max-h-24 px-3 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#f97316]/40 focus:border-[#f97316]"
+              className="flex-1 resize-none max-h-24 px-3 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c2410c]/40 focus:border-[#c2410c]"
             />
             <button
               type="button"
               onClick={sendMessage}
               disabled={loading || !input.trim()}
               aria-label="Kirim pesan"
-              className="p-2.5 rounded-xl bg-[#f97316] text-white hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2.5 rounded-xl bg-[#c2410c] text-white hover:bg-[#9a3412] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -192,7 +192,7 @@ export default function AiChatWidget() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Tutup asisten AI" : "Buka asisten AI"}
-        className="fixed z-[200] bottom-6 right-6 w-14 h-14 rounded-full bg-[#f97316] text-white shadow-lg shadow-orange-500/30 flex items-center justify-center hover:bg-orange-600 hover:scale-105 transition-all"
+        className="fixed z-[200] bottom-6 right-6 w-14 h-14 rounded-full bg-[#c2410c] text-white shadow-lg shadow-orange-700/30 flex items-center justify-center hover:bg-[#9a3412] hover:scale-105 transition-all"
       >
         {open ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
       </button>

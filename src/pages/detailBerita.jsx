@@ -131,11 +131,11 @@ export default function BeritaDetail() {
 
             {/* 1. HERO BANNER */}
             <div className="max-w-[1400px] mx-auto px-4 md:px-8 lg:px-12 mb-8">
-                <div className="relative w-full bg-[#f97316] rounded-[32px] md:rounded-[40px] flex flex-col md:flex-row items-center pt-8 md:pt-10 pb-[400px] md:pb-24 px-6 md:px-12 lg:px-16 shadow-lg">
+                <div className="relative w-full bg-[#c2410c] rounded-[32px] md:rounded-[40px] flex flex-col md:flex-row items-center pt-8 md:pt-10 pb-[400px] md:pb-24 px-6 md:px-12 lg:px-16 shadow-lg">
 
                     <div className="flex-1 text-white z-10 w-full mb-6 md:mb-0">
-                        <h1 className="text-3xl md:text-4xl lg:text-4xl font-bold mb-2 md:mb-2">Berita Asrama</h1>
-                        <p className="text-12 md:text-[14px] lg:text-[14px] text-white/90 max-w-lg md:max-w-md lg:max-w-lg leading-relaxed mb-6 md:mb-24">
+                        <h1 className="text-3xl md:text-4xl lg:text-4xl font-bold mb-2 md:mb-2 text-white">Berita Asrama</h1>
+                        <p className="text-12 md:text-[14px] lg:text-[14px] text-white max-w-lg md:max-w-md lg:max-w-lg leading-relaxed mb-6 md:mb-24">
                             Jelajahi event dan prestasi mahasiswa Asrama IPB Sukasari, dari rangkaian kegiatan hingga pencapaian yang menginspirasi.
                         </p>
                     </div>

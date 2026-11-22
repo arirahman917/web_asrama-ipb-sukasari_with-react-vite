@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense, lazy } from 'react';
+import React, { useEffect, useState, useRef, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 // Import Critical Path Components (Hanya Navbar & Hero untuk render pertama super cepat)
@@ -73,23 +73,67 @@ function ScrollToTop() {
   return null;
 }
 
+// Komponen LazySection dengan IntersectionObserver untuk memecah Long Tasks & Forced Reflow.
+// Section di bawah fold hanya diunduh & diinisialisasi saat mendekati viewport.
+function LazySection({ children, minHeight = "400px" }) {
+  const [inView, setInView] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "350px" }
+    );
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} style={{ minHeight: inView ? undefined : minHeight }}>
+      {inView ? (
+        <Suspense fallback={<div className="py-16 text-center text-gray-400">Memuat...</div>}>
+          {children}
+        </Suspense>
+      ) : null}
+    </div>
+  );
+}
+
 // Komponen Halaman Utama (Landing Page)
 function LandingPage() {
   return (
     <main className="relative w-full min-h-screen bg-[#f3f4f6] font-sans">
       <Hero />
-      <Suspense fallback={<div className="py-20 text-center text-gray-400">Memuat...</div>}>
+      <LazySection minHeight="600px">
         <Tentang />
-        {/* <Sejarah /> */}
+      </LazySection>
+      <LazySection minHeight="600px">
         <VisiMisiNilai />
+      </LazySection>
+      <LazySection minHeight="500px">
         <Pengurus />
-        {/* <Program /> */}
+      </LazySection>
+      <LazySection minHeight="500px">
         <ProgramSementara />
+      </LazySection>
+      <LazySection minHeight="600px">
         <Fasilitas />
+      </LazySection>
+      <LazySection minHeight="500px">
         <Berita />
+      </LazySection>
+      <LazySection minHeight="600px">
         <Galeri />
+      </LazySection>
+      <LazySection minHeight="500px">
         <Alumni />
-      </Suspense>
+      </LazySection>
     </main>
   );
 }
@@ -99,9 +143,9 @@ function MainLayout({ children }) {
     <>
       <Navbar />
       {children}
-      <Suspense fallback={null}>
+      <LazySection minHeight="250px">
         <Footer />
-      </Suspense>
+      </LazySection>
     </>
   );
 }

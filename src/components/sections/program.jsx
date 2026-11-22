@@ -64,13 +64,13 @@ export default function ProgramAsrama() {
             return "opacity-100 scale-100 translate-y-0 z-30 blur-none shadow-xl";
         } else if (index === (activeIndex - 1 + total) % total) {
             // Gambar Sebelumnya (Atas)
-            return "opacity-60 scale-[0.80] -translate-y-[60px] sm:-translate-y-[65px] md:-translate-y-[70px] z-20 blur-[2px] cursor-pointer";
+            return "opacity-60 scale-[0.80] -translate-y-[60px] sm:-translate-y-[65px] md:-translate-y-[70px] z-20 lg:blur-[2px] cursor-pointer";
         } else if (index === (activeIndex + 1) % total) {
             // Gambar Selanjutnya (Bawah)
-            return "opacity-60 scale-[0.80] translate-y-[60px] sm:translate-y-[65px] md:translate-y-[70px] z-20 blur-[2px] cursor-pointer";
+            return "opacity-60 scale-[0.80] translate-y-[60px] sm:translate-y-[65px] md:translate-y-[70px] z-20 lg:blur-[2px] cursor-pointer";
         } else {
             // Gambar lainnya (Disembunyikan di belakang)
-            return "opacity-0 scale-70 translate-y-0 z-10 blur-md pointer-events-none";
+            return "opacity-0 scale-70 translate-y-0 z-10 lg:blur-md pointer-events-none";
         }
     };
 
@@ -100,7 +100,7 @@ export default function ProgramAsrama() {
                             <div
                                 key={program.id}
                                 onClick={() => setActiveIndex(index)} // Bisa diklik langsung fotonya untuk pindah
-                                className={`absolute w-full h-full rounded-2xl md:rounded-3xl overflow-hidden transition-all duration-700 ease-in-out ${getCardStyle(index)}`}
+                                className={`absolute w-full h-full rounded-2xl md:rounded-3xl overflow-hidden transition-[transform,opacity] duration-700 ease-in-out transform-gpu ${getCardStyle(index)}`}
                             >
                                 <SiteImage
                                     k={program.image}
@@ -108,6 +108,7 @@ export default function ProgramAsrama() {
                                     width="400"
                                     height="225"
                                     loading="lazy"
+                                    decoding="async"
                                     className={`w-full h-full object-cover ${program.imgClass || 'object-center'}`}
                                 />
                             </div>

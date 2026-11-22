@@ -71,17 +71,17 @@ export default function Sejarah() {
 
                 {/* Teks Kiri */}
                 <div className="w-full lg:w-2/5 flex flex-col justify-center shrink-0 text-center lg:text-left">
-                    <h2 className="text-4xl md:text-4xl lg:text-4xl font-extrabold text-[#f97316] mb-5 md:mb-5 leading-tight">
+                    <h2 className="text-4xl md:text-4xl lg:text-4xl font-extrabold text-[#c2410c] mb-5 md:mb-5 leading-tight">
                         Sejarah Asrama<br className="hidden md:block" /> IPB Sukasari
                     </h2>
-                    <p className="text-gray-500 mb-8 md:mb-6 text-[16px] lg:text-[14px] leading-relaxed max-w-[360px] md:max-w-2xl mx-auto lg:mx-0">
+                    <p className="text-gray-600 mb-8 md:mb-6 text-[16px] lg:text-[14px] leading-relaxed max-w-[360px] md:max-w-2xl mx-auto lg:mx-0">
                         Sejak berdiri, Asrama IPB Sukasari berkomitmen menyediakan hunian yang mendukung pembelajaran dan pengembangan karakter mahasiswa.
                     </p>
 
                     {/* Card Deskripsi — hanya berubah saat klik timeline */}
                     <div className="bg-gradient-to-r from-gray-100 to-transparent rounded-2xl p-4 md:p-5 lg:p-6 text-left mb-1 md:mb-0">
                         <h3
-                            className="text-xl md:text-lg font-bold text-[#f97316] mb-2 md:mb-1.5 transition-opacity duration-280"
+                            className="text-xl md:text-lg font-bold text-[#c2410c] mb-2 md:mb-1.5 transition-opacity duration-280"
                             style={{ opacity: isContentTransitioning ? 0 : 1 }}
                         >
                             {activeData.title}

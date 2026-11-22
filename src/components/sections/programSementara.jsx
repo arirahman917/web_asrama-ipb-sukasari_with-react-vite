@@ -93,9 +93,9 @@ export default function ProgramSementara() {
     return (
         <section id="program" className="relative w-full bg-[#1e2a3b] pt-20 md:pt-28 pb-0 px-4 sm:px-6 md:px-12 overflow-hidden">
             
-            {/* Background Glow */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-orange-500/5 rounded-full blur-[150px] pointer-events-none" />
-            <div className="absolute bottom-0 right-0 w-[500px] h-[300px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
+            {/* Background Glow (radial-gradient, jauh lebih ringan daripada filter blur) */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.10),transparent_70%)] pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-[500px] h-[300px] bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.10),transparent_70%)] pointer-events-none" />
             
             {/* Gradient Mask for Smooth Transition to Fasilitas */}
             <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#1e2a3b] to-transparent pointer-events-none z-0" />
@@ -134,7 +134,7 @@ export default function ProgramSementara() {
                         onClick={() => setActiveIndex(activeIndex === index ? null : index)}
                         className="group relative cursor-pointer"
                     >
-                        <div className={`relative bg-white/[0.04] backdrop-blur-sm border rounded-2xl overflow-hidden transition-all duration-500 ${
+                        <div className={`relative bg-white/[0.04] backdrop-blur-none lg:backdrop-blur-sm border rounded-2xl overflow-hidden transition-[border-color,background-color,box-shadow] duration-300 ${
                             activeIndex === index 
                                 ? "border-orange-500/40 bg-white/[0.08] shadow-[0_0_30px_rgba(242,129,63,0.1)]" 
                                 : "border-white/[0.08] hover:border-white/20 hover:bg-white/[0.06]"

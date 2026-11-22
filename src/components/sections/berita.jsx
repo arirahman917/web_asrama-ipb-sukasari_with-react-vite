@@ -61,16 +61,17 @@ export default function Berita() {
         <section id="berita" className="w-full py-16 md:py-24 bg-white overflow-hidden">
             <div className="w-full flex flex-col lg:flex-row lg:items-stretch gap-8 lg:gap-10 pl-6 md:pl-12 lg:pl-12 xl:pl-12">
 
-                {/* 1. CARD HEADER (Warna Orange) */}
+                {/* 1. CARD HEADER (Warna Oranye Gelap #c2410c untuk rasio kontras >= 4.5:1) */}
                 <div className="shrink-0 flex lg:block">
-                    <div className="relative w-[94%] md:w-[95%] lg:w-[280px] bg-[#f97316] rounded-[32px] p-6 md:p-8 pb-20 md:pb-24 text-white flex flex-col h-fit">
-                        <h2 className="text-4xl font-bold mb-3">Berita</h2>
-                        <p className="text-white/90 text-sm font-medium leading-relaxed mb-6">
+                    <div className="relative w-[94%] md:w-[95%] lg:w-[280px] bg-[#c2410c] rounded-[32px] p-6 md:p-8 pb-20 md:pb-24 text-white flex flex-col h-fit">
+                        <h2 className="text-4xl font-bold mb-3 text-white">Berita</h2>
+                        <p className="text-white text-sm font-normal leading-relaxed mb-6">
                             Telusuri kegiatan asrama dan informasi prestasi.
                         </p>
                         <Link
                             to="/berita"
-                            className="inline-flex items-center gap-1 text-sm font-medium hover:opacity-80 transition-opacity"
+                            aria-label="Lihat arsip berita selengkapnya"
+                            className="inline-flex items-center gap-1 text-sm font-semibold text-white hover:underline transition-all"
                         >
                             Selengkapnya
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 mb-0.5">
@@ -81,14 +82,14 @@ export default function Berita() {
                         <div className="absolute bottom-0 right-0 bg-white rounded-tl-[28px] pl-4 pt-4 pb-2 pr-2 flex gap-2">
                             <div className="absolute right-0 -top-[19.5px] w-[20px] h-[20px]" style={{ background: 'radial-gradient(circle at top left, transparent 20px, #ffffff 20.5px)' }}></div>
                             <div className="absolute -left-[19.5px] bottom-0 w-[20px] h-[20px]" style={{ background: 'radial-gradient(circle at top left, transparent 20px, #ffffff 20.5px)' }}></div>
-                            <button onClick={() => scroll('left')} aria-label="Geser kiri"
-                                className="w-10 h-10 flex items-center justify-center rounded-xl border border-orange-200 text-orange-500 hover:bg-orange-50 transition-colors">
+                            <button onClick={() => scroll('left')} aria-label="Geser berita ke kiri"
+                                className="w-10 h-10 flex items-center justify-center rounded-xl border border-orange-200 text-[#c2410c] hover:bg-orange-50 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                                 </svg>
                             </button>
-                            <button onClick={() => scroll('right')} aria-label="Geser kanan"
-                                className="w-10 h-10 flex items-center justify-center rounded-xl border border-orange-200 text-orange-500 hover:bg-orange-50 transition-colors">
+                            <button onClick={() => scroll('right')} aria-label="Geser berita ke kanan"
+                                className="w-10 h-10 flex items-center justify-center rounded-xl border border-orange-200 text-[#c2410c] hover:bg-orange-50 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                                 </svg>
@@ -117,6 +118,7 @@ export default function Berita() {
                                                 width="280"
                                                 height="200"
                                                 loading="lazy"
+                                                decoding="async"
                                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                             />
                                         ) : (

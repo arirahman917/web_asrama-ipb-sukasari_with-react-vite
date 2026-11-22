@@ -16,9 +16,9 @@ export default function Pengurus() {
         // Menghapus min-h-screen dan mengurangi padding agar tidak terlalu memakan tempat
         <section id="pengurus" className="relative w-full bg-[#fafafa] py-8 md:py-12">
 
-            {/* Judul Section */}
+            {/* Judul Section dengan rasio kontras >= 4.5:1 */}
             <h2
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-extrabold text-[#ea580c] mb-8 md:mb-16 mt-4 md:mt-4 tracking-wide text-center px-4"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-extrabold text-[#c2410c] mb-8 md:mb-16 mt-4 md:mt-4 tracking-wide text-center px-4"
             >
                 Pengurus Asrama
             </h2>
@@ -64,14 +64,15 @@ export default function Pengurus() {
                     {/* Tombol Selengkapnya */}
                     <Link
                         to="/pengurus"
+                        aria-label="Lihat pengurus asrama selengkapnya"
                         className="group flex-none flex flex-col items-center justify-center w-[120px] md:w-[150px] cursor-pointer pl-2"
                     >
-                        <div className="w-12 h-12 md:w-14 md:h-14 bg-[#ea580c] rounded-full flex items-center justify-center shadow-md transition-transform duration-300 group-hover:scale-110 group-hover:bg-[#c2410c]">
+                        <div className="w-12 h-12 md:w-14 md:h-14 bg-[#c2410c] rounded-full flex items-center justify-center shadow-md transition-transform duration-300 group-hover:scale-110 group-hover:bg-[#9a3412]">
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 md:w-7 md:h-7 text-white transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                             </svg>
                         </div>
-                        <span className="mt-3 md:mt-4 text-[#ea580c] font-semibold text-sm md:text-base transition-colors duration-300 group-hover:text-[#c2410c]">
+                        <span className="mt-3 md:mt-4 text-[#c2410c] font-semibold text-sm md:text-base transition-colors duration-300 group-hover:text-[#9a3412]">
                             Selengkapnya
                         </span>
                     </Link>

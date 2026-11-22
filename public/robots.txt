@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+
+Sitemap: https://asrama-ipb-sukasari.firebaseapp.com/sitemap.xml

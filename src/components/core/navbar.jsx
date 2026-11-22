@@ -18,7 +18,7 @@ export default function Navbar() {
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
-            
+
             // Tutup dropdown desktop jika scroll
             if (isDesktopDropdownOpen) setIsDesktopDropdownOpen(false);
 
@@ -57,26 +57,26 @@ export default function Navbar() {
     }, [isMobileMenuOpen]);
 
     return (
-        <nav 
-            id="navbar" 
-            className="fixed top-3 sm:top-4 md:top-5 left-0 right-0 mx-auto z-[90] w-[94%] sm:w-[90%] max-w-2xl rounded-full bg-white/80 md:bg-white/60 backdrop-blur-md px-3 sm:px-5 py-1.5 md:px-6 md:py-0 shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex justify-between items-center text-gray-900 border border-white/30 transition-transform duration-500 ease-in-out"
+        <nav
+            id="navbar"
+            className="fixed top-3 sm:top-4 md:top-5 left-0 right-0 mx-auto z-[90] w-[94%] sm:w-[90%] lg:w-max max-w-2xl lg:max-w-5xl rounded-full bg-white/80 md:bg-white/60 backdrop-blur-md px-3 sm:px-5 py-1.5 md:px-6 md:py-0 shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex justify-between lg:justify-start lg:gap-8 items-center text-gray-900 border border-white/30 transition-transform duration-500 ease-in-out"
             style={{ transform: `translateY(${navTransform})` }}
         >
             {/* Logo */}
-            <div className="flex items-center gap-3">
-                <a href="/" aria-label="Beranda Asrama IPB Sukasari">
+            <div className="flex items-center gap-3 shrink-0">
+                <a href="/#hero" aria-label="Beranda Asrama IPB Sukasari">
                     <SiteImage k="logo-ais.webp" alt="Logo Asrama IPB Sukasari" width="40" height="40" className="z-10 w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 object-contain" />
                 </a>
             </div>
 
             {/* Desktop Menu & Button */}
             <div className="hidden lg:flex items-center gap-4 xl:gap-6">
-                <div className="flex items-center gap-5 xl:gap-6 text-xs font-semibold">
+                <div className="flex items-center gap-4 xl:gap-6 text-xs font-semibold whitespace-nowrap">
                     <a href="/#hero" className="hover:text-orange-500 transition-colors py-2">Beranda</a>
-                    
+
                     {/* Dropdown Desktop */}
                     <div className="relative" ref={desktopDropdownRef}>
-                        <button 
+                        <button
                             type="button"
                             onClick={() => setIsDesktopDropdownOpen(!isDesktopDropdownOpen)}
                             aria-expanded={isDesktopDropdownOpen}
@@ -87,7 +87,7 @@ export default function Navbar() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        
+
                         <div className={`absolute top-[110%] left-0 w-28 bg-white/95 backdrop-blur-xl rounded-md shadow-[0_10px_40px_rgb(0,0,0,0.1)] border border-gray-100 p-2 flex flex-col gap-1 transition-all duration-300 z-[100] ${isDesktopDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
                             <div className="overflow-hidden m-0.5">
                                 <div className="flex flex-col gap-3 border-l-2 border-gray-200 ml-1 pl-3 mt-2 mb-2">
@@ -99,7 +99,7 @@ export default function Navbar() {
                             </div>
                         </div>
                     </div>
-                    
+
                     <a href="/#program" className="hover:text-orange-500 transition-colors py-2">Program</a>
                     <a href="/#fasilitas" className="hover:text-orange-500 transition-colors py-2">Fasilitas</a>
                     <a href="/#berita" className="hover:text-orange-500 transition-colors py-2">Berita</a>
@@ -117,13 +117,14 @@ export default function Navbar() {
                 <button
                     type="button"
                     disabled
-                    className="px-4 py-1.5 bg-gray-100/90 text-gray-800 border-2 border-gray-400 text-xs font-semibold rounded-full cursor-not-allowed shadow-sm"
+                    aria-label="Pendaftaran asrama saat ini sedang ditutup"
+                    className="shrink-0 whitespace-nowrap px-4 py-1.5 bg-gray-100 text-gray-700 text-xs font-semibold rounded-full cursor-not-allowed shadow-sm"
                     title="Pendaftaran saat ini sedang ditutup"
                 >
                     Pendaftaran
                 </button>
             </div>
-            
+
             {/* Mobile Actions: Daftar Button + Hamburger */}
             <div className="flex lg:hidden items-center gap-2 sm:gap-3">
                 {/* KODE FORMULIR AKTIF ASLI (Uncomment saat pendaftaran dibuka kembali):
@@ -134,13 +135,14 @@ export default function Navbar() {
                 <button
                     type="button"
                     disabled
-                    className="px-3 sm:px-3.5 py-1.5 bg-gray-100/90 text-gray-800 border-2 border-gray-400 text-xs font-semibold rounded-full cursor-not-allowed shadow-sm"
+                    aria-label="Pendaftaran asrama saat ini sedang ditutup"
+                    className="px-3 sm:px-3.5 py-1.5 bg-gray-100 text-gray-700 text-xs font-semibold rounded-full cursor-not-allowed shadow-sm"
                     title="Pendaftaran saat ini sedang ditutup"
                 >
                     Pendaftaran
                 </button>
                 {/* Hamburger Button */}
-                <button 
+                <button
                     id="btn-hamburger"
                     type="button"
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -155,13 +157,13 @@ export default function Navbar() {
             </div>
 
             {/* Mobile Menu Content */}
-            <div 
+            <div
                 ref={mobileMenuRef}
                 className={`absolute top-[120%] left-0 w-full bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_rgb(0,0,0,0.1)] border border-gray-100 p-4 flex-col gap-1 z-[100] transition-all ${isMobileMenuOpen ? 'flex' : 'hidden'}`}
             >
                 <a href="/#hero" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Beranda</a>
-                
-                <button 
+
+                <button
                     onClick={() => setIsMobileAccordionOpen(!isMobileAccordionOpen)}
                     className="w-full flex items-center justify-between px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800 text-left"
                 >
@@ -184,7 +186,7 @@ export default function Navbar() {
                         </div>
                     </div>
                 </div>
-                
+
                 <a href="/#program" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Program</a>
                 <a href="/#fasilitas" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Fasilitas</a>
                 <a href="/#berita" className="px-4 py-3 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-semibold text-gray-800">Berita</a>
